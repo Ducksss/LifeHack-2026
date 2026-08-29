@@ -111,7 +111,8 @@ when public networking or host configuration is unreliable.
 - Simulated approval, decline, merchant failure, and reversal paths
 - A live merchant operations desk with CSV updates and audit events
 - Automated coverage for domain, security, failure, idempotency, and CSV behavior
-- A polished desktop and mobile product experience rather than a fake chat mockup
+- A polished desktop and mobile experience, including a clearly labeled
+  simulated chat host that rehearses the in-ChatGPT flow with live tool calls
 
 ### What we learned
 
@@ -151,7 +152,7 @@ All gallery assets are 1600 × 900 and live in the repository.
 | Order | File | Devpost title | Caption |
 | --- | --- | --- | --- |
 | 1 | `docs/assets/devpost/cover.png` | Everything works together | Woven turns every constraint in one urgent request into a complete cart and an exact confirmation. |
-| 2 | `docs/assets/screenshots/buyer-overview.png` | Complete carts, not loose links | Three one-merchant options satisfy the budget, compatibility, stock, and pickup constraints. |
+| 2 | `docs/assets/screenshots/buyer-overview.png` | Born inside the chat | One message becomes a live MCP app: a visible `start_mission` call, then three complete one-merchant carts. |
 | 3 | `docs/assets/devpost/woven-user-flow.png` | One request to pickup | Six visible steps carry the mission from intent to complete cart, exact confirmation, and receipt. |
 | 4 | `docs/assets/screenshots/checkout-confirmation.png` | The human stays in control | Merchant, pickup, cart version, and total are bound to one expiring confirmation. |
 | 5 | `docs/assets/devpost/woven-trust-boundary.png` | Recommendation is not permission | The model recommends, Woven binds the terms, and only a direct user click can confirm. |
@@ -185,9 +186,10 @@ compatible, under budget, pickup today.”
 
 **0:48–1:30 — Ask once**
 
-Run the canonical prompt in ChatGPT/Codex or open `/demo`. Point out the three
-complete one-merchant carts. Select ByteRoute and show the compatibility proof,
-demo stock, pickup location, and S$133 total.
+Run the canonical prompt in ChatGPT/Codex or open `/demo`, where the simulated
+chat host types the mission and plays the `start_mission` activity live. Point
+out the three complete one-merchant carts. Select ByteRoute and show the
+compatibility proof, demo stock, pickup location, and S$133 total.
 
 **1:30–2:15 — Review once and confirm once**
 
@@ -225,7 +227,8 @@ decline, and reversal paths.
 **Is this a browser extension?**
 
 No. The primary experience is an MCP App rendered inside ChatGPT or Codex. The
-browser route is a rehearsal fallback using the same backend, not a fake chat UI.
+browser route is a clearly labeled simulated chat host that rehearses the same
+experience — same backend, real MCP tool calls shown live, no live charge.
 
 **Does it make real Visa payments?**
 

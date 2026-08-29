@@ -49,8 +49,13 @@ stronger, more defensible demo:
 - judges can test success and failure paths live.
 
 The primary artifact is therefore an actual MCP App/plugin, not a speculative
-browser extension. The browser UI at `/demo` exists only as a reliable rehearsal
-and stage fallback using the same backend behavior.
+browser extension. The browser UI at `/demo` is a reliable stage rehearsal of
+that experience: a clearly labeled simulated chat host (marked “Simulated” in
+its header and footer) that types the canonical mission, plays a staged
+`start_mission` activity, renders the real widget inline, surfaces every MCP
+tool call live, and closes with a scripted thank-you after a confirmed
+simulated payment. It drives the same backend behavior and never impersonates a
+real host.
 
 ## Canonical demo story
 
@@ -77,7 +82,7 @@ live demo through the implemented review-and-confirm flow only.
 | --- | --- | --- |
 | Buyer MCP App | Complete | React widget using MCP Apps bridge |
 | Local plugin packaging | Complete | Repo marketplace, bundled stdio MCP and verified install guide |
-| Browser fallback | Complete | `/demo`; same domain behavior over HTTP |
+| Browser fallback | Complete | `/demo`; simulated chat-host rehearsal, same domain behavior over HTTP (`?instant` skips animations) |
 | Merchant desk | Complete | `/merchant`; inventory, scenarios, orders, audit, reset |
 | Cart engine | Complete for canonical mission | Four required categories; one location per cart |
 | Checkout safety | Complete for prototype | Expiry, hash, private nonce, exact terms, idempotency |
@@ -131,10 +136,12 @@ and domain rules. Do not split it into services without a measured reason.
 | `src/store.ts` | SQLite schema/state, transactions, confirmation, idempotency, scenarios, CSV and audit |
 | `src/payment.ts` | Simulated authorization adapter and the future real-payment replacement seam |
 | `src/server.ts` | MCP tools/transports, HTTP APIs, static UI, validation and process startup |
-| `web/widget.tsx` | Buyer MCP App and browser-fallback UI |
+| `web/widget.tsx` | Buyer MCP App plus the simulated chat-host rehearsal (`/demo`) |
 | `web/merchant.tsx` | Merchant operations desk |
 | `web/woven-mark.tsx` | Shared Flightpath brand mark: one route from request to verified destination |
-| `web/styles.css` | Shared visual system and responsive layout |
+| `web/components/ui/` | Vendored shadcn/ui primitives (button, card, badge, table, input, separator, skeleton) |
+| `web/lib/utils.ts` | `cn` class-merge helper for shadcn components |
+| `web/styles.css` | Tailwind v4 entry: shadcn design tokens, Geist fonts, shared animations |
 | `test/domain.test.ts` | Mission, compatibility and ranking behavior |
 | `test/store.test.ts` | Confirmation, security, failures, inventory and CSV behavior |
 | `.codex-plugin/plugin.json` | Codex plugin metadata |
@@ -242,12 +249,14 @@ the currently working product flow.
 
 1. Run `npm run check`, then `npm start`.
 2. Open `/merchant` and click **Reset demo data**.
-3. Keep `/demo` and `/merchant` open in separate tabs.
-4. Run the canonical mission and explain the three complete carts.
+3. Keep `/demo` and `/merchant` open in separate tabs (`/demo?instant` skips
+   the intro animation if time is short).
+4. Let `/demo` play: the mission types itself, the staged `start_mission`
+   activity runs, and the widget renders three complete carts.
 5. Select ByteRoute and show the compatibility proof.
 6. Click **Review checkout** and emphasize the price/stock recheck.
 7. Read the exact S$133 mandate, then click **Confirm**.
-8. Show the simulated result and pickup receipt.
+8. Show the simulated result, pickup receipt, and the scripted thank-you close.
 9. If time permits, select **Price change** in `/merchant` and show stale-preview
    rejection.
 

@@ -107,8 +107,10 @@ merchant actions and return a structured checkout for review.
 
 The primary product is a real MCP App/plugin inside ChatGPT or Codex. The model
 can ask Woven to build carts, but app-only tools and a direct user click protect
-checkout. The `/demo` browser route is a stage-safe fallback over the same
-backend—not a fake chat interface and not a second product.
+checkout. The `/demo` browser route is a stage-safe rehearsal of that
+experience: a clearly labeled simulated chat host that types the canonical
+mission, shows every MCP tool call live, and drives the same backend. It is
+marked “Simulated” on screen and is not a second product.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -162,11 +164,11 @@ path, and the identity insert that becomes usable only after implementation.
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/assets/screenshots/buyer-overview.png" alt="Woven buyer experience showing the mission and three complete carts"></td>
+    <td width="50%"><img src="docs/assets/screenshots/buyer-overview.png" alt="Woven running inside a simulated chat host with a visible start_mission tool call"></td>
     <td width="50%"><img src="docs/assets/screenshots/checkout-confirmation.png" alt="Woven exact checkout mandate and explicit confirm button"></td>
   </tr>
   <tr>
-    <td><strong>Complete carts, not loose links.</strong><br>Three ranked options satisfy the whole mission.</td>
+    <td><strong>Born inside the chat.</strong><br>One message becomes a live MCP app — visible tool calls, then three complete carts.</td>
     <td><strong>A visible authorization boundary.</strong><br>The exact merchant, pickup, items, and total are bound before confirmation.</td>
   </tr>
   <tr>
@@ -200,6 +202,7 @@ are documented in [the architecture guide](docs/architecture.md).
 
 - [TypeScript](https://www.typescriptlang.org/) and [Node.js](https://nodejs.org/)
 - [React](https://react.dev/) and [Vite](https://vite.dev/)
+- [Tailwind CSS](https://tailwindcss.com/) and [shadcn/ui](https://ui.shadcn.com/)
 - [Model Context Protocol SDK](https://modelcontextprotocol.io/)
 - [MCP Apps](https://github.com/modelcontextprotocol/ext-apps)
 - [Express](https://expressjs.com/)
@@ -263,7 +266,8 @@ server serves widget assets on port `8788`, separate from the HTTP demo.
 Use the complete [three-minute stage script](script.md). The working happy path
 is:
 
-1. Open `/demo` and show the canonical request and three ranked carts.
+1. Open `/demo` — the simulated chat host types the mission, plays the
+   `start_mission` activity, and renders the widget with three ranked carts.
 2. Select a kit and inspect its compatibility proof.
 3. Click **Review checkout** to force a stock and price recheck.
 4. Call out the exact, expiring mandate and click **Confirm S$133.00**.

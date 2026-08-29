@@ -22,7 +22,7 @@ flowchart LR
   Rail -. replace one function after product/credential approval .-> Visa[Visa sandbox API]
 ```
 
-There is no fake chat UI. The in-chat surface uses the standard MCP Apps bridge (`app.callServerTool`), while `/demo` is only a fallback transport for on-stage reliability.
+The in-chat surface uses the standard MCP Apps bridge (`app.callServerTool`). `/demo` is a rehearsal transport for on-stage reliability: it renders a clearly labeled simulated chat host (marked “Simulated” in its header and footer) that drives the same backend over HTTP and surfaces each MCP tool call as it happens. It never impersonates a real host and performs no live charges.
 
 ## Tool contract
 

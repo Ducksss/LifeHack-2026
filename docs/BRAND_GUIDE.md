@@ -37,10 +37,23 @@ symbols.
 | Field Grey | `#6D7974` | Supporting copy and dividers |
 | Alert Clay | `#B64032` | Decline or invalidation states |
 
-Use Iowan Old Style, Baskerville, or Georgia for headlines; Avenir Next or the
-system sans-serif for interface copy; and system monospace for IDs, audit events,
-and operational labels. Keep corners directional rather than bubbly: a small
-top-left radius with softer remaining corners echoes an interlaced fabric edge.
+The table above governs marketing and campaign assets (covers, decks, social
+cards). The shipped product UI uses its own system, below.
+
+## Product UI system
+
+The web surfaces (`/demo`, `/merchant`, and the MCP widget) are built with
+Tailwind CSS and shadcn/ui in a Vercel/Linear-style monochrome system: white
+cards, hairline neutral borders, near-black (`#0A0A0A`) primary actions, one
+dark hero/ops surface, and Waypoint Blue reserved for the simulated payment
+boundary. The Flightpath mark carries Signal Lime and Waypoint Blue into the UI
+as its only decorative accents. Tokens live as CSS variables in
+`web/styles.css`; shadcn primitives live in `web/components/ui/`.
+
+Type is Geist Sans for interface copy and headings (semibold, tight tracking)
+and Geist Mono for IDs, audit events, table prices, and uppercase operational
+microlabels. Both are self-hosted through `@fontsource-variable` packages so the
+MCP widget's same-origin CSP holds; never load fonts from a CDN.
 
 ## Logo rules
 
