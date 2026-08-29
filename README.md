@@ -8,10 +8,12 @@
   <p><strong>Everything works together.</strong></p>
 
   <p>
-    An MCP commerce app for ChatGPT and Codex that turns a constrained shopping
-    request into a complete, in-stock, one-merchant cart—then asks the user to
-    confirm the exact mandate before a simulated Visa authorization.
+    A shopping app inside ChatGPT and Codex that turns one request into a
+    complete, compatible cart—then waits for the user to approve the exact
+    purchase before a simulated Visa authorization.
   </p>
+
+  <p><em>Ask once. Review once. Confirm once.</em></p>
 
   <p>
     <a href="https://github.com/Ducksss/LifeHack-2026/actions/workflows/ci.yml"><img src="https://github.com/Ducksss/LifeHack-2026/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
@@ -32,6 +34,8 @@
     ·
     <a href="docs/DEVPOST_SUBMISSION.md">Devpost submission kit</a>
     ·
+    <a href="script.md">3-minute pitch</a>
+    ·
     <a href="https://github.com/Ducksss/LifeHack-2026/issues">Report an issue</a>
   </p>
 </div>
@@ -47,7 +51,9 @@
   <summary>Table of contents</summary>
   <ol>
     <li><a href="#about-the-project">About the project</a></li>
+    <li><a href="#why-chatgpt-why-a-plugin">Why ChatGPT and why a plugin?</a></li>
     <li><a href="#how-it-works">How it works</a></li>
+    <li><a href="#the-three-minute-story">The three-minute story</a></li>
     <li><a href="#product-gallery">Product gallery</a></li>
     <li><a href="#architecture">Architecture</a></li>
     <li><a href="#built-with">Built with</a></li>
@@ -65,14 +71,16 @@
 
 ## About the project
 
-Shopping agents can suggest products, but a list of links is not a ready answer
-when the user has a real mission: a hard budget, multiple devices, a departure
-tonight, and pickup before the shops close.
+**Search gives you links. Buying still takes work.**
 
-Woven keeps the experience inside an existing AI workflow. The user asks
-ChatGPT or Codex once; Woven returns complete carts from a single pickup
-location, explains why every item works together, rechecks the commercial terms,
-and requires a separate human click before authorization.
+Imagine flying tonight and needing a charger for three devices. You still have
+to compare products, check compatibility, find one store with everything in
+stock, and rebuild the cart at checkout.
+
+Woven finishes that job inside the AI workflow the user already uses. Ask
+ChatGPT or Codex once and Woven returns complete carts from one pickup location,
+shows why every item works together, rechecks the price and stock, and waits for
+a separate human confirmation before authorization.
 
 The canonical mission is deliberately concrete:
 
@@ -81,7 +89,7 @@ The canonical mission is deliberately concrete:
 
 ### Why it is different
 
-| Typical product search | Woven |
+| Product search | Woven |
 | --- | --- |
 | Ranks individual items | Ranks complete, compatible carts |
 | Leaves stock and pickup implicit | Uses current demo stock and pickup timing |
@@ -91,22 +99,62 @@ The canonical mission is deliberately concrete:
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Why ChatGPT? Why a plugin?
+
+The shopping request already exists in the conversation. A standalone app would
+make the user repeat it, while Woven can turn that same request into bounded
+merchant actions and return a structured checkout for review.
+
+The primary product is a real MCP App/plugin inside ChatGPT or Codex. The model
+can ask Woven to build carts, but app-only tools and a direct user click protect
+checkout. The `/demo` browser route is a stage-safe fallback over the same
+backend—not a fake chat interface and not a second product.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## How it works
 
-1. **Describe the mission.** The host calls `start_mission` with the user's
+1. **Ask once.** The host calls `start_mission` with the user's
    budget, destination, devices, and pickup constraint.
 2. **Build complete carts.** Woven rejects incompatible or unavailable
    offers, stays under budget, and ranks one-merchant options.
 3. **Show the proof.** The MCP App widget explains charger wattage, voltage,
    cable connectors, adapter fit, live demo stock, total, and pickup time.
-4. **Review exact terms.** The server rechecks price and stock and creates a
+4. **Review once.** The server rechecks price and stock and creates a
    ten-minute mandate bound to the merchant, cart version, and amount.
 5. **Confirm once.** A private nonce, mandate hash, and idempotency key are
    verified before the simulated authorization and merchant order.
 
 The AI recommends. The user chooses. Woven binds the exact terms.
 
-![How Woven turns a mission into a pickup-ready receipt](docs/assets/devpost/woven-how-it-works.png)
+![How Woven turns a mission into a pickup-ready receipt](docs/assets/devpost/woven-user-flow.png)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## The three-minute story
+
+```text
+Ask once
+   ↓
+Receive complete one-merchant carts
+   ↓
+See why everything works together
+   ↓
+Review the exact merchant, items, pickup, and total
+   ↓
+Confirm once
+   ↓
+Receive a simulated Visa result and pickup receipt
+```
+
+The proposed next trust step is a **simulated connector-style identity check**
+before checkout. It is intentionally not shown as a working feature yet: the
+current prototype has no Visa login, user account, or identity-provider
+integration. When built, it must remain separate from final purchase
+confirmation and must never collect Visa credentials or card data.
+
+See [`script.md`](script.md) for the exact narration, stage actions, fallback
+path, and the identity insert that becomes usable only after implementation.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -212,7 +260,10 @@ server serves widget assets on port `8788`, separate from the HTTP demo.
 
 ### Happy-path demo
 
-1. Open `/demo` and show the canonical mission and three ranked carts.
+Use the complete [three-minute stage script](script.md). The working happy path
+is:
+
+1. Open `/demo` and show the canonical request and three ranked carts.
 2. Select a kit and inspect its compatibility proof.
 3. Click **Review checkout** to force a stock and price recheck.
 4. Call out the exact, expiring mandate and click **Confirm S$133.00**.
@@ -272,6 +323,12 @@ npm run mcp          # stdio MCP transport used by the Codex plugin
 - Duplicate confirmation returns the original result through idempotency.
 - Simulated rail and merchant failures are visibly labeled and auditable.
 
+> [!NOTE]
+> The connector-style identity screen in the target storyboard is roadmap work,
+> not a current product claim. Today, Woven protects the transaction with an
+> exact, expiring mandate and a separate direct confirmation; it does not verify
+> a Visa identity or perform KYC.
+
 ![Woven keeps recommendation separate from authorization](docs/assets/devpost/woven-trust-boundary.png)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -298,6 +355,7 @@ the full test and production-build gate on every push and pull request.
 - [x] Merchant inventory, scenario controls, CSV update, and audit trail
 - [x] Simulated authorization, decline, order failure, and reversal paths
 - [x] End-to-end tests and submission-ready gallery
+- [ ] Simulated connector-style identity check, enforced before checkout
 - [ ] Public HTTPS deployment and shareable ChatGPT app connection
 - [ ] Real merchant inventory/fulfilment connectors
 - [ ] Exact Visa sandbox product adapter after credentials and product approval
@@ -338,8 +396,8 @@ Project repository: [Ducksss/LifeHack-2026](https://github.com/Ducksss/LifeHack-
 - Product documentation: [installation](docs/INSTALLATION.md),
   [PRD](docs/PRD.md), [architecture](docs/architecture.md),
   [AI handover](docs/HANDOVER.md), [Devpost kit](docs/DEVPOST_SUBMISSION.md),
-  [pitch deck](docs/Woven-Hackathon-Pitch.pptx), and
-  [brand guide](docs/BRAND_GUIDE.md).
+  [three-minute script](script.md),
+  [pitch deck](docs/Woven-Hackathon-Pitch.pptx), and [brand guide](docs/BRAND_GUIDE.md).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

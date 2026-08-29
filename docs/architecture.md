@@ -86,6 +86,35 @@ Checkout validates all of the following inside one SQLite write transaction:
 - Express request JSON is capped at 256 KB and server identity headers are disabled.
 - Demo reset is local and requires an explicit browser confirmation.
 
+## Planned demo identity boundary — not implemented
+
+The target storyboard adds a simulated connector-style account check before
+`create_checkout_preview`. It must not be called Visa OAuth, KYC, or a real Visa
+login.
+
+```text
+Widget requests demo identity connection
+    ↓
+External demo consent page issues a short-lived, single-use code
+    ↓
+Server validates state + PKCE and creates an opaque identity session
+    ↓
+Checkout preview binds that subject to the existing exact terms
+    ↓
+The user still confirms the purchase separately
+```
+
+Only a safe status such as `verified`, the expiry, and an opaque display label
+may reach the widget. Authorization codes and identity-session secrets remain
+server-side and never enter MCP tool arguments or model-visible
+`structuredContent`. Missing, expired, reused, or mismatched identity sessions
+must fail before preview creation.
+
+This remains one-service functionality. Do not introduce a separate identity
+service for the demo; add the smallest server routes, session state, and checkout
+guard at the existing trust boundary. A static imitation login page is
+insufficient because it does not prove or enforce anything.
+
 ## Real Visa integration boundary
 
 The safe replacement point is `authorizePayment` in `src/payment.ts`. A real sandbox adapter should be implemented only after choosing the exact Visa product and receiving sandbox credentials. It must preserve the current result contract, mandate/idempotency validation, audit events, timeout handling, reversal status, and the explicit confirmation UI. Production credentials must live in a secret manager, never the widget, repository, or MCP tool arguments.

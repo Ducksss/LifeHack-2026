@@ -10,6 +10,8 @@ editorial enough to be memorable, operational enough to be trusted.
 
 **Explanatory line:** Everything you need, woven into one choice.
 
+**Stage line:** Ask once. Review once. Confirm once.
+
 **Trust line:** The AI recommends. Only you can authorize.
 
 Use “Woven” with one capital W. It is a working hackathon identity, not a claim
@@ -77,11 +79,13 @@ confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 | `docs/assets/devpost/cover.png` | Devpost thumbnail and gallery cover |
 | `docs/assets/devpost/cover.svg` | Editable cover source |
 | `docs/assets/devpost/architecture.{png,svg}` | Concise system-story slide |
-| `docs/assets/devpost/woven-how-it-works.{png,svg}` | Judge-friendly five-step product flow |
-| `docs/assets/devpost/woven-trust-boundary.{png,svg}` | Human authorization and simulator boundary |
-| `docs/assets/devpost/woven-architecture.{png,svg}` | Detailed technical architecture |
+| `docs/assets/devpost/woven-user-flow.png` | Six-step product flow with real product screens |
+| `docs/assets/devpost/woven-trust-boundary.png` | Human authorization and simulator boundary |
+| `docs/assets/devpost/woven-architecture.png` | Detailed technical architecture |
+| `docs/Woven-Devpost-Visuals.pptx` | Presentation-ready source deck for the three slides |
 | `docs/assets/screenshots/*.png` | Verified product gallery |
-| `docs/Woven-Hackathon-Pitch.pptx` | Nine-slide judge and demo pitch deck |
+| `script.md` | Authoritative three-minute narration and language guardrails |
+| `docs/Woven-Hackathon-Pitch.pptx` | Eleven-slide judge deck; the identity slide is explicitly labeled as planned |
 
 All Devpost gallery images are 1600 × 900. Upload them uncropped in the order
 listed in `docs/DEVPOST_SUBMISSION.md`.

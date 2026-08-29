@@ -27,6 +27,14 @@ The explanatory line is: “Everything you need, woven into one choice.” The n
 expresses the product mechanism: Woven combines separate threads—intent,
 compatibility, budget, inventory, pickup, and consent—into one complete cart.
 
+The current three-minute stage line is:
+
+> Ask once. Review once. Confirm once.
+
+`script.md` at the repository root is the authoritative narration. It includes a
+target connector-style identity scene, but that scene is explicitly **not live**
+until the server enforces identity before checkout.
+
 ## Why this direction was chosen
 
 The project began with a broader idea: a Visa-powered extension that could layer
@@ -69,6 +77,7 @@ Within three minutes, the audience should see:
 | Merchant desk | Complete | `/merchant`; inventory, scenarios, orders, audit, reset |
 | Cart engine | Complete for canonical mission | Four required categories; one location per cart |
 | Checkout safety | Complete for prototype | Expiry, hash, private nonce, exact terms, idempotency |
+| Demo identity check | Planned, not implemented | Target is a simulated connector-style flow; never call it Visa OAuth, KYC, or a real Visa login |
 | Visa rail | Simulated only | Approval, decline, failure, and reversal semantics |
 | Automated verification | Green | Eight tests, TypeScript/build gate, GitHub CI |
 | README and gallery | Complete | Best-README structure and eight 1600×900 Devpost assets |
@@ -131,7 +140,8 @@ and domain rules. Do not split it into services without a measured reason.
 | `docs/architecture.md` | Detailed tool contract, state machine and trust boundaries |
 | `docs/DEVPOST_SUBMISSION.md` | Paste-ready Devpost story, captions, pitch and demo script |
 | `docs/BRAND_GUIDE.md` | Naming, visual tokens, asset inventory and campaign prompt |
-| `docs/Woven-Hackathon-Pitch.pptx` | Final nine-slide pitch deck |
+| `docs/Woven-Hackathon-Pitch.pptx` | Eleven-slide judge deck; the identity scene is explicitly labeled as planned, not live |
+| `script.md` | Authoritative three-minute narration, stage cues, fallback, judge Q&A, and identity implementation gate |
 
 ## Interfaces and runtime
 
@@ -222,6 +232,9 @@ The database and Playwright artifacts are intentionally ignored. Never commit
 
 ## Stage demo runbook
 
+Use `script.md` for the exact three-minute narration. The steps below describe
+the currently working product flow.
+
 1. Run `npm run check`, then `npm start`.
 2. Open `/merchant` and click **Reset demo data**.
 3. Keep `/demo` and `/merchant` open in separate tabs.
@@ -233,13 +246,18 @@ The database and Playwright artifacts are intentionally ignored. Never commit
 9. If time permits, select **Price change** in `/merchant` and show stale-preview
    rejection.
 
-The polished 90-second narration is in `docs/DEVPOST_SUBMISSION.md`.
+Do not add the target identity scene to the live demo until checkout rejects a
+missing or expired server-side identity session. A static login mock does not
+qualify.
 
 ## Submission handover
 
-The README, Woven brand system, cover, how-it-works slide,
+The README, Woven brand system, cover, user-flow slide,
 authorization-boundary slide, architecture slide, product screenshots, Devpost
-story, captions, pitch, judge Q&A, and recording script are complete.
+story, captions, pitch, judge Q&A, and three-minute script are complete. The
+pitch deck includes the identity scene only as the next integration. Regenerate
+the slide and checkout screenshots after identity is implemented rather than
+presenting the current planned state as live.
 
 The existing LifeHack Devpost draft is saved at
 <https://devpost.com/software/woven-wzefyv>. Its rendered preview has been
@@ -264,15 +282,19 @@ Do not invent these fields. Use the checklist in `docs/DEVPOST_SUBMISSION.md`.
 
 Unless the user changes direction, prioritize in this order:
 
-1. **Public deployment:** deploy the single service behind HTTPS, set `BASE_URL`,
+1. **Simulated identity check:** add the connector-style demo authorization flow,
+   bind its opaque subject to checkout, reject missing/expired/mismatched
+   sessions, and keep final purchase confirmation separate.
+2. **Public deployment:** deploy the single service behind HTTPS, set `BASE_URL`,
    preserve SQLite expectations or deliberately choose persistent storage, and
    verify `/healthz`, `/demo`, `/merchant`, and `/mcp`.
-2. **Real ChatGPT connection:** connect the deployed `/mcp` endpoint in Developer
+3. **Real ChatGPT connection:** connect the deployed `/mcp` endpoint in Developer
    Mode and verify the widget, private metadata, CSP and tool calls.
-3. **Demo recording:** capture the 90-second happy path plus one stale-cart failure.
-4. **Devpost publication:** add human/team details, upload the eight gallery assets,
+4. **Demo recording:** capture the three-minute happy path plus one stale-cart
+   failure.
+5. **Devpost publication:** add human/team details, upload the eight gallery assets,
    add links and publish only with explicit user authorization.
-5. **Post-hackathon validation:** interview merchants/users before generalizing the
+6. **Post-hackathon validation:** interview merchants/users before generalizing the
    mission engine or adding production integrations.
 
 ## Do not expand by default
@@ -281,7 +303,8 @@ These ideas are intentionally deferred, not forgotten:
 
 - Google search result injection or a Chrome extension;
 - scraping merchants or presenting seeded stock as live;
-- user accounts, onboarding, refunds, disputes or production fulfilment;
+- production user accounts, onboarding, refunds, disputes or fulfilment; the
+  scoped simulated identity check above is the only planned exception;
 - broad multi-category optimization or a solver;
 - extra services, queues, caches or databases;
 - live Visa calls without the exact approved product and credentials.

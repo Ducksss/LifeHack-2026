@@ -14,6 +14,10 @@ Within three minutes, an audience should see:
 4. An explicit user confirmation produce a clearly simulated Visa authorization and pickup receipt.
 5. A merchant operator force stock, price, authorization, and order failure paths without changing code.
 
+The current build does not verify a user identity. The target storyboard adds a
+simulated connector-style identity check before checkout, but it is not part of
+the implemented acceptance contract below until the server enforces it.
+
 ## Primary persona
 
 A time-constrained traveller who knows the outcome they need but does not want to evaluate individual product compatibility, merchant stock, pickup logistics, and checkout separately.
@@ -45,8 +49,33 @@ Assumptions are explicit: MacBook Air uses USB-C PD; the demo iPhone and AirPods
 - General web search or Google result-page injection.
 - Scraping live merchants or claiming real inventory.
 - Real Visa authorization without an approved product, sandbox credentials, and compliance review.
-- User accounts, production merchant onboarding, fulfillment integrations, refunds, or disputes.
+- Production user accounts, merchant onboarding, fulfillment integrations,
+  refunds, or disputes.
 - Broad catalog optimization beyond the four-part charging mission.
+
+## Planned identity extension — not implemented
+
+The next trust step is a connector-style **demo identity** flow. It is account
+authentication for the prototype, not KYC, a real Visa login, or a claim of a
+Visa identity product.
+
+Before the feature may be presented as working, it must:
+
+- show a prominent “DEMO ONLY” boundary and collect no passwords, card details,
+  or Visa credentials;
+- use an opaque subject identifier and short-lived server-side session;
+- use an allowlisted callback, `state`, PKCE, and a single-use authorization
+  code;
+- keep identity tokens out of MCP arguments and model-visible content;
+- reject checkout when the identity is missing, expired, reused, or bound to a
+  different session;
+- bind the verified subject to the exact checkout preview; and
+- preserve a separate direct confirmation for the exact merchant, items, amount,
+  expiry, nonce, and idempotency key.
+
+Static UI alone does not satisfy this extension. When implemented, promote these
+requirements into the functional requirements and acceptance criteria and add
+focused automated coverage.
 
 ## Acceptance criteria
 
