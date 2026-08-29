@@ -9,7 +9,18 @@
 **Current phase:** Working, submission-ready prototype; public deployment and
 Devpost publishing are still outstanding.
 
+**Repository synchronization:** The primary checkout should be clean and aligned
+with `origin/main` after handoff. Worktree paths and counts are ephemeral; always
+rediscover them with `git worktree list` instead of copying a fixed inventory or
+commit hash into documentation.
+
 ## Read this first
+
+`AGENTS.md` is the canonical execution contract for every coding agent. This file
+owns current product and repository state. `docs/PRD.md` owns implemented
+requirements, `docs/architecture.md` owns system contracts, and `script.md` owns
+the spoken demo. If a pitch artifact describes planned behavior that the code and
+PRD do not implement, it is not a product claim.
 
 Woven is an agentic-commerce MCP App for ChatGPT and Codex. It turns a
 constrained shopping request into complete, compatible, in-stock carts from one
@@ -91,6 +102,7 @@ live demo through the implemented review-and-confirm flow only.
 | Automated verification | Green | Eight tests, TypeScript/build gate, GitHub CI |
 | README and gallery | Complete | Best-README structure and eight 1600×900 Devpost assets |
 | Judge pitch deck | Complete | Seven-slide story plus four backups; presenter notes and source blocks included |
+| Agent context | Current | `AGENTS.md` is canonical; Claude and Copilot use thin pointers to it |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
 | Public HTTPS deployment | Not done | Required for a shareable ChatGPT connection |
 | Devpost submission | Text ready — media blocked | Draft story, tags, repository, Visa prize and Digital Payments are saved; uploads and submission remain outstanding |
@@ -132,6 +144,9 @@ and domain rules. Do not split it into services without a measured reason.
 
 | Path | Responsibility |
 | --- | --- |
+| `AGENTS.md` | Canonical agent execution rules, source ordering, invariants, and definition of done |
+| `CLAUDE.md` | Claude pointer to the canonical agent contract |
+| `.github/copilot-instructions.md` | GitHub Copilot pointer to the canonical agent contract |
 | `src/domain.ts` | Types, seed catalog, mission creation, compatibility, cart ranking, preview construction |
 | `src/store.ts` | SQLite schema/state, transactions, confirmation, idempotency, scenarios, CSV and audit |
 | `src/payment.ts` | Simulated authorization adapter and the future real-payment replacement seam |
@@ -153,6 +168,9 @@ and domain rules. Do not split it into services without a measured reason.
 | `docs/DEVPOST_SUBMISSION.md` | Paste-ready Devpost story, captions, pitch and demo script |
 | `docs/BRAND_GUIDE.md` | Naming, visual tokens, asset inventory and campaign prompt |
 | `docs/Woven-Hackathon-Pitch.pptx` | Eleven-slide judge deck; the identity scene is explicitly labeled as planned, not live |
+| `docs/Woven-Devpost-Visuals.pptx` | Editable three-slide source deck for user flow, architecture, and trust visuals |
+| `docs/assets/brand/woven-cover.{png,svg}` | Product-led repository/social cover using the working buyer UI |
+| `docs/assets/devpost/woven-{user-flow,architecture,trust-boundary}.png` | Verified 1600×900 submission visuals |
 | `script.md` | Authoritative three-minute narration, stage cues, fallback, judge Q&A, and identity implementation gate |
 
 ## Interfaces and runtime
@@ -266,13 +284,14 @@ qualify.
 
 ## Submission handover
 
-The README, Woven brand system, cover, authorization-boundary slide,
-architecture slide, product screenshots, Devpost story, captions, judge Q&A,
-three-minute script, and eleven-slide pitch deck are complete. The main deck
-story is: friction → complete cart → live request → human authorization →
-merchant control → takeaway. The pitch deck includes identity only as the next
-integration. Regenerate the identity and checkout evidence after identity is
-implemented rather than presenting the current planned state as live.
+The README, product-led cover, Woven brand system, user-flow slide,
+authorization-boundary slide, architecture slide, product screenshots, Devpost
+story, captions, judge Q&A, three-minute script, and eleven-slide pitch deck are
+complete. The main deck story is: friction → complete cart → live request →
+human authorization → merchant control → takeaway. The pitch deck includes
+identity only as the next integration. Regenerate the identity and checkout
+evidence after identity is implemented rather than presenting the current
+planned state as live.
 
 The existing LifeHack Devpost draft is saved at
 <https://devpost.com/software/woven-wzefyv>. Its rendered preview has been
@@ -292,6 +311,27 @@ Before publishing Devpost, a human must provide or confirm:
 - final logged-out link checks.
 
 Do not invent these fields. Use the checklist in `docs/DEVPOST_SUBMISSION.md`.
+
+## Repository and worktree state
+
+`main` is the only current product branch. Two historical branches were pushed
+to preserve old work without contaminating Woven:
+
+- `PinZheng/docs-archive-missioncart-gallery` — pre-Woven MissionCart gallery and
+  copy exploration;
+- `PinZheng/frontend-missioncart-dashboard` — pre-Woven Tailwind/shadcn UI
+  experiment whose simulated chat host conflicts with the current `/demo`
+  invariant.
+
+`claude/missioncart-ai-handover-d8c2bd` is a superseded local pre-Woven branch.
+It is not a source of truth and should not be merged; the useful frontend work
+from that checkout is already preserved on
+`PinZheng/frontend-missioncart-dashboard`.
+
+Do not merge either branch into `main` by default. Recover individual assets or
+patterns only after translating them to Woven and rechecking every trust and
+transport invariant. Before changing branches or worktrees, inspect
+`git worktree list` and preserve dirty state on a branch.
 
 ## Highest-value next work
 
@@ -339,13 +379,13 @@ A future AI should not call work complete until it has:
 5. run focused checks and `npm run check` with fresh passing evidence;
 6. visually verified affected buyer/merchant UI at desktop and mobile sizes when
    UI changes;
-7. updated README, PRD, architecture, Devpost copy, or this handover if their
-   claims changed; and
+7. updated README, script, PRD, architecture, Devpost copy, brand guide,
+   `AGENTS.md`, or this handover when their owned facts changed; and
 8. reported anything still requiring human authority rather than guessing.
 
 ## Maintaining this handover
 
 Update the date and affected sections whenever product direction, architecture,
-deployment state, demo steps, external links, or outstanding work changes. Keep
-this file factual and current; history belongs in Git, not in an ever-growing
-chronology here.
+deployment state, demo steps, external links, archive branches, or outstanding
+work changes. Keep this file factual and current; use Git itself for commit and
+worktree state instead of copying ephemeral hashes or paths here.

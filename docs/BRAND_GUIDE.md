@@ -86,8 +86,7 @@ confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 | `docs/assets/brand/woven-mark.svg` | Square avatar and app icon |
 | `docs/assets/brand/woven-wordmark.svg` | Horizontal wordmark and promise |
 | `docs/assets/brand/woven-hero-flightpath.png` | Text-free campaign hero |
-| `docs/assets/brand/woven-cover.{png,svg}` | Logo-forward repository and social cover |
-| `docs/assets/brand/woven-cover-background.png` | Text-free generated cover photography |
+| `docs/assets/brand/woven-cover.{png,svg}` | Product statement beside the working buyer UI |
 | `docs/assets/brand/concepts/*.png` | Archived identity explorations; not production marks |
 | `docs/assets/devpost/cover.png` | Devpost thumbnail and gallery cover |
 | `docs/assets/devpost/cover.svg` | Editable cover source |
