@@ -1,8 +1,8 @@
-# MissionCart implemented PRD
+# Woven implemented PRD
 
 ## Product statement
 
-MissionCart is a personal commerce plugin that builds a complete kit around a user’s mission instead of returning a list of product links. It recommends merchant carts inside an existing ChatGPT/Codex workflow and crosses the purchase boundary only after the user confirms an exact mandate.
+Woven is a personal commerce plugin that builds a complete kit around a user’s mission instead of returning a list of product links. It recommends merchant carts inside an existing ChatGPT/Codex workflow and crosses the purchase boundary only after the user confirms an exact mandate.
 
 ## Demo objective
 

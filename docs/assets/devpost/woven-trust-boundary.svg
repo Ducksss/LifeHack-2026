@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Woven authorization boundary</title>
+  <desc id="desc">The AI recommends, Woven binds exact terms, and only a direct user click can authorize a simulated payment outcome.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0 0l11 6-11 6z" fill="#84968f"/>
+    </marker>
+    <marker id="signal-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0 0l11 6-11 6z" fill="#b7f522"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="900" rx="34" fill="#fcfaf5"/>
+
+  <g transform="translate(72 54)">
+    <image href="../brand/woven-mark.svg" width="54" height="54"/>
+    <text x="72" y="36" fill="#0e4b3b" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="34" font-weight="600">Woven</text>
+    <text x="1237" y="30" fill="#6d7974" font-family="SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700" letter-spacing="1.8">AUTHORIZATION BOUNDARY</text>
+  </g>
+
+  <g transform="translate(72 164)">
+    <text fill="#0e4b3b" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="61" font-weight="600" letter-spacing="-2">Recommendation is not permission.</text>
+    <text y="51" fill="#5f6964" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="20">Woven keeps the model useful, the terms exact, and the final decision visibly human.</text>
+  </g>
+
+  <g transform="translate(72 286)">
+    <line x1="394" y1="205" x2="505" y2="205" stroke="#84968f" stroke-width="4" marker-end="url(#arrow)"/>
+    <line x1="935" y1="205" x2="1046" y2="205" stroke="#b7f522" stroke-width="4" marker-end="url(#signal-arrow)"/>
+
+    <g>
+      <rect width="390" height="412" rx="22" fill="#0e4b3b"/>
+      <text x="32" y="48" fill="#dcece5" font-family="SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700" letter-spacing="1.6">01 · AI WORKFLOW</text>
+      <text x="32" y="91" fill="#fff" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="34" font-weight="600">Recommend</text>
+      <text x="32" y="121" fill="#b9c7c1" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="14">ChatGPT or Codex coordinates the mission.</text>
+
+      <g transform="translate(32 160)">
+        <circle cx="10" cy="10" r="10" fill="#dcece5"/>
+        <path d="M6 10l3 3 6-7" fill="none" stroke="#0e4b3b" stroke-width="2.5"/>
+        <text x="34" y="15" fill="#fff" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="15">Express user intent and constraints</text>
+        <circle cx="10" cy="64" r="10" fill="#dcece5"/>
+        <path d="M6 64l3 3 6-7" fill="none" stroke="#0e4b3b" stroke-width="2.5"/>
+        <text x="34" y="69" fill="#fff" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="15">Call tools and present complete carts</text>
+        <circle cx="10" cy="118" r="10" fill="#dcece5"/>
+        <path d="M6 118l3 3 6-7" fill="none" stroke="#0e4b3b" stroke-width="2.5"/>
+        <text x="34" y="123" fill="#fff" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="15">Explain compatibility and trade-offs</text>
+      </g>
+
+      <rect x="32" y="332" width="326" height="48" rx="8" fill="#b64032" fill-opacity=".2" stroke="#d46e61"/>
+      <text x="50" y="361" fill="#ffb3a8" font-family="SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700">CANNOT SEE NONCE · CANNOT CONFIRM</text>
+    </g>
+
+    <g transform="translate(525)">
+      <rect width="410" height="412" rx="22" fill="#fff" stroke="#d8d0c4" stroke-width="2"/>
+      <text x="32" y="48" fill="#6f990d" font-family="SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700" letter-spacing="1.6">02 · WOVEN CHECKOUT</text>
+      <text x="32" y="91" fill="#0e4b3b" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="34" font-weight="600">Bind</text>
+      <text x="32" y="121" fill="#5f6964" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="14">The server makes the commercial terms exact.</text>
+
+      <g transform="translate(32 154)">
+        <rect width="346" height="132" rx="12" fill="#dcece5"/>
+        <text x="20" y="32" fill="#2d6253" font-family="SFMono-Regular, Menlo, monospace" font-size="10" font-weight="700">10-MINUTE MANDATE</text>
+        <text x="20" y="62" fill="#0e4b3b" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="700">Merchant · cart version · items · total</text>
+        <text x="20" y="88" fill="#5f6964" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="13">Price + stock rechecked before preview</text>
+        <text x="20" y="112" fill="#5f6964" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="13">Hash + expiry + idempotency key</text>
+      </g>
+
+      <g transform="translate(32 306)">
+        <rect width="346" height="74" rx="10" fill="#0e4b3b"/>
+        <path d="M22 28V20c0-22 34-22 34 0v8" fill="none" stroke="#dcece5" stroke-width="5"/>
+        <rect x="18" y="27" width="42" height="34" rx="5" fill="#dcece5"/>
+        <text x="78" y="31" fill="#fff" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="700">Private one-time nonce</text>
+        <text x="78" y="53" fill="#aebdb7" font-family="SFMono-Regular, Menlo, monospace" font-size="9">MCP _meta → widget only</text>
+      </g>
+    </g>
+
+    <g transform="translate(1066)">
+      <rect width="374" height="412" rx="22" fill="#b7f522"/>
+      <text x="32" y="48" fill="#0e4b3b" font-family="SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700" letter-spacing="1.6">03 · DIRECT USER ACTION</text>
+      <text x="32" y="91" fill="#0e4b3b" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="34" font-weight="600">Confirm</text>
+      <text x="32" y="121" fill="#284b40" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="14">One visible click on the displayed terms.</text>
+
+      <g transform="translate(47 159)">
+        <rect width="280" height="112" rx="15" fill="#fff"/>
+        <text x="24" y="32" fill="#6d7974" font-family="SFMono-Regular, Menlo, monospace" font-size="9" font-weight="700">EXACT TOTAL</text>
+        <text x="24" y="76" fill="#0e4b3b" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="34" font-weight="600">S$133.00</text>
+        <rect x="172" y="27" width="84" height="58" rx="10" fill="#0e4b3b"/>
+        <text x="214" y="61" text-anchor="middle" fill="#fff" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="700">CONFIRM</text>
+      </g>
+
+      <path d="M82 318h210" stroke="#8cc213" stroke-width="2"/>
+      <text x="187" y="350" text-anchor="middle" fill="#0e4b3b" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="700">Nonce + mandate + stock verified</text>
+      <text x="187" y="376" text-anchor="middle" fill="#0e4b3b" font-family="SFMono-Regular, Menlo, monospace" font-size="10" font-weight="700">ATOMIC ORDER · IDEMPOTENT RETRY</text>
+    </g>
+  </g>
+
+  <g transform="translate(72 744)">
+    <rect width="1440" height="92" rx="16" fill="#1545e8"/>
+    <text x="34" y="39" fill="#fff" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="26" font-weight="600">After confirmation: simulated Visa outcome</text>
+    <text x="34" y="67" fill="#dce4ff" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="14">Approval returns a pickup receipt. Decline creates no order. Merchant failure enters reversal. No card data and no live charge.</text>
+    <g transform="translate(1104 24)">
+      <rect width="302" height="44" rx="22" fill="#fff" fill-opacity=".14"/>
+      <text x="151" y="28" text-anchor="middle" fill="#fff" font-family="SFMono-Regular, Menlo, monospace" font-size="10" font-weight="700" letter-spacing="1.2">SIMULATOR · VISIBLY LABELED</text>
+    </g>
+  </g>
+</svg>

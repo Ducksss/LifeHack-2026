@@ -1,33 +1,37 @@
-# MissionCart AI handover
+# Woven AI handover
 
-**Last updated:** 29 August 2026
+**Last updated:** 30 August 2026
 
 **Repository:** `Ducksss/LifeHack-2026`
 
-**Product:** MissionCart
+**Product:** Woven
 
 **Current phase:** Working, submission-ready prototype; public deployment and
 Devpost publishing are still outstanding.
 
 ## Read this first
 
-MissionCart is an agentic-commerce MCP App for ChatGPT and Codex. It turns a
+Woven is an agentic-commerce MCP App for ChatGPT and Codex. It turns a
 constrained shopping request into complete, compatible, in-stock carts from one
 pickup location, explains why each cart works, and requires the user to confirm
 the exact merchant, cart, and amount before a **simulated** Visa authorization.
 
 The repository name is `LifeHack-2026`; the user-facing product name is
-`MissionCart`. Do not rename the product to LifeHack.
+`Woven`. Do not rename the product to LifeHack.
 
-The shortest correct product statement is:
+The product promise is:
 
-> One mission. One compatible cart. One explicit confirmation.
+> Everything works together.
+
+The explanatory line is: “Everything you need, woven into one choice.” The name
+expresses the product mechanism: Woven combines separate threads—intent,
+compatibility, budget, inventory, pickup, and consent—into one complete cart.
 
 ## Why this direction was chosen
 
 The project began with a broader idea: a Visa-powered extension that could layer
 merchant recommendations over existing search and authorize payment after user
-confirmation. The direction was narrowed to MissionCart because it produces a
+confirmation. The direction was narrowed to Woven because it produces a
 stronger, more defensible demo:
 
 - it begins inside a workflow the user already uses—ChatGPT or Codex;
@@ -60,13 +64,14 @@ Within three minutes, the audience should see:
 | Area | Status | Notes |
 | --- | --- | --- |
 | Buyer MCP App | Complete | React widget using MCP Apps bridge |
+| Local plugin packaging | Complete | Repo marketplace, bundled stdio MCP and verified install guide |
 | Browser fallback | Complete | `/demo`; same domain behavior over HTTP |
 | Merchant desk | Complete | `/merchant`; inventory, scenarios, orders, audit, reset |
 | Cart engine | Complete for canonical mission | Four required categories; one location per cart |
 | Checkout safety | Complete for prototype | Expiry, hash, private nonce, exact terms, idempotency |
 | Visa rail | Simulated only | Approval, decline, failure, and reversal semantics |
 | Automated verification | Green | Eight tests, TypeScript/build gate, GitHub CI |
-| README and gallery | Complete | Best-README structure and six 1600×900 assets |
+| README and gallery | Complete | Best-README structure and eight 1600×900 Devpost assets |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
 | Public HTTPS deployment | Not done | Required for a shareable ChatGPT connection |
 | Devpost submission | Not published | Needs human/team and launch details |
@@ -93,14 +98,14 @@ User mission
     ↓
 ChatGPT or Codex MCP host
     ↓
-MissionCart tools + React MCP App
+Woven tools + React MCP App
     ↓
 Domain rules → Node SQLite state → simulated Visa adapter
     ↑
 Merchant desk: inventory, prices, scenarios, orders, audit
 ```
 
-MissionCart deliberately remains one deployable Node.js service. HTTP MCP, stdio
+Woven deliberately remains one deployable Node.js service. HTTP MCP, stdio
 MCP, the browser fallback, and the merchant desk all route through the same store
 and domain rules. Do not split it into services without a measured reason.
 
@@ -114,15 +119,19 @@ and domain rules. Do not split it into services without a measured reason.
 | `src/server.ts` | MCP tools/transports, HTTP APIs, static UI, validation and process startup |
 | `web/widget.tsx` | Buyer MCP App and browser-fallback UI |
 | `web/merchant.tsx` | Merchant operations desk |
+| `web/woven-mark.tsx` | Shared Flightpath brand mark: one route from request to verified destination |
 | `web/styles.css` | Shared visual system and responsive layout |
 | `test/domain.test.ts` | Mission, compatibility and ranking behavior |
 | `test/store.test.ts` | Confirmation, security, failures, inventory and CSV behavior |
 | `.codex-plugin/plugin.json` | Codex plugin metadata |
 | `.mcp.json` | Local stdio MCP launch configuration |
+| `.agents/plugins/marketplace.json` | Repository marketplace entry for local plugin installation |
+| `docs/INSTALLATION.md` | Canonical Codex/ChatGPT installation steps and expected results |
 | `docs/PRD.md` | Binding implemented product requirements |
 | `docs/architecture.md` | Detailed tool contract, state machine and trust boundaries |
 | `docs/DEVPOST_SUBMISSION.md` | Paste-ready Devpost story, captions, pitch and demo script |
 | `docs/BRAND_GUIDE.md` | Naming, visual tokens, asset inventory and campaign prompt |
+| `docs/Woven-Hackathon-Pitch.pptx` | Final nine-slide pitch deck |
 
 ## Interfaces and runtime
 
@@ -155,14 +164,14 @@ model-visible `structuredContent`.
 | --- | --- | --- |
 | `PORT` | `8787` | Codex stdio config uses `8788` to avoid collisions |
 | `BASE_URL` | `http://localhost:8787` | Must be the public HTTPS origin for ChatGPT |
-| `MISSIONCART_DB` | `./data/missioncart.db` | Local demo state; ignored by Git |
+| `WOVEN_DB` | `./data/woven.db` | Local demo state; ignored by Git |
 | `PAYMENT_MODE` | `simulated` | Every other value fails closed |
 
 ## Non-negotiable trust boundaries
 
 Preserve these across every change:
 
-1. No PAN, CVV, wallet token, or payment credential may enter MissionCart.
+1. No PAN, CVV, wallet token, or payment credential may enter Woven.
 2. The model never receives the confirmation nonce.
 3. Recommendation is not authorization; confirmation requires a separate click.
 4. Confirmation is bound to exact immutable terms and expires.
@@ -181,8 +190,11 @@ handling, idempotency, audit, reversal, and confirmation UI.
 
 ## Local runbook
 
+The complete host installation, expected outputs, and troubleshooting guide is
+in `docs/INSTALLATION.md`.
+
 ```bash
-npm install
+npm ci
 npm run check
 npm start
 ```
@@ -225,8 +237,9 @@ The polished 90-second narration is in `docs/DEVPOST_SUBMISSION.md`.
 
 ## Submission handover
 
-The README, brand system, cover, architecture slide, product screenshots, Devpost
-story, captions, pitch, judge Q&A, and recording script are complete and committed.
+The README, Woven brand system, cover, how-it-works slide,
+authorization-boundary slide, architecture slide, product screenshots, Devpost
+story, captions, pitch, judge Q&A, and recording script are complete.
 
 Before publishing Devpost, a human must provide or confirm:
 
@@ -250,7 +263,7 @@ Unless the user changes direction, prioritize in this order:
 2. **Real ChatGPT connection:** connect the deployed `/mcp` endpoint in Developer
    Mode and verify the widget, private metadata, CSP and tool calls.
 3. **Demo recording:** capture the 90-second happy path plus one stale-cart failure.
-4. **Devpost publication:** add human/team details, upload the six gallery assets,
+4. **Devpost publication:** add human/team details, upload the eight gallery assets,
    add links and publish only with explicit user authorization.
 5. **Post-hackathon validation:** interview merchants/users before generalizing the
    mission engine or adding production integrations.

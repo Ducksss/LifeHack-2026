@@ -1,10 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { CANONICAL_REQUEST, DomainError } from "../src/domain.js";
-import { MissionCartStore, parseCsv } from "../src/store.js";
+import { WovenStore, parseCsv } from "../src/store.js";
 
 function setup() {
-  const store = new MissionCartStore(":memory:");
+  const store = new WovenStore(":memory:");
   const view = store.startMission({ request: CANONICAL_REQUEST });
   const cart = view.carts[0]!;
   return { store, view, cart };
@@ -37,6 +37,7 @@ test("checkout is explicit, nonce-bound, idempotent, and decrements stock once",
     const first = store.confirmPurchase(input);
     const second = store.confirmPurchase(input);
     assert.equal(first.order.status, "confirmed");
+    assert.match(first.order.receiptNumber ?? "", /^WV-/);
     assert.equal(second.order.id, first.order.id);
     assert.throws(
       () => store.confirmPurchase({ ...input, previewId: "pre_different_checkout" }),
@@ -123,7 +124,7 @@ test("CSV parser handles quoted commas and escaped quotes", () => {
 });
 
 test("catalog CSV rejects blank values instead of silently zeroing an offer", () => {
-  const store = new MissionCartStore(":memory:");
+  const store = new WovenStore(":memory:");
   try {
     assert.throws(
       () => store.updateCatalogCsv("offer_id,price_sgd,stock\nbyteroute-funan-br-gan65,,4\n"),

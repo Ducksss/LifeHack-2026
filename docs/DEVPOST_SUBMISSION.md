@@ -1,20 +1,20 @@
-# MissionCart — Devpost submission kit
+# Woven — Devpost submission kit
 
 This document is field-ready. Replace only the bracketed launch details before
 publishing; the product claims below match the working repository.
 
 ## Listing basics
 
-**Project name:** MissionCart
+**Project name:** Woven
 
-**Tagline:** One mission. One compatible cart. One explicit confirmation.
+**Tagline:** Everything works together.
 
-**One-line description:** MissionCart turns a constrained shopping request in
+**One-line description:** Woven turns a constrained shopping request in
 ChatGPT or Codex into an in-stock, one-merchant cart and asks the user to confirm
 the exact terms before a simulated Visa authorization.
 
 **Short description:** Flying tonight and missing the right charging kit?
-MissionCart works inside ChatGPT and Codex to rank complete carts by compatibility,
+Woven works inside ChatGPT and Codex to rank complete carts by compatibility,
 budget, stock, pickup time, and merchant—then binds the chosen merchant, cart, and
 total to one visible confirmation. The prototype includes a merchant operations
 desk, stale-cart protection, failure scenarios, an audit trail, and a simulated
@@ -36,14 +36,14 @@ independent recommendations. They need one complete kit that works together, is
 actually in stock, stays under budget, and can be collected on time.
 
 We asked a second question: if the user already starts that mission in ChatGPT or
-Codex, why force them into another destination app? MissionCart extends the
+Codex, why force them into another destination app? Woven extends the
 workflow they already use, while drawing a bright line between AI recommendation
 and human authorization.
 
 ### What it does
 
 The user describes a mission in natural language: destination, devices, budget,
-and pickup deadline. MissionCart then:
+and pickup deadline. Woven then:
 
 1. filters incompatible and unavailable products;
 2. assembles complete carts from one pickup location;
@@ -59,7 +59,7 @@ import inventory updates, or inspect the audit trail in real time.
 
 ### How we built it
 
-MissionCart is a TypeScript and React MCP App that runs in ChatGPT/Codex and also
+Woven is a TypeScript and React MCP App that runs in ChatGPT/Codex and also
 ships with an HTTP browser fallback for reliable on-stage demos. One Node.js and
 Express service hosts the MCP transports, domain logic, merchant APIs, compiled
 widget, and Node SQLite state.
@@ -83,7 +83,7 @@ can help assemble the cart, but it should not silently inherit permission to buy
 We made confirmation a separate, exact, expiring UI state with private metadata.
 
 **Preventing a stale cart from becoming a charge.** Price and inventory may
-change between recommendation and checkout. MissionCart revalidates the cart and
+change between recommendation and checkout. Woven revalidates the cart and
 the mandate inside the same database transaction that creates the order.
 
 **Proving compatibility across the whole kit.** The correct charger is useless
@@ -140,12 +140,14 @@ All gallery assets are 1600 × 900 and live in the repository.
 
 | Order | File | Devpost title | Caption |
 | --- | --- | --- | --- |
-| 1 | `docs/assets/devpost/cover.png` | One mission. One ready-to-go kit. | MissionCart turns one urgent request into a compatible cart and an exact confirmation. |
+| 1 | `docs/assets/devpost/cover.png` | Everything works together | Woven turns every constraint in one urgent request into a complete cart and an exact confirmation. |
 | 2 | `docs/assets/screenshots/buyer-overview.png` | Complete carts, not loose links | Three one-merchant options satisfy the budget, compatibility, stock, and pickup constraints. |
-| 3 | `docs/assets/screenshots/checkout-confirmation.png` | The human stays in control | Merchant, pickup, cart version, and total are bound to one expiring confirmation. |
-| 4 | `docs/assets/screenshots/order-success.png` | From mission to pickup receipt | A successful simulated Visa result reserves the kit and returns a pickup-ready receipt. |
-| 5 | `docs/assets/screenshots/merchant-dashboard.png` | Trust you can test live | Change inventory or trigger decline/reversal scenarios while the audit trail updates. |
-| 6 | `docs/assets/devpost/architecture.png` | Built inside the AI workflow | ChatGPT/Codex coordinates intent; MissionCart validates commerce; the user authorizes exact terms. |
+| 3 | `docs/assets/devpost/woven-how-it-works.png` | From mission to ready for pickup | Five visible steps turn constraints into complete carts, proof, exact terms, and a receipt. |
+| 4 | `docs/assets/screenshots/checkout-confirmation.png` | The human stays in control | Merchant, pickup, cart version, and total are bound to one expiring confirmation. |
+| 5 | `docs/assets/devpost/woven-trust-boundary.png` | Recommendation is not permission | The model recommends, Woven binds the terms, and only a direct user click can confirm. |
+| 6 | `docs/assets/screenshots/order-success.png` | From mission to pickup receipt | A successful simulated Visa result reserves the kit and returns a pickup-ready receipt. |
+| 7 | `docs/assets/screenshots/merchant-dashboard.png` | Trust you can test live | Change inventory or trigger decline/reversal scenarios while the audit trail updates. |
+| 8 | `docs/assets/devpost/woven-architecture.png` | One service, one source of truth | Every surface shares the same commerce rules, SQLite transactions, and simulated payment boundary. |
 
 Use `cover.png` as the Devpost thumbnail. Keep the raw product screenshots
 uncropped so judges can inspect the visible prototype boundaries.
@@ -155,7 +157,7 @@ uncropped so judges can inspect the visible prototype boundaries.
 **0:00–0:10 — The problem**
 
 “I fly to Tokyo tonight. I need four compatible things, under S$150, and I need
-one place where I can collect them today. Search gives me links; MissionCart gives
+one place where I can collect them today. Search gives me links; Woven gives
 me a mission-ready cart.”
 
 **0:10–0:30 — Ask once**
@@ -170,13 +172,14 @@ the cables match the assumed ports, and the adapter fits the destination.
 
 **0:45–1:05 — Confirm exact terms**
 
-Click **Review checkout**. Say: “MissionCart rechecks price and stock now. The AI
+Click **Review checkout**. Say: “Woven rechecks price and stock now. The AI
 has recommended; it still cannot authorize.” Read the bound merchant and S$133
 total, then click **Confirm**.
 
 **1:05–1:15 — Complete the mission**
 
-Show the simulated Visa result, receipt, and pickup location.
+Show the simulated Visa result, receipt, and pickup location. “Everything the
+traveler needs, woven into one choice.”
 
 **1:15–1:30 — Prove the trust boundary**
 
@@ -186,7 +189,7 @@ control.”
 
 ## 30-second pitch
 
-MissionCart is the missing transaction layer between AI recommendation and a
+Woven is the missing transaction layer between AI recommendation and a
 ready-to-collect order. Inside ChatGPT or Codex, it converts a natural-language
 mission into complete one-merchant carts, proves that every item works together,
 rechecks live commercial terms, and asks the user to confirm one exact mandate.
@@ -208,7 +211,7 @@ the exact sandbox product once credentials and approval exist.
 
 **Why is this better than a standalone shopping app?**
 
-It begins where the user already expresses intent. MissionCart adds structured
+It begins where the user already expresses intent. Woven adds structured
 commerce, compatibility proof, and authorization without asking the user to
 restart the workflow elsewhere.
 
@@ -228,5 +231,5 @@ transactions safely.
 - [ ] Confirm the event's rules for using “Visa” in tags and screenshots
 - [ ] Verify the repository visibility required by the hackathon
 - [ ] Test every public link in a logged-out browser
-- [ ] Upload the six gallery files in the order above
+- [ ] Upload the eight gallery files in the order above
 - [ ] Reset the demo database to the normal scenario before judging

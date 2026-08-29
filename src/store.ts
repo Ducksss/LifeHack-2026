@@ -33,10 +33,10 @@ interface ConfirmInput {
   idempotencyKey: string;
 }
 
-export class MissionCartStore {
+export class WovenStore {
   private readonly db: DatabaseSync;
 
-  constructor(filename = process.env.MISSIONCART_DB || "./data/missioncart.db") {
+  constructor(filename = process.env.WOVEN_DB || "./data/woven.db") {
     if (filename !== ":memory:") mkdirSync(path.dirname(path.resolve(filename)), { recursive: true });
     this.db = new DatabaseSync(filename);
     this.db.exec("PRAGMA foreign_keys = ON; PRAGMA journal_mode = WAL;");
@@ -259,7 +259,7 @@ export class MissionCartStore {
         ...(authorization.authorizationCode
           ? { authorizationCode: authorization.authorizationCode }
           : {}),
-        ...(status === "confirmed" ? { receiptNumber: `MC-${Date.now().toString(36).toUpperCase()}` } : {}),
+        ...(status === "confirmed" ? { receiptNumber: `WV-${Date.now().toString(36).toUpperCase()}` } : {}),
         createdAt: now.toISOString(),
       };
 

@@ -18,15 +18,15 @@ import {
   type MissionView,
   type Scenario,
 } from "./domain.js";
-import { MissionCartStore } from "./store.js";
+import { WovenStore } from "./store.js";
 
 const VERSION = "0.1.0";
-const WIDGET_URI = "ui://missioncart/mission-v1.html";
+const WIDGET_URI = "ui://woven/mission-v1.html";
 const port = Number(process.env.PORT || 8787);
 const baseUrl = (process.env.BASE_URL || `http://localhost:${port}`).replace(/\/$/, "");
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const webRoot = path.join(root, "dist", "web");
-const store = new MissionCartStore();
+const store = new WovenStore();
 
 type ToolResult = {
   content: Array<{ type: "text"; text: string }>;
@@ -58,7 +58,7 @@ function errorResult(error: unknown): ToolResult {
     ? error
     : error instanceof z.ZodError
       ? new DomainError("INVALID_INPUT", error.issues[0]?.message || "Invalid request.")
-      : new DomainError("INTERNAL_ERROR", "MissionCart could not complete that action. Try again.", true);
+      : new DomainError("INTERNAL_ERROR", "Woven could not complete that action. Try again.", true);
   if (!(error instanceof DomainError) && !(error instanceof z.ZodError)) console.error(error);
   return {
     isError: true,
@@ -78,13 +78,13 @@ function attempt(work: () => ToolResult): ToolResult {
 }
 
 function createMcpServer(): McpServer {
-  const server = new McpServer({ name: "missioncart", version: VERSION });
+  const server = new McpServer({ name: "woven", version: VERSION });
 
   registerAppTool(
     server,
     "start_mission",
     {
-      title: "Build a MissionCart",
+      title: "Build a complete Woven cart",
       description:
         "Use when a user asks to shop for a complete, compatible kit under constraints such as devices, destination, budget, availability, or pickup time. Returns ranked one-merchant carts in an interactive confirmation widget.",
       inputSchema: {
@@ -117,7 +117,7 @@ function createMcpServer(): McpServer {
     "build_carts",
     {
       title: "Refresh mission carts",
-      description: "Refresh ranked carts for an existing MissionCart mission after price or inventory changes.",
+      description: "Refresh ranked carts for an existing Woven mission after price or inventory changes.",
       inputSchema: { missionId: z.string().min(5).max(80) },
       annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
       _meta: { ui: { resourceUri: WIDGET_URI }, "openai/outputTemplate": WIDGET_URI, "openai/widgetAccessible": true },
@@ -134,7 +134,7 @@ function createMcpServer(): McpServer {
     "select_cart",
     {
       title: "Select cart",
-      description: "Select one ranked cart in the MissionCart widget. App-only.",
+      description: "Select one ranked cart in the Woven widget. App-only.",
       inputSchema: { missionId: z.string().min(5).max(80), cartId: z.string().min(5).max(80) },
       annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
       _meta: { ui: { visibility: ["app"] } },
@@ -169,7 +169,7 @@ function createMcpServer(): McpServer {
     "confirm_purchase",
     {
       title: "Confirm simulated Visa purchase",
-      description: "Execute an explicitly confirmed MissionCart checkout using the private one-time confirmation token. App-only.",
+      description: "Execute an explicitly confirmed Woven checkout using the private one-time confirmation token. App-only.",
       inputSchema: {
         previewId: z.string().min(5).max(80),
         mandateHash: z.string().length(64),
@@ -195,8 +195,8 @@ function createMcpServer(): McpServer {
     server,
     "get_order_status",
     {
-      title: "Get MissionCart order status",
-      description: "Check the latest checkout or order status for an existing MissionCart mission.",
+      title: "Get Woven order status",
+      description: "Check the latest checkout or order status for an existing Woven mission.",
       inputSchema: { missionId: z.string().min(5).max(80) },
       annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
       _meta: { ui: { visibility: ["model"] } },
@@ -210,7 +210,7 @@ function createMcpServer(): McpServer {
 
   registerAppResource(
     server,
-    "MissionCart checkout widget",
+    "Woven checkout widget",
     WIDGET_URI,
     {
       mimeType: RESOURCE_MIME_TYPE,
@@ -228,7 +228,7 @@ function createMcpServer(): McpServer {
               prefersBorder: false,
               csp: { connectDomains: [baseUrl], resourceDomains: [baseUrl] },
             },
-            "openai/widgetDescription": "MissionCart ranks compatible pickup-ready kits and keeps checkout confirmation inside the widget.",
+            "openai/widgetDescription": "Woven ranks compatible pickup-ready kits and keeps checkout confirmation inside the widget.",
             "openai/widgetPrefersBorder": false,
           },
         },
@@ -267,7 +267,7 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: "256kb" }));
 app.use("/assets", express.static(path.join(webRoot, "assets"), { immutable: true, maxAge: "1y" }));
 
-app.get("/healthz", (_req, res) => res.json({ ok: true, service: "missioncart", version: VERSION, paymentMode: "simulated" }));
+app.get("/healthz", (_req, res) => res.json({ ok: true, service: "woven", version: VERSION, paymentMode: "simulated" }));
 app.get("/favicon.ico", (_req, res) => res.sendStatus(204));
 app.get("/", (_req, res) => res.redirect("/demo"));
 app.get("/demo", (_req, res) => res.sendFile(path.join(webRoot, "widget.html")));
@@ -300,7 +300,7 @@ app.post("/api/merchant/scenario", (req, res) =>
 );
 app.post("/api/merchant/catalog", (req, res) => api(res, () => store.updateCatalogCsv(z.string().max(200_000).parse(req.body.csv))));
 app.get("/api/merchant/catalog.csv", (_req, res) => {
-  res.type("text/csv").attachment("missioncart-catalog.csv").send(store.catalogCsv());
+  res.type("text/csv").attachment("woven-catalog.csv").send(store.catalogCsv());
 });
 app.post("/api/merchant/reset", (_req, res) => api(res, () => {
   store.reset();
@@ -334,7 +334,7 @@ function api(res: Response, work: () => unknown): void {
 }
 
 const httpServer = app.listen(port, () => {
-  console.error(`MissionCart ready: ${baseUrl}/mcp · ${baseUrl}/demo · ${baseUrl}/merchant`);
+  console.error(`Woven ready: ${baseUrl}/mcp · ${baseUrl}/demo · ${baseUrl}/merchant`);
 });
 
 if (process.argv.includes("--stdio")) {

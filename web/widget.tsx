@@ -10,7 +10,6 @@ import {
   MapPin,
   Plane,
   ShieldCheck,
-  ShoppingBag,
   Sparkles,
   Store,
   TriangleAlert,
@@ -19,6 +18,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import type { Category, MissionView, RankedCart } from "../src/domain";
 import "./styles.css";
+import { WovenMark } from "./woven-mark";
 
 interface Payload {
   view?: MissionView;
@@ -45,27 +45,27 @@ function HostedWidget() {
   };
 
   const { app, error } = useApp({
-    appInfo: { name: "MissionCart", version: "0.1.0" },
+    appInfo: { name: "Woven", version: "0.1.0" },
     capabilities: {},
     onAppCreated: (created: McpApp) => {
       created.ontoolresult = (result) => {
         try {
           receive(result);
         } catch (caught) {
-          setConnectionError(caught instanceof Error ? caught.message : "Could not read MissionCart data.");
+          setConnectionError(caught instanceof Error ? caught.message : "Could not read Woven data.");
         }
       };
     },
   });
 
   const invoke: Invoke = async (name, arguments_) => {
-    if (!app) throw new Error("MissionCart is still connecting.");
+    if (!app) throw new Error("Woven is still connecting.");
     return receive(await app.callServerTool({ name, arguments: arguments_ }));
   };
 
   if (error || connectionError) return <ConnectionError message={connectionError || error!.message} />;
   if (!app || !view) return <Loading message={!app ? "Connecting secure cart…" : "Building compatible kits…"} />;
-  return <MissionCart view={view} setView={setView} nonce={nonce} invoke={invoke} />;
+  return <Woven view={view} setView={setView} nonce={nonce} invoke={invoke} />;
 }
 
 function StandaloneDemo() {
@@ -88,7 +88,7 @@ function StandaloneDemo() {
 
   if (error) return <ConnectionError message={error} />;
   if (!view) return <Loading message="Preparing the Tokyo mission…" />;
-  return <MissionCart view={view} setView={setView} nonce={nonce} invoke={invoke} standalone />;
+  return <Woven view={view} setView={setView} nonce={nonce} invoke={invoke} standalone />;
 }
 
 async function post(url: string, body: Record<string, unknown>): Promise<Payload> {
@@ -102,7 +102,7 @@ async function post(url: string, body: Record<string, unknown>): Promise<Payload
   return payload;
 }
 
-function MissionCart({
+function Woven({
   view,
   setView,
   nonce,
@@ -163,14 +163,14 @@ function MissionCart({
 
       <header className="mission-header">
         <div className="brand-lockup">
-          <span className="brand-mark"><ShoppingBag size={19} strokeWidth={2.3} /></span>
-          <span>MISSIONCART</span>
+          <span className="brand-mark"><WovenMark /></span>
+          <span>WOVEN</span>
           <span className="prototype-tag">PROTOTYPE</span>
         </div>
         <div className="route-line" aria-label="Travel route Singapore to Tokyo">
           <span>SIN</span><span className="route-rule"><Plane size={16} /></span><span>TYO</span>
         </div>
-        <h1>One mission.<br />One ready-to-go kit.</h1>
+        <h1>Everything you need.<br /><em>Woven</em> into one choice.</h1>
         <p className="mission-request">“{view.mission.request}”</p>
         <div className="constraint-row">
           <Constraint label="BUDGET" value={formatMoney(view.mission.budgetCents)} />
@@ -189,11 +189,11 @@ function MissionCart({
       </header>
 
       <section className="results-section" aria-labelledby="results-heading">
-        <div className="section-kicker"><span>01</span><div /><span>{view.carts.length} COMPLETE CARTS</span></div>
+        <div className="section-kicker"><span>01</span><div /><span>{view.carts.length} COMPLETE OPTIONS</span></div>
         <div className="section-title-row">
           <div>
-            <h2 id="results-heading">Ready for pickup</h2>
-            <p>Every option passes the mission’s hard constraints.</p>
+            <h2 id="results-heading">Three ways it comes together</h2>
+            <p>Every option is one complete cart from one pickup location.</p>
           </div>
           <span className="live-stock"><i /> LIVE DEMO STOCK</span>
         </div>
@@ -217,11 +217,11 @@ function MissionCart({
 
       {activeCart && (
         <section className="compatibility-section">
-          <div className="section-kicker"><span>02</span><div /><span>COMPATIBILITY PROOF</span></div>
+          <div className="section-kicker"><span>02</span><div /><span>EVERY THREAD CHECKED</span></div>
           <div className="proof-layout">
             <div>
-              <h2>Why this kit works</h2>
-              <p>MissionCart verifies the complete setup, not just individual search results.</p>
+              <h2>Nothing left to connect</h2>
+              <p>Woven checks the whole setup—not isolated products or sponsored links.</p>
               <div className="proof-list">
                 {activeCart.lines.map((line) => (
                   <div className="proof-row" key={line.offerId}>
@@ -255,11 +255,11 @@ function MissionCart({
 
       {preview && !view.order && (
         <section className="checkout-section" aria-labelledby="checkout-heading">
-          <div className="section-kicker"><span>03</span><div /><span>EXPLICIT CONFIRMATION</span></div>
+          <div className="section-kicker"><span>03</span><div /><span>THE CONSENT BOUNDARY</span></div>
           <div className="checkout-card">
             <div className="checkout-summary">
               <span className="visa-sim"><CreditCard size={17} /> VISA AUTHORIZATION · SIMULATED</span>
-              <h2 id="checkout-heading">Confirm the exact mandate</h2>
+              <h2 id="checkout-heading">Review the exact terms</h2>
               <p>This one click authorizes only this merchant, cart version, and total. It expires at {formatTime(preview.expiresAt)}.</p>
               <dl>
                 <div><dt>Merchant</dt><dd>{preview.mandate.merchantName}</dd></div>
@@ -270,8 +270,8 @@ function MissionCart({
             </div>
             <div className="confirmation-panel">
               <ShieldCheck size={34} />
-              <h3>Bound, expiring, one-time</h3>
-              <p>No card credentials enter MissionCart. The demo returns a simulated network authorization.</p>
+              <h3>Your yes is the final thread.</h3>
+              <p>No card credentials enter Woven. The demo returns a simulated network authorization.</p>
               <button className="confirm-button" disabled={busy !== null || !nonce} onClick={confirm}>
                 {busy === "confirm" ? "Authorizing…" : `Confirm ${formatMoney(preview.mandate.amountCents)}`}
               </button>
@@ -285,7 +285,7 @@ function MissionCart({
       {error && <div className="error-toast" role="alert"><TriangleAlert size={17} />{error}</div>}
 
       <footer>
-        <span>MISSIONCART / VISA COMMERCE PROTOTYPE</span>
+        <span>WOVEN / AGENTIC COMMERCE PROTOTYPE</span>
         <span>Simulated payments · seeded merchants · no live charge</span>
       </footer>
     </main>
@@ -321,7 +321,7 @@ function OrderResult({ view }: { view: MissionView }) {
       <span className="result-icon">{success ? <Check size={32} /> : <TriangleAlert size={30} />}</span>
       <div>
         <span className="tiny-label">SIMULATED VISA RESULT</span>
-        <h2>{success ? "Kit reserved. Mission complete." : order.status === "authorization_declined" ? "Authorization declined" : "Order failed · reversal started"}</h2>
+        <h2>{success ? "Kit reserved. Everything aligned." : order.status === "authorization_declined" ? "Authorization declined" : "Order failed · reversal started"}</h2>
         <p>{success ? `Pickup at ${order.pickupLocation}. Show receipt ${order.receiptNumber}.` : "No successful charge was completed. Use the merchant desk to restore the normal scenario."}</p>
       </div>
       <dl>
@@ -338,7 +338,7 @@ function Constraint({ label, value }: { label: string; value: string }) {
 }
 
 function Loading({ message }: { message: string }) {
-  return <main className="loading-shell"><span className="brand-mark"><Sparkles size={20} /></span><h1>MISSIONCART</h1><div className="loading-rule"><i /></div><p>{message}</p></main>;
+  return <main className="loading-shell"><span className="brand-mark"><WovenMark /></span><h1>WOVEN</h1><div className="loading-rule"><i /></div><p>{message}</p></main>;
 }
 
 function ConnectionError({ message }: { message: string }) {

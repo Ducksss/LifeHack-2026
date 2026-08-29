@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">How Woven works</title>
+  <desc id="desc">Five steps from a natural-language mission to a pickup-ready receipt after explicit confirmation.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
+      <path d="M0 0l10 6-10 6z" fill="#84968f"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="900" rx="34" fill="#fcfaf5"/>
+
+  <g transform="translate(72 58)">
+    <image href="../brand/woven-mark.svg" width="54" height="54"/>
+    <text x="72" y="36" fill="#0e4b3b" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="34" font-weight="600">Woven</text>
+    <text x="1328" y="30" fill="#6d7974" font-family="SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700" letter-spacing="1.8">PRODUCT FLOW · 01—05</text>
+  </g>
+
+  <g transform="translate(72 164)">
+    <text fill="#0e4b3b" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="62" font-weight="600" letter-spacing="-2">From “I need this” to ready for pickup.</text>
+    <text y="52" fill="#5f6964" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="20">Five visible steps. The AI recommends; only the user can confirm the exact terms.</text>
+  </g>
+
+  <g transform="translate(72 292)">
+    <line x1="264" y1="170" x2="300" y2="170" stroke="#84968f" stroke-width="3" marker-end="url(#arrow)"/>
+    <line x1="558" y1="170" x2="594" y2="170" stroke="#84968f" stroke-width="3" marker-end="url(#arrow)"/>
+    <line x1="852" y1="170" x2="888" y2="170" stroke="#84968f" stroke-width="3" marker-end="url(#arrow)"/>
+    <line x1="1146" y1="170" x2="1182" y2="170" stroke="#84968f" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <g>
+      <rect width="264" height="350" rx="8" fill="#fff" stroke="#d8d0c4" stroke-width="2"/>
+      <rect width="264" height="9" rx="4" fill="#dcece5"/>
+      <circle cx="38" cy="48" r="21" fill="#0e4b3b"/>
+      <text x="38" y="55" text-anchor="middle" fill="#fff" font-family="SFMono-Regular, Menlo, monospace" font-size="16" font-weight="700">1</text>
+      <path d="M46 120h172v84H46z" fill="#f4eee4" stroke="#d8d0c4" stroke-width="2"/>
+      <path d="M61 139h110M61 158h137M61 177h82" stroke="#8a958f" stroke-width="7" stroke-linecap="round"/>
+      <path d="M196 192l22 21v-21z" fill="#d8d0c4"/>
+      <text x="28" y="247" fill="#0e4b3b" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="22" font-weight="600">Describe the mission</text>
+      <text x="28" y="281" fill="#5f6964" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="14">
+        <tspan x="28">Devices, destination, budget,</tspan>
+        <tspan x="28" dy="22">and pickup deadline.</tspan>
+      </text>
+    </g>
+
+    <g transform="translate(294)">
+      <rect width="264" height="350" rx="8" fill="#0e4b3b"/>
+      <rect width="264" height="9" rx="4" fill="#b7f522"/>
+      <circle cx="38" cy="48" r="21" fill="#b7f522"/>
+      <text x="38" y="55" text-anchor="middle" fill="#0e4b3b" font-family="SFMono-Regular, Menlo, monospace" font-size="16" font-weight="700">2</text>
+      <g transform="translate(48 118)" fill="none" stroke="#dcece5" stroke-width="5">
+        <rect width="62" height="62" rx="10"/>
+        <rect x="102" width="62" height="62" rx="10"/>
+        <path d="M62 31h40M31 62v36m102-36v36M31 98h102"/>
+      </g>
+      <text x="28" y="247" fill="#fff" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="22" font-weight="600">Build complete carts</text>
+      <text x="28" y="281" fill="#c8d3ce" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="14">
+        <tspan x="28">One merchant and pickup point;</tspan>
+        <tspan x="28" dy="22">incompatible options rejected.</tspan>
+      </text>
+    </g>
+
+    <g transform="translate(588)">
+      <rect width="264" height="350" rx="8" fill="#fff" stroke="#d8d0c4" stroke-width="2"/>
+      <rect width="264" height="9" rx="4" fill="#dcece5"/>
+      <circle cx="38" cy="48" r="21" fill="#0e4b3b"/>
+      <text x="38" y="55" text-anchor="middle" fill="#fff" font-family="SFMono-Regular, Menlo, monospace" font-size="16" font-weight="700">3</text>
+      <g transform="translate(47 113)">
+        <path d="M0 14h28l9 9-9 9H0zM0 59h28l9 9-9 9H0zM0 104h28l9 9-9 9H0z" fill="#dcece5"/>
+        <path d="M52 23h111M52 68h96M52 113h124" stroke="#0e4b3b" stroke-width="7" stroke-linecap="round"/>
+        <path d="M144 10l10 10 20-24M129 55l10 10 20-24M155 100l10 10 20-24" fill="none" stroke="#b7f522" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <text x="28" y="247" fill="#0e4b3b" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="22" font-weight="600">Show the proof</text>
+      <text x="28" y="281" fill="#5f6964" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="14">
+        <tspan x="28">Compatibility, stock, pickup,</tspan>
+        <tspan x="28" dy="22">and budget stay inspectable.</tspan>
+      </text>
+    </g>
+
+    <g transform="translate(882)">
+      <rect width="264" height="350" rx="8" fill="#fff" stroke="#d8d0c4" stroke-width="2"/>
+      <rect width="264" height="9" rx="4" fill="#b7f522"/>
+      <circle cx="38" cy="48" r="21" fill="#0e4b3b"/>
+      <text x="38" y="55" text-anchor="middle" fill="#fff" font-family="SFMono-Regular, Menlo, monospace" font-size="16" font-weight="700">4</text>
+      <g transform="translate(66 105)">
+        <rect x="0" y="30" width="132" height="92" rx="12" fill="#dcece5" stroke="#0e4b3b" stroke-width="4"/>
+        <path d="M31 30V12c0-37 70-37 70 0v18" fill="none" stroke="#0e4b3b" stroke-width="8"/>
+        <circle cx="66" cy="70" r="10" fill="#b7f522"/>
+        <path d="M66 79v19" stroke="#b7f522" stroke-width="6" stroke-linecap="round"/>
+      </g>
+      <text x="28" y="247" fill="#0e4b3b" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="22" font-weight="600">Bind exact terms</text>
+      <text x="28" y="281" fill="#5f6964" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="14">
+        <tspan x="28">Price and stock are rechecked;</tspan>
+        <tspan x="28" dy="22">the 10-minute mandate is fixed.</tspan>
+      </text>
+    </g>
+
+    <g transform="translate(1176)">
+      <rect width="264" height="350" rx="8" fill="#1545e8"/>
+      <rect width="264" height="9" rx="4" fill="#dcece5"/>
+      <circle cx="38" cy="48" r="21" fill="#fff"/>
+      <text x="38" y="55" text-anchor="middle" fill="#1545e8" font-family="SFMono-Regular, Menlo, monospace" font-size="16" font-weight="700">5</text>
+      <g transform="translate(51 110)">
+        <rect x="0" y="0" width="162" height="83" rx="12" fill="#fff" fill-opacity=".12" stroke="#fff" stroke-width="3"/>
+        <path d="M27 41l23 21 40-47" fill="none" stroke="#dcece5" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M108 28h28M108 46h28M108 64h19" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+      </g>
+      <text x="28" y="247" fill="#fff" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="22" font-weight="600">Confirm &amp; collect</text>
+      <text x="28" y="281" fill="#dce4ff" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="14">
+        <tspan x="28">One user click triggers a simulated</tspan>
+        <tspan x="28" dy="22">result and pickup receipt.</tspan>
+      </text>
+    </g>
+  </g>
+
+  <g transform="translate(72 716)">
+    <rect width="1440" height="108" rx="16" fill="#dcece5"/>
+    <text x="40" y="47" fill="#0e4b3b" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="28" font-weight="600">The AI recommends. The user chooses.</text>
+    <text x="40" y="77" fill="#5f6964" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="15">No payment credentials enter Woven. Every Visa response is simulated; no live charge occurs.</text>
+    <rect x="1166" y="31" width="232" height="46" rx="23" fill="#0e4b3b"/>
+    <text x="1282" y="60" text-anchor="middle" fill="#fff" font-family="SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700" letter-spacing="1.2">EXPLICIT USER CONTROL</text>
+  </g>
+</svg>

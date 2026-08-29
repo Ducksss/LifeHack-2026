@@ -4,4 +4,7 @@ data/
 .env
 .DS_Store
 *.log
+*.inspect.ndjson
 .playwright-cli/
+/.tmp-*
+/output/

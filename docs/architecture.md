@@ -1,8 +1,8 @@
-# MissionCart architecture
+# Woven architecture
 
 ## Shape
 
-MissionCart is deliberately one deployable Node.js service. ChatGPT/Codex, the browser fallback, and the merchant console all call the same domain and persistence functions.
+Woven is deliberately one deployable Node.js service. ChatGPT/Codex, the browser fallback, and the merchant console all call the same domain and persistence functions.
 
 ```mermaid
 flowchart LR

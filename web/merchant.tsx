@@ -7,7 +7,6 @@ import {
   RefreshCw,
   RotateCcw,
   Search,
-  Store,
   Upload,
   WalletCards,
   XCircle,
@@ -16,6 +15,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import type { CatalogItem, Order, Scenario } from "../src/domain";
 import "./styles.css";
+import { WovenMark } from "./woven-mark";
 
 interface Dashboard {
   scenario: Scenario;
@@ -91,7 +91,7 @@ function MerchantDesk() {
   return (
     <main className="merchant-shell">
       <header className="desk-header">
-        <div className="desk-brand"><span className="brand-mark"><Store size={19} /></span><div><strong>MISSIONCART</strong><small>MERCHANT DESK / DEMO CONTROL</small></div></div>
+        <div className="desk-brand"><span className="brand-mark"><WovenMark /></span><div><strong>WOVEN</strong><small>MERCHANT DESK / DEMO CONTROL</small></div></div>
         <div className="desk-actions">
           <a className="secondary-button" href="/demo" target="_blank" rel="noreferrer">Open buyer demo ↗</a>
           <button className="icon-button" title="Refresh" onClick={() => void load()}><RefreshCw size={17} /></button>
@@ -99,7 +99,7 @@ function MerchantDesk() {
       </header>
 
       <section className="desk-intro">
-        <div><span className="eyebrow">OPERATIONS / SINGAPORE</span><h1>Commerce simulation desk</h1><p>Change live demo conditions, update inventory, and inspect the authorization trail.</p></div>
+        <div><span className="eyebrow">OPERATIONS / SINGAPORE</span><h1>Keep every thread in view.</h1><p>Change demo conditions, update inventory, and inspect the authorization trail.</p></div>
         <span className="simulation-seal"><FlaskConical size={18} /> SIMULATED ONLY</span>
       </section>
 
@@ -187,17 +187,17 @@ function MerchantDesk() {
           <PanelHeading number="05" title="Reset the room" note="Restore seeded stock, normal scenario, and clear demo missions." />
           <RotateCcw size={34} />
           <h3>Clean slate for the next pitch</h3>
-          <p>This clears only MissionCart’s local demo database. The source catalog is reseeded immediately.</p>
+          <p>This clears only Woven’s local demo database. The source catalog is reseeded immediately.</p>
           <button
             className="danger-button"
             disabled={busy !== null}
-            onClick={() => window.confirm("Reset all local MissionCart demo data?") && void mutate("reset", "/api/merchant/reset")}
+            onClick={() => window.confirm("Reset all local Woven demo data?") && void mutate("reset", "/api/merchant/reset")}
           >{busy === "reset" ? "Resetting…" : "Reset demo data"}</button>
         </section>
       </div>
 
       {message && <div className="desk-message" role="status">{message}</div>}
-      <footer className="desk-footer"><span>MISSIONCART / MERCHANT OPERATIONS</span><span>Local prototype · simulated Visa rail · {data.scenario} scenario</span></footer>
+      <footer className="desk-footer"><span>WOVEN / MERCHANT OPERATIONS</span><span>Local prototype · simulated Visa rail · {data.scenario} scenario</span></footer>
     </main>
   );
 }

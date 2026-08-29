@@ -1,9 +1,9 @@
 {
-  "name": "missioncart",
+  "name": "woven",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Mission-bound commerce demo for ChatGPT, Codex, and the Visa payment story.",
+  "description": "Woven builds complete compatible carts in ChatGPT and Codex, then waits for exact user confirmation.",
   "engines": {
     "node": ">=22.5"
   },

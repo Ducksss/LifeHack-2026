@@ -6,7 +6,7 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-ENV NODE_ENV=production PORT=8787 MISSIONCART_DB=/app/data/missioncart.db
+ENV NODE_ENV=production PORT=8787 WOVEN_DB=/app/data/woven.db
 EXPOSE 8787
 VOLUME ["/app/data"]
 CMD ["npm", "start"]

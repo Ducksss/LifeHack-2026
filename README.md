@@ -1,11 +1,11 @@
 <a id="readme-top"></a>
 
 <div align="center">
-  <img src="docs/assets/brand/missioncart-mark.svg" alt="MissionCart logo" width="112" height="112">
+  <img src="docs/assets/brand/woven-mark.svg" alt="Woven logo" width="112" height="112">
 
-  <h1>MissionCart</h1>
+  <h1>Woven</h1>
 
-  <p><strong>One mission. One compatible cart. One explicit confirmation.</strong></p>
+  <p><strong>Everything works together.</strong></p>
 
   <p>
     An MCP commerce app for ChatGPT and Codex that turns a constrained shopping
@@ -17,12 +17,14 @@
     <a href="https://github.com/Ducksss/LifeHack-2026/actions/workflows/ci.yml"><img src="https://github.com/Ducksss/LifeHack-2026/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
     <img src="https://img.shields.io/badge/Node.js-%E2%89%A522.5-339933?logo=nodedotjs&logoColor=white" alt="Node.js 22.5 or newer">
     <img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white" alt="TypeScript 5.9">
-    <img src="https://img.shields.io/badge/MCP-App-c6f65b" alt="MCP App">
-    <img src="https://img.shields.io/badge/payment-simulated-1d3fd4" alt="Simulated payment">
+    <img src="https://img.shields.io/badge/MCP-App-B7F522" alt="MCP App">
+    <img src="https://img.shields.io/badge/payment-simulated-1545E8" alt="Simulated payment">
   </p>
 
   <p>
-    <a href="#getting-started"><strong>Run the demo</strong></a>
+    <a href="docs/INSTALLATION.md"><strong>Install Woven</strong></a>
+    ·
+    <a href="#getting-started">Run the demo</a>
     ·
     <a href="docs/PRD.md">Product requirements</a>
     ·
@@ -34,10 +36,10 @@
   </p>
 </div>
 
-![MissionCart — one mission, one ready-to-go kit](docs/assets/devpost/cover.png)
+![Woven — everything you need, woven into one choice](docs/assets/devpost/cover.png)
 
 > [!IMPORTANT]
-> MissionCart is a hackathon prototype. Merchants, inventory, prices, and Visa
+> Woven is a hackathon prototype. Merchants, inventory, prices, and Visa
 > authorization responses are seeded or simulated. It collects no card
 > credentials and cannot make a live charge.
 
@@ -67,8 +69,8 @@ Shopping agents can suggest products, but a list of links is not a ready answer
 when the user has a real mission: a hard budget, multiple devices, a departure
 tonight, and pickup before the shops close.
 
-MissionCart keeps the experience inside an existing AI workflow. The user asks
-ChatGPT or Codex once; MissionCart returns complete carts from a single pickup
+Woven keeps the experience inside an existing AI workflow. The user asks
+ChatGPT or Codex once; Woven returns complete carts from a single pickup
 location, explains why every item works together, rechecks the commercial terms,
 and requires a separate human click before authorization.
 
@@ -79,7 +81,7 @@ The canonical mission is deliberately concrete:
 
 ### Why it is different
 
-| Typical product search | MissionCart |
+| Typical product search | Woven |
 | --- | --- |
 | Ranks individual items | Ranks complete, compatible carts |
 | Leaves stock and pickup implicit | Uses current demo stock and pickup timing |
@@ -93,7 +95,7 @@ The canonical mission is deliberately concrete:
 
 1. **Describe the mission.** The host calls `start_mission` with the user's
    budget, destination, devices, and pickup constraint.
-2. **Build complete carts.** MissionCart rejects incompatible or unavailable
+2. **Build complete carts.** Woven rejects incompatible or unavailable
    offers, stays under budget, and ranks one-merchant options.
 3. **Show the proof.** The MCP App widget explains charger wattage, voltage,
    cable connectors, adapter fit, live demo stock, total, and pickup time.
@@ -102,7 +104,9 @@ The canonical mission is deliberately concrete:
 5. **Confirm once.** A private nonce, mandate hash, and idempotency key are
    verified before the simulated authorization and merchant order.
 
-The AI recommends. The user chooses. MissionCart binds the exact terms.
+The AI recommends. The user chooses. Woven binds the exact terms.
+
+![How Woven turns a mission into a pickup-ready receipt](docs/assets/devpost/woven-how-it-works.png)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -110,16 +114,16 @@ The AI recommends. The user chooses. MissionCart binds the exact terms.
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/assets/screenshots/buyer-overview.png" alt="MissionCart buyer experience showing the mission and three complete carts"></td>
-    <td width="50%"><img src="docs/assets/screenshots/checkout-confirmation.png" alt="MissionCart exact checkout mandate and explicit confirm button"></td>
+    <td width="50%"><img src="docs/assets/screenshots/buyer-overview.png" alt="Woven buyer experience showing the mission and three complete carts"></td>
+    <td width="50%"><img src="docs/assets/screenshots/checkout-confirmation.png" alt="Woven exact checkout mandate and explicit confirm button"></td>
   </tr>
   <tr>
     <td><strong>Complete carts, not loose links.</strong><br>Three ranked options satisfy the whole mission.</td>
     <td><strong>A visible authorization boundary.</strong><br>The exact merchant, pickup, items, and total are bound before confirmation.</td>
   </tr>
   <tr>
-    <td><img src="docs/assets/screenshots/order-success.png" alt="MissionCart simulated Visa result and pickup receipt"></td>
-    <td><img src="docs/assets/screenshots/merchant-dashboard.png" alt="MissionCart merchant operations dashboard"></td>
+    <td><img src="docs/assets/screenshots/order-success.png" alt="Woven simulated Visa result and pickup receipt"></td>
+    <td><img src="docs/assets/screenshots/merchant-dashboard.png" alt="Woven merchant operations dashboard"></td>
   </tr>
   <tr>
     <td><strong>A pickup-ready result.</strong><br>The user receives a simulated authorization result and receipt.</td>
@@ -131,9 +135,9 @@ The AI recommends. The user chooses. MissionCart binds the exact terms.
 
 ## Architecture
 
-![MissionCart system architecture](docs/assets/devpost/architecture.png)
+![Woven system architecture](docs/assets/devpost/woven-architecture.png)
 
-MissionCart is one deployable Node.js service. The MCP transports, browser
+Woven is one deployable Node.js service. The MCP transports, browser
 fallback, and merchant desk all route through the same domain and persistence
 functions. The real payment integration boundary is isolated in
 `src/payment.ts`; the current adapter intentionally fails closed unless
@@ -165,10 +169,14 @@ are documented in [the architecture guide](docs/architecture.md).
 
 ### Installation
 
+For the exact Codex desktop, Codex CLI, and ChatGPT Developer Mode steps—with
+expected output and troubleshooting—use the
+**[installation and verification guide](docs/INSTALLATION.md)**.
+
 ```bash
 git clone https://github.com/Ducksss/LifeHack-2026.git
 cd LifeHack-2026
-npm install
+npm ci
 npm run check
 npm start
 ```
@@ -184,14 +192,9 @@ Open the local surfaces:
 
 ### Connect the ChatGPT app
 
-ChatGPT requires a public HTTPS origin; it cannot reach localhost.
-
-1. Deploy the service or expose port `8787` through an HTTPS tunnel.
-2. Start MissionCart with `BASE_URL=https://your-public-origin.example` so the
-   sandboxed widget receives the correct asset origin and CSP.
-3. Enable Developer Mode in ChatGPT and create a personal app using
-   `https://your-public-origin.example/mcp`.
-4. Start a new chat, select MissionCart, and use the canonical mission.
+Follow the [ChatGPT connection guide](docs/INSTALLATION.md#3-connect-woven-to-chatgpt).
+It covers the required public HTTPS endpoint, Developer Mode setup, discovered
+tools, and expected widget result. ChatGPT cannot connect to localhost.
 
 Current OpenAI references: [plugin quickstart][openai-quickstart], [MCP server
 guide][openai-mcp], [ChatGPT UI guide][openai-ui], and [connection
@@ -199,10 +202,9 @@ guide][openai-connect].
 
 ### Connect the Codex plugin
 
-This repository is already a valid local Codex plugin package. Its `.mcp.json`
-launches the server over stdio and serves widget assets on port `8788` to avoid
-colliding with the standalone HTTP demo. Build the project, then install or load
-the repository directory through the Codex plugin workflow.
+Follow the [local Codex installation guide](docs/INSTALLATION.md#2-recommended-install-in-codex-desktop).
+The repository includes a **Woven Local** marketplace entry; its bundled stdio
+server serves widget assets on port `8788`, separate from the HTTP demo.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -254,7 +256,7 @@ npm run mcp          # stdio MCP transport used by the Codex plugin
 | --- | --- | --- |
 | `PORT` | `8787` | HTTP server port |
 | `BASE_URL` | `http://localhost:8787` | Public widget asset/CSP origin |
-| `MISSIONCART_DB` | `./data/missioncart.db` | SQLite demo state |
+| `WOVEN_DB` | `./data/woven.db` | SQLite demo state |
 | `PAYMENT_MODE` | `simulated` | Guardrail; every other value fails closed |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -269,6 +271,8 @@ npm run mcp          # stdio MCP transport used by the Codex plugin
   order creation and inventory decrement.
 - Duplicate confirmation returns the original result through idempotency.
 - Simulated rail and merchant failures are visibly labeled and auditable.
+
+![Woven keeps recommendation separate from authorization](docs/assets/devpost/woven-trust-boundary.png)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -331,8 +335,10 @@ Project repository: [Ducksss/LifeHack-2026](https://github.com/Ducksss/LifeHack-
   [Best README Template][best-readme-template].
 - Devpost story and gallery sequencing were informed by
   [AquaWise's Devpost submission][aquawise-devpost].
-- Product documentation: [PRD](docs/PRD.md), [architecture](docs/architecture.md),
-  [AI handover](docs/HANDOVER.md), [Devpost kit](docs/DEVPOST_SUBMISSION.md), and
+- Product documentation: [installation](docs/INSTALLATION.md),
+  [PRD](docs/PRD.md), [architecture](docs/architecture.md),
+  [AI handover](docs/HANDOVER.md), [Devpost kit](docs/DEVPOST_SUBMISSION.md),
+  [pitch deck](docs/Woven-Hackathon-Pitch.pptx), and
   [brand guide](docs/BRAND_GUIDE.md).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

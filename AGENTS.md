@@ -1,7 +1,7 @@
-# MissionCart agent instructions
+# Woven agent instructions
 
 This repository is the LifeHack 2026 submission workspace. The product is
-**MissionCart**.
+**Woven**.
 
 ## Start here
 

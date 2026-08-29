@@ -1,0 +1,20 @@
+{
+  "name": "woven-local",
+  "interface": {
+    "displayName": "Woven Local"
+  },
+  "plugins": [
+    {
+      "name": "woven",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Shopping"
+    }
+  ]
+}
