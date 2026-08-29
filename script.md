@@ -292,6 +292,7 @@ Never say:
 When the identity flow becomes real, update all of the following in the same
 change:
 
+- `AGENTS.md`
 - `README.md`
 - `docs/PRD.md`
 - `docs/architecture.md`
