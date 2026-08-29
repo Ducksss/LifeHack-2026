@@ -36,7 +36,7 @@
   </p>
 </div>
 
-![Woven — everything you need, woven into one choice](docs/assets/devpost/cover.png)
+![Woven — everything works together](docs/assets/brand/woven-cover.png)
 
 > [!IMPORTANT]
 > Woven is a hackathon prototype. Merchants, inventory, prices, and Visa
