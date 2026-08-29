@@ -25,7 +25,7 @@ const WIDGET_URI = "ui://woven/mission-v1.html";
 const port = Number(process.env.PORT || 8787);
 const baseUrl = (process.env.BASE_URL || `http://localhost:${port}`).replace(/\/$/, "");
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const webRoot = path.join(root, "dist", "web");
+const webRoot = path.join(root, "public");
 const store = new WovenStore();
 
 type ToolResult = {
@@ -240,6 +240,7 @@ function createMcpServer(): McpServer {
 }
 
 const app = express();
+export default app;
 const missionInputSchema = z.object({
   request: z.string().min(1).max(1_000).optional(),
   budgetCents: z.number().int().min(1_000).max(100_000).optional(),

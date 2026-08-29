@@ -1,5 +1,6 @@
 node_modules/
 dist/
+public/
 data/
 .env
 .DS_Store
@@ -8,3 +9,5 @@ data/
 .playwright-cli/
 /.tmp-*
 /output/
+.vercel/
+.env.local
