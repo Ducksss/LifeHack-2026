@@ -84,13 +84,10 @@ feature real.
   rebasing it.
 - Preserve dirty worktrees on a branch before updating them. Never reset, clean,
   or overwrite another worktree's changes.
-- `PinZheng/docs-archive-missioncart-gallery` and
-  `PinZheng/frontend-missioncart-dashboard` are historical pre-Woven archives.
-  Do not merge them into `main` by default: they contain obsolete MissionCart
-  language, and the frontend archive includes a fake-chat transport that violates
-  current product invariants.
-- `claude/missioncart-ai-handover-d8c2bd` is a superseded local pre-Woven branch;
-  its useful UI work is already preserved in the frontend archive above.
+- Historical pre-Woven archive branches are not sources of truth. Do not merge
+  them into `main` by default: they contain obsolete branding, and one frontend
+  archive includes a fake-chat transport that violates current product
+  invariants.
 - Do not commit `data/`, `dist/`, `.env`, `.playwright-cli/`, secrets, logs, or
   local tool metadata unless the user explicitly requests it.
 - Do not deploy, publish Devpost, change repository visibility, integrate live

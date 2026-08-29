@@ -100,7 +100,7 @@ live demo through the implemented review-and-confirm flow only.
 | Agent context | Current | `AGENTS.md` is canonical; Claude and Copilot use thin pointers to it |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
 | Public HTTPS deployment | Not done | Required for a shareable ChatGPT connection |
-| Devpost submission | Text ready — media blocked | Draft story, tags, repository, Visa prize and Digital Payments are saved; uploads and submission remain outstanding |
+| Devpost submission | Text ready — media blocked | Draft story was re-synced from the authoritative script, including the planned identity boundary; tags, repository, Visa prize and Digital Payments are saved; uploads and submission remain outstanding |
 | Real merchant/Visa integrations | Not started | Explicitly outside current prototype scope |
 
 ## Product vocabulary
@@ -288,6 +288,8 @@ The existing LifeHack Devpost draft is saved at
 <https://devpost.com/software/woven-wzefyv>. Its rendered preview has been
 verified with the project name, pitch, story, technology tags, GitHub link,
 `Visa best submission award`, and `Digital Payments`. It is not submitted.
+The story was re-synced after the three-minute script became authoritative; the
+connector-style identity check appears only as planned roadmap work.
 Thumbnail/gallery uploads, the demo video URL, and the required project PDF were
 left empty at the user's request.
 
@@ -305,21 +307,10 @@ Do not invent these fields. Use the checklist in `docs/DEVPOST_SUBMISSION.md`.
 
 ## Repository and worktree state
 
-`main` is the only current product branch. Two historical branches were pushed
-to preserve old work without contaminating Woven:
-
-- `PinZheng/docs-archive-missioncart-gallery` — pre-Woven MissionCart gallery and
-  copy exploration;
-- `PinZheng/frontend-missioncart-dashboard` — pre-Woven Tailwind/shadcn UI
-  experiment whose simulated chat host conflicts with the current `/demo`
-  invariant.
-
-`claude/missioncart-ai-handover-d8c2bd` is a superseded local pre-Woven branch.
-It is not a source of truth and should not be merged; the useful frontend work
-from that checkout is already preserved on
-`PinZheng/frontend-missioncart-dashboard`.
-
-Do not merge either branch into `main` by default. Recover individual assets or
+`main` is the only current product branch. Historical pre-Woven archive branches
+exist only to preserve old experiments; they are not sources of truth and should
+not be merged into `main` by default. One archive includes a simulated chat host
+that conflicts with the current `/demo` invariant. Recover individual assets or
 patterns only after translating them to Woven and rechecking every trust and
 transport invariant. Before changing branches or worktrees, inspect
 `git worktree list` and preserve dirty state on a branch.
