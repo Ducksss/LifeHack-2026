@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "missioncart": {
+      "command": "./node_modules/.bin/tsx",
+      "args": ["src/server.ts", "--stdio"],
+      "cwd": ".",
+      "env": {
+        "PORT": "8788",
+        "BASE_URL": "http://localhost:8788"
+      }
+    }
+  }
+}

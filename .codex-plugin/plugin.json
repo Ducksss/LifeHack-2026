@@ -1,0 +1,21 @@
+{
+  "name": "missioncart",
+  "version": "0.1.0",
+  "description": "Turn a shopping mission into a compatible, in-stock cart and explicitly confirm a simulated Visa purchase.",
+  "author": {
+    "name": "Chai Pin Zheng"
+  },
+  "interface": {
+    "displayName": "MissionCart",
+    "shortDescription": "Compatible shopping kits, ready to confirm.",
+    "longDescription": "MissionCart turns a natural-language mission into ranked merchant carts, verifies compatibility and pickup stock, then creates a bound checkout preview for explicit user confirmation.",
+    "developerName": "Chai Pin Zheng",
+    "category": "Shopping",
+    "capabilities": ["Product discovery", "Compatibility validation", "Cart building", "Simulated Visa authorization"],
+    "defaultPrompt": [
+      "Build a Tokyo charging kit under S$150 for pickup today.",
+      "Find a compatible travel charging kit for my devices."
+    ]
+  },
+  "mcpServers": "./.mcp.json"
+}
