@@ -332,7 +332,8 @@ Project repository: [Ducksss/LifeHack-2026](https://github.com/Ducksss/LifeHack-
 - Devpost story and gallery sequencing were informed by
   [AquaWise's Devpost submission][aquawise-devpost].
 - Product documentation: [PRD](docs/PRD.md), [architecture](docs/architecture.md),
-  [Devpost kit](docs/DEVPOST_SUBMISSION.md), and [brand guide](docs/BRAND_GUIDE.md).
+  [AI handover](docs/HANDOVER.md), [Devpost kit](docs/DEVPOST_SUBMISSION.md), and
+  [brand guide](docs/BRAND_GUIDE.md).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
