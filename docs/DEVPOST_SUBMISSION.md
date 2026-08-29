@@ -187,7 +187,7 @@ compatible, under budget, pickup today.”
 **0:48–1:30 — Ask once**
 
 Run the canonical prompt in ChatGPT/Codex or open `/demo`, where the simulated
-chat host types the mission and plays the `start_mission` activity live. Point
+chat host types the canonical request and plays the `start_mission` activity live. Point
 out the three complete one-merchant carts. Select ByteRoute and show the
 compatibility proof, demo stock, pickup location, and S$133 total.
 

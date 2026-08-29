@@ -109,7 +109,7 @@ The primary product is a real MCP App/plugin inside ChatGPT or Codex. The model
 can ask Woven to build carts, but app-only tools and a direct user click protect
 checkout. The `/demo` browser route is a stage-safe rehearsal of that
 experience: a clearly labeled simulated chat host that types the canonical
-mission, shows every MCP tool call live, and drives the same backend. It is
+request, shows every MCP tool call live, and drives the same backend. It is
 marked “Simulated” on screen and is not a second product.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -266,7 +266,7 @@ server serves widget assets on port `8788`, separate from the HTTP demo.
 Use the complete [three-minute stage script](script.md). The working happy path
 is:
 
-1. Open `/demo` — the simulated chat host types the mission, plays the
+1. Open `/demo` — the simulated chat host types the canonical request, plays the
    `start_mission` activity, and renders the widget with three ranked carts.
 2. Select a kit and inspect its compatibility proof.
 3. Click **Review checkout** to force a stock and price recheck.

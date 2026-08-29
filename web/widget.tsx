@@ -88,15 +88,15 @@ interface ToolCall {
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 const activityStages = [
-  "Retrieving mission context…",
+  "Reading your request…",
   "Recalling device profile…",
   "Calling start_mission…",
   "Checking live stock across merchants…",
-  "Finalising compatible carts…",
+  "Weaving compatible carts…",
 ];
 
 const narrationText =
-  "Three complete carts fit the mission — one pickup location each, every component verified compatible, all under budget. Review the kit below; nothing is charged without your explicit confirmation.";
+  "Three complete carts fit your request — one pickup location each, every thread checked for compatibility, all under budget. Review the kit below; nothing is charged without your explicit confirmation.";
 
 const thanksMessage = "Perfect — that’s exactly what I needed. Thanks!";
 
@@ -291,7 +291,7 @@ function StandaloneDemo() {
         <div className="mx-auto w-full max-w-3xl px-4 pb-10 pt-8">
           {phase === "typing" ? (
             <div className="flex h-full min-h-[40vh] items-center justify-center">
-              <h1 className="text-2xl font-semibold tracking-tight text-center">What’s the mission?</h1>
+              <h1 className="text-2xl font-semibold tracking-tight text-center">What do you need?</h1>
             </div>
           ) : (
             <>
@@ -373,8 +373,8 @@ function StandaloneDemo() {
                   {phase === "typing"
                     ? "Message the demo host…"
                     : epilogueDone
-                      ? "Mission complete — replay from the header anytime."
-                      : "The mission is running above…"}
+                      ? "All wrapped up — replay from the header anytime."
+                      : "Your request is running above…"}
                 </span>
               )}
             </div>
@@ -820,7 +820,7 @@ function ConnectionError({ message }: { message: string }) {
   return (
     <main className="mx-auto grid min-h-[280px] w-full max-w-[1040px] place-items-center content-center gap-2 rounded-2xl border bg-background p-10 text-center shadow-sm">
       <TriangleAlert className="size-8 text-destructive" />
-      <h1 className="mt-2 text-lg font-semibold tracking-tight">Mission interrupted</h1>
+      <h1 className="mt-2 text-lg font-semibold tracking-tight">Connection interrupted</h1>
       <p className="text-sm text-muted-foreground">{message}</p>
     </main>
   );

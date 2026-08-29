@@ -62,7 +62,7 @@ stronger, more defensible demo:
 The primary artifact is therefore an actual MCP App/plugin, not a speculative
 browser extension. The browser UI at `/demo` is a reliable stage rehearsal of
 that experience: a clearly labeled simulated chat host (marked “Simulated” in
-its header and footer) that types the canonical mission, plays a staged
+its header and footer) that types the canonical request, plays a staged
 `start_mission` activity, renders the real widget inline, surfaces every MCP
 tool call live, and closes with a scripted thank-you after a confirmed
 simulated payment. It drives the same backend behavior and never impersonates a
@@ -269,7 +269,7 @@ the currently working product flow.
 2. Open `/merchant` and click **Reset demo data**.
 3. Keep `/demo` and `/merchant` open in separate tabs (`/demo?instant` skips
    the intro animation if time is short).
-4. Let `/demo` play: the mission types itself, the staged `start_mission`
+4. Let `/demo` play: the canonical request types itself, the staged `start_mission`
    activity runs, and the widget renders three complete carts.
 5. Select ByteRoute and show the compatibility proof.
 6. Click **Review checkout** and emphasize the price/stock recheck.
@@ -319,18 +319,17 @@ to preserve old work without contaminating Woven:
 
 - `PinZheng/docs-archive-missioncart-gallery` — pre-Woven MissionCart gallery and
   copy exploration;
-- `PinZheng/frontend-missioncart-dashboard` — pre-Woven Tailwind/shadcn UI
-  experiment whose simulated chat host conflicts with the current `/demo`
-  invariant.
+- `PinZheng/frontend-missioncart-dashboard` — pre-Woven snapshot of the
+  Tailwind/shadcn UI experiment, kept for history.
 
-`claude/missioncart-ai-handover-d8c2bd` is a superseded local pre-Woven branch.
-It is not a source of truth and should not be merged; the useful frontend work
-from that checkout is already preserved on
-`PinZheng/frontend-missioncart-dashboard`.
+`claude/missioncart-ai-handover-d8c2bd` (mirrored as
+`PinZheng/frontend-woven-demo-host`) carries the Woven-branded shadcn interface
+and the clearly labeled simulated chat-host rehearsal now merged into `main` at
+the user's direction.
 
-Do not merge either branch into `main` by default. Recover individual assets or
-patterns only after translating them to Woven and rechecking every trust and
-transport invariant. Before changing branches or worktrees, inspect
+Do not merge the two pre-Woven archive branches into `main`; recover individual
+assets or patterns only after translating them to Woven and rechecking every
+trust and transport invariant. Before changing branches or worktrees, inspect
 `git worktree list` and preserve dirty state on a branch.
 
 ## Highest-value next work

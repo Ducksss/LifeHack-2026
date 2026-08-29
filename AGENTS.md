@@ -45,8 +45,9 @@ feature real.
 ## Product and trust invariants
 
 - The primary experience is an MCP App inside ChatGPT or Codex.
-- `/demo` is a stage-safe browser transport for the same backend, not a fake chat
-  UI and not the primary product.
+- `/demo` is a stage-safe rehearsal over the same backend: a clearly labeled
+  simulated chat host (marked “Simulated” on screen) that surfaces real MCP tool
+  calls. It never impersonates a real host and is not the primary product.
 - Recommendations are complete, compatible carts from one merchant/location.
 - The AI may recommend; only a direct user action may confirm exact terms.
 - Every checkout remains bound to merchant, cart version, amount, expiry, nonce,
@@ -87,10 +88,11 @@ feature real.
 - `PinZheng/docs-archive-missioncart-gallery` and
   `PinZheng/frontend-missioncart-dashboard` are historical pre-Woven archives.
   Do not merge them into `main` by default: they contain obsolete MissionCart
-  language, and the frontend archive includes a fake-chat transport that violates
-  current product invariants.
-- `claude/missioncart-ai-handover-d8c2bd` is a superseded local pre-Woven branch;
-  its useful UI work is already preserved in the frontend archive above.
+  language and pre-rename copy.
+- `claude/missioncart-ai-handover-d8c2bd` (mirrored as
+  `PinZheng/frontend-woven-demo-host`) carries the Woven shadcn interface and the
+  labeled simulated chat-host demo that were merged into `main` at the user's
+  direction on 30 August 2026.
 - Do not commit `data/`, `dist/`, `.env`, `.playwright-cli/`, secrets, logs, or
   local tool metadata unless the user explicitly requests it.
 - Do not deploy, publish Devpost, change repository visibility, integrate live
