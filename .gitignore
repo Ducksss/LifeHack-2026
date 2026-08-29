@@ -8,3 +8,5 @@ data/
 .playwright-cli/
 /.tmp-*
 /output/
+.vercel
+.env*
