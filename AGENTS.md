@@ -85,10 +85,9 @@ feature real.
   rebasing it.
 - Preserve dirty worktrees on a branch before updating them. Never reset, clean,
   or overwrite another worktree's changes.
-- `PinZheng/docs-archive-missioncart-gallery` and
-  `PinZheng/frontend-missioncart-dashboard` are historical pre-Woven archives.
-  Do not merge them into `main` by default: they contain obsolete MissionCart
-  language and pre-rename copy.
+- Historical pre-Woven archive branches are not sources of truth. Do not merge
+  them into `main` by default: they contain obsolete branding and pre-rename
+  copy.
 - `claude/missioncart-ai-handover-d8c2bd` (mirrored as
   `PinZheng/frontend-woven-demo-host`) carries the Woven shadcn interface and the
   labeled simulated chat-host demo that were merged into `main` at the user's

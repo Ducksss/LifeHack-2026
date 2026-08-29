@@ -7,5 +7,6 @@ done. Then read `docs/HANDOVER.md` for the latest product and repository state.
 Do not duplicate project policy in this file. If context changes, update
 `AGENTS.md` and the owning product document instead.
 
-The product is **Woven**, not MissionCart or LifeHack. The connector-style demo
-identity check is planned, not implemented, and must never be presented as live.
+The product is **Woven**, not the repository or event name. The connector-style
+demo identity check is planned, not implemented, and must never be presented as
+live.
