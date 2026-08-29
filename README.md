@@ -34,7 +34,7 @@
   </p>
 </div>
 
-![MissionCart — one mission, one ready-to-go kit](docs/assets/devpost/cover.png)
+![MissionCart — one mission, one mission-ready cart](docs/assets/devpost/cover.png)
 
 > [!IMPORTANT]
 > MissionCart is a hackathon prototype. Merchants, inventory, prices, and Visa

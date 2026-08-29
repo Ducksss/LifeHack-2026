@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Search finds products. MissionCart completes the mission.</title>
+  <desc id="desc">A comparison between ordinary product search and MissionCart across cart completeness, pickup, compatibility, and user authorization.</desc>
+  <rect width="1600" height="900" rx="38" fill="#f6f1e7"/>
+
+  <text x="88" y="82" fill="#112d24" font-family="Avenir Next, Inter, Arial, sans-serif" font-size="14" font-weight="800" letter-spacing="4">MISSIONCART / WHY IT WINS</text>
+  <text x="88" y="156" fill="#112d24" font-family="Georgia, 'Times New Roman', serif" font-size="46" font-weight="700">Search finds products. MissionCart completes the mission.</text>
+  <text x="88" y="204" fill="#566a63" font-family="Avenir Next, Inter, Arial, sans-serif" font-size="22">The difference is not another recommendation. It is a complete, pickup-ready answer with a clear human boundary.</text>
+
+  <g font-family="Avenir Next, Inter, Arial, sans-serif">
+    <g transform="translate(88 276)">
+      <rect width="684" height="460" rx="30" fill="#ffffff" stroke="#d4d9d3" stroke-width="2"/>
+      <rect width="684" height="86" rx="30" fill="#e7e9e4"/>
+      <path d="M0 56h684v30H0z" fill="#e7e9e4"/>
+      <circle cx="46" cy="43" r="19" fill="#b64032"/>
+      <path d="m38 35 16 16m0-16L38 51" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+      <text x="78" y="51" fill="#112d24" font-size="25" font-weight="800">Ordinary product search</text>
+
+      <g transform="translate(34 116)">
+        <circle cx="14" cy="14" r="14" fill="#f6e8e4"/>
+        <text x="14" y="20" fill="#b64032" text-anchor="middle" font-size="18" font-weight="900">×</text>
+        <text x="46" y="11" fill="#112d24" font-size="20" font-weight="800">Loose product links</text>
+        <text x="46" y="36" fill="#667871" font-size="16">The user still assembles the answer.</text>
+      </g>
+      <line x1="34" y1="183" x2="650" y2="183" stroke="#e1e4df" stroke-width="2"/>
+
+      <g transform="translate(34 205)">
+        <circle cx="14" cy="14" r="14" fill="#f6e8e4"/>
+        <text x="14" y="20" fill="#b64032" text-anchor="middle" font-size="18" font-weight="900">×</text>
+        <text x="46" y="11" fill="#112d24" font-size="20" font-weight="800">Mixed merchants and pickup points</text>
+        <text x="46" y="36" fill="#667871" font-size="16">Four items can mean four separate trips.</text>
+      </g>
+      <line x1="34" y1="272" x2="650" y2="272" stroke="#e1e4df" stroke-width="2"/>
+
+      <g transform="translate(34 294)">
+        <circle cx="14" cy="14" r="14" fill="#f6e8e4"/>
+        <text x="14" y="20" fill="#b64032" text-anchor="middle" font-size="18" font-weight="900">×</text>
+        <text x="46" y="11" fill="#112d24" font-size="20" font-weight="800">Compatibility left to the user</text>
+        <text x="46" y="36" fill="#667871" font-size="16">Wattage, ports, plugs and devices need checking.</text>
+      </g>
+      <line x1="34" y1="361" x2="650" y2="361" stroke="#e1e4df" stroke-width="2"/>
+
+      <g transform="translate(34 383)">
+        <circle cx="14" cy="14" r="14" fill="#f6e8e4"/>
+        <text x="14" y="20" fill="#b64032" text-anchor="middle" font-size="18" font-weight="900">×</text>
+        <text x="46" y="11" fill="#112d24" font-size="20" font-weight="800">An unclear purchase boundary</text>
+        <text x="46" y="36" fill="#667871" font-size="16">The exact terms are easy to miss.</text>
+      </g>
+    </g>
+
+    <g transform="translate(828 276)">
+      <rect width="684" height="460" rx="30" fill="#112d24"/>
+      <rect width="684" height="86" rx="30" fill="#c6f65b"/>
+      <path d="M0 56h684v30H0z" fill="#c6f65b"/>
+      <circle cx="46" cy="43" r="19" fill="#112d24"/>
+      <path d="m37 43 6 6 12-14" fill="none" stroke="#c6f65b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="78" y="51" fill="#112d24" font-size="25" font-weight="900">MissionCart</text>
+
+      <g transform="translate(34 116)">
+        <circle cx="14" cy="14" r="14" fill="#c6f65b"/>
+        <path d="m8 14 4 4 8-9" fill="none" stroke="#112d24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="46" y="11" fill="#ffffff" font-size="20" font-weight="800">One complete, compatible cart</text>
+        <text x="46" y="36" fill="#aec1ba" font-size="16">Every required category is present.</text>
+      </g>
+      <line x1="34" y1="183" x2="650" y2="183" stroke="#385148" stroke-width="2"/>
+
+      <g transform="translate(34 205)">
+        <circle cx="14" cy="14" r="14" fill="#c6f65b"/>
+        <path d="m8 14 4 4 8-9" fill="none" stroke="#112d24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="46" y="11" fill="#ffffff" font-size="20" font-weight="800">One merchant, one pickup</text>
+        <text x="46" y="36" fill="#aec1ba" font-size="16">A single location satisfies the mission.</text>
+      </g>
+      <line x1="34" y1="272" x2="650" y2="272" stroke="#385148" stroke-width="2"/>
+
+      <g transform="translate(34 294)">
+        <circle cx="14" cy="14" r="14" fill="#c6f65b"/>
+        <path d="m8 14 4 4 8-9" fill="none" stroke="#112d24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="46" y="11" fill="#ffffff" font-size="20" font-weight="800">Every item verified</text>
+        <text x="46" y="36" fill="#aec1ba" font-size="16">Compatibility is explained before checkout.</text>
+      </g>
+      <line x1="34" y1="361" x2="650" y2="361" stroke="#385148" stroke-width="2"/>
+
+      <g transform="translate(34 383)">
+        <circle cx="14" cy="14" r="14" fill="#c6f65b"/>
+        <path d="m8 14 4 4 8-9" fill="none" stroke="#112d24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="46" y="11" fill="#ffffff" font-size="20" font-weight="800">Exact terms, one explicit click</text>
+        <text x="46" y="36" fill="#aec1ba" font-size="16">The AI recommends; only the user authorizes.</text>
+      </g>
+    </g>
+  </g>
+
+  <rect x="88" y="778" width="1424" height="2" fill="#d7ddd6"/>
+  <text x="88" y="824" fill="#112d24" font-family="Avenir Next, Inter, Arial, sans-serif" font-size="16" font-weight="800" letter-spacing="2.3">ONE REQUEST · ONE PICKUP · ONE VERIFIED KIT · HUMAN CONTROL</text>
+  <text x="1512" y="824" fill="#687c74" text-anchor="end" font-family="Avenir Next, Inter, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.5">SEEDED MERCHANTS · DEMO STOCK · NO LIVE CHARGE</text>
+</svg>

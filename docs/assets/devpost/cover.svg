@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
   <title id="title">MissionCart Devpost cover</title>
-  <desc id="desc">One mission, one compatible cart, one explicit confirmation.</desc>
+  <desc id="desc">One mission. One mission-ready cart.</desc>
   <defs>
     <clipPath id="frame"><rect width="1600" height="900" rx="38"/></clipPath>
     <linearGradient id="shade" x1="0" x2="1">
@@ -25,9 +25,9 @@
       <rect width="270" height="34" rx="17" fill="#c6f65b"/>
       <text x="135" y="23" fill="#112d24" text-anchor="middle" font-family="Avenir Next, Inter, Arial, sans-serif" font-size="11" font-weight="800" letter-spacing="2">CHAT → CART → CONFIRM</text>
       <text y="112" fill="#fff" font-family="Georgia, 'Times New Roman', serif" font-size="86" font-weight="700">One mission.</text>
-      <text y="206" fill="#fff" font-family="Georgia, 'Times New Roman', serif" font-size="86" font-weight="700">One ready-to-go kit.</text>
-      <text y="276" fill="#cbd8d3" font-family="Avenir Next, Inter, Arial, sans-serif" font-size="25">Compatible carts from live stock, inside the AI workflow</text>
-      <text y="311" fill="#cbd8d3" font-family="Avenir Next, Inter, Arial, sans-serif" font-size="25">users already trust—then one exact, explicit confirmation.</text>
+      <text y="198" fill="#fff" font-family="Georgia, 'Times New Roman', serif" font-size="62" font-weight="700">One mission-ready cart.</text>
+      <text y="270" fill="#cbd8d3" font-family="Avenir Next, Inter, Arial, sans-serif" font-size="25">Complete, compatible, pickup-ready—then one exact,</text>
+      <text y="305" fill="#cbd8d3" font-family="Avenir Next, Inter, Arial, sans-serif" font-size="25">explicit confirmation.</text>
       <g transform="translate(0 382)">
         <text x="0" y="0" fill="#fff" font-family="Avenir Next, Inter, Arial, sans-serif" font-size="18" font-weight="800" letter-spacing="3">SIN</text>
         <line x1="58" y1="-7" x2="228" y2="-7" stroke="#587269" stroke-width="2"/>

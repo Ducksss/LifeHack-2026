@@ -1,6 +1,6 @@
 # MissionCart AI handover
 
-**Last updated:** 29 August 2026
+**Last updated:** 30 August 2026
 
 **Repository:** `Ducksss/LifeHack-2026`
 
@@ -66,7 +66,7 @@ Within three minutes, the audience should see:
 | Checkout safety | Complete for prototype | Expiry, hash, private nonce, exact terms, idempotency |
 | Visa rail | Simulated only | Approval, decline, failure, and reversal semantics |
 | Automated verification | Green | Eight tests, TypeScript/build gate, GitHub CI |
-| README and gallery | Complete | Best-README structure and six 1600×900 assets |
+| README and gallery | Complete | Best-README structure and seven 1600×900 gallery assets |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
 | Public HTTPS deployment | Not done | Required for a shareable ChatGPT connection |
 | Devpost submission | Not published | Needs human/team and launch details |
@@ -225,8 +225,9 @@ The polished 90-second narration is in `docs/DEVPOST_SUBMISSION.md`.
 
 ## Submission handover
 
-The README, brand system, cover, architecture slide, product screenshots, Devpost
-story, captions, pitch, judge Q&A, and recording script are complete and committed.
+The README, brand system, cover, problem/benefit and buyer-journey slides,
+architecture slide, product screenshots, Devpost story, captions, pitch, judge
+Q&A, and recording script are complete in the repository.
 
 Before publishing Devpost, a human must provide or confirm:
 
@@ -250,7 +251,7 @@ Unless the user changes direction, prioritize in this order:
 2. **Real ChatGPT connection:** connect the deployed `/mcp` endpoint in Developer
    Mode and verify the widget, private metadata, CSP and tool calls.
 3. **Demo recording:** capture the 90-second happy path plus one stale-cart failure.
-4. **Devpost publication:** add human/team details, upload the six gallery assets,
+4. **Devpost publication:** add human/team details, upload the seven gallery assets,
    add links and publish only with explicit user authorization.
 5. **Post-hackathon validation:** interview merchants/users before generalizing the
    mission engine or adding production integrations.

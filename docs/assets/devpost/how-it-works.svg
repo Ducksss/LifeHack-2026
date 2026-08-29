@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">From one sentence to a pickup-ready cart.</title>
+  <desc id="desc">Five steps show how MissionCart describes a mission, builds compatible carts, rechecks exact terms, asks the user to confirm, and returns a simulated result with pickup details.</desc>
+  <rect width="1600" height="900" rx="38" fill="#f6f1e7"/>
+
+  <text x="88" y="82" fill="#112d24" font-family="Avenir Next, Inter, Arial, sans-serif" font-size="14" font-weight="800" letter-spacing="4">MISSIONCART / HOW IT WORKS</text>
+  <text x="88" y="156" fill="#112d24" font-family="Georgia, 'Times New Roman', serif" font-size="60" font-weight="700">From one sentence to a pickup-ready cart.</text>
+  <text x="88" y="204" fill="#566a63" font-family="Avenir Next, Inter, Arial, sans-serif" font-size="22">MissionCart handles the constraints and rechecks the terms. The final decision remains visibly human.</text>
+
+  <g font-family="Avenir Next, Inter, Arial, sans-serif">
+    <g fill="#749087" stroke="#749087" stroke-width="3">
+      <line x1="338" y1="468" x2="356" y2="468"/>
+      <path d="m354 460 12 8-12 8Z" stroke="none"/>
+      <line x1="628" y1="468" x2="646" y2="468"/>
+      <path d="m644 460 12 8-12 8Z" stroke="none"/>
+      <line x1="918" y1="468" x2="936" y2="468"/>
+      <path d="m934 460 12 8-12 8Z" stroke="none"/>
+      <line x1="1208" y1="468" x2="1226" y2="468"/>
+      <path d="m1224 460 12 8-12 8Z" stroke="none"/>
+    </g>
+
+    <g transform="translate(88 310)">
+      <rect width="250" height="330" rx="28" fill="#ffffff" stroke="#ced4ce" stroke-width="2"/>
+      <circle cx="48" cy="48" r="24" fill="#c6f65b"/>
+      <text x="48" y="56" fill="#112d24" text-anchor="middle" font-size="22" font-weight="900">1</text>
+      <text x="28" y="112" fill="#112d24" font-size="24" font-weight="800">Describe the</text>
+      <text x="28" y="143" fill="#112d24" font-size="24" font-weight="800">mission</text>
+      <text x="28" y="198" fill="#667871" font-size="16">Devices</text>
+      <text x="28" y="227" fill="#667871" font-size="16">Destination</text>
+      <text x="28" y="256" fill="#667871" font-size="16">Budget</text>
+      <text x="28" y="285" fill="#667871" font-size="16">Pickup deadline</text>
+    </g>
+
+    <g transform="translate(378 310)">
+      <rect width="250" height="330" rx="28" fill="#112d24"/>
+      <circle cx="48" cy="48" r="24" fill="#c6f65b"/>
+      <text x="48" y="56" fill="#112d24" text-anchor="middle" font-size="22" font-weight="900">2</text>
+      <text x="28" y="112" fill="#ffffff" font-size="24" font-weight="800">Build compatible</text>
+      <text x="28" y="143" fill="#ffffff" font-size="24" font-weight="800">carts</text>
+      <text x="28" y="198" fill="#aec1ba" font-size="16">Complete kits</text>
+      <text x="28" y="227" fill="#aec1ba" font-size="16">One merchant</text>
+      <text x="28" y="256" fill="#aec1ba" font-size="16">One location</text>
+      <rect x="28" y="280" width="160" height="28" rx="14" fill="#27453a"/>
+      <text x="108" y="299" fill="#c6f65b" text-anchor="middle" font-size="11" font-weight="800" letter-spacing="1.4">COMPATIBILITY PROOF</text>
+    </g>
+
+    <g transform="translate(668 310)">
+      <rect width="250" height="330" rx="28" fill="#ffffff" stroke="#ced4ce" stroke-width="2"/>
+      <circle cx="48" cy="48" r="24" fill="#c6f65b"/>
+      <text x="48" y="56" fill="#112d24" text-anchor="middle" font-size="22" font-weight="900">3</text>
+      <text x="28" y="112" fill="#112d24" font-size="24" font-weight="800">Recheck exact</text>
+      <text x="28" y="143" fill="#112d24" font-size="24" font-weight="800">terms</text>
+      <text x="28" y="198" fill="#667871" font-size="16">Price</text>
+      <text x="28" y="227" fill="#667871" font-size="16">Stock</text>
+      <text x="28" y="256" fill="#667871" font-size="16">Cart version</text>
+      <text x="28" y="285" fill="#667871" font-size="16">Exact amount</text>
+    </g>
+
+    <g transform="translate(958 310)">
+      <rect width="250" height="330" rx="28" fill="#ffffff" stroke="#ced4ce" stroke-width="2"/>
+      <circle cx="48" cy="48" r="24" fill="#c6f65b"/>
+      <text x="48" y="56" fill="#112d24" text-anchor="middle" font-size="22" font-weight="900">4</text>
+      <text x="28" y="112" fill="#112d24" font-size="24" font-weight="800">User confirms</text>
+      <text x="28" y="143" fill="#112d24" font-size="24" font-weight="800">once</text>
+      <text x="28" y="198" fill="#667871" font-size="16">Bound</text>
+      <text x="28" y="227" fill="#667871" font-size="16">Expiring</text>
+      <text x="28" y="256" fill="#667871" font-size="16">One-time</text>
+      <rect x="28" y="280" width="176" height="28" rx="14" fill="#e8f9ba"/>
+      <text x="116" y="299" fill="#112d24" text-anchor="middle" font-size="11" font-weight="800" letter-spacing="1.2">EXPLICIT USER ACTION</text>
+    </g>
+
+    <g transform="translate(1248 310)">
+      <rect width="264" height="330" rx="28" fill="#1d3fd4"/>
+      <circle cx="48" cy="48" r="24" fill="#ffffff"/>
+      <text x="48" y="56" fill="#1d3fd4" text-anchor="middle" font-size="22" font-weight="900">5</text>
+      <text x="28" y="112" fill="#ffffff" font-size="24" font-weight="800">Pickup receipt</text>
+      <text x="28" y="143" fill="#ffffff" font-size="24" font-weight="800">returned</text>
+      <text x="28" y="198" fill="#dbe2ff" font-size="16">Simulated Visa result</text>
+      <text x="28" y="227" fill="#dbe2ff" font-size="16">Reservation details</text>
+      <text x="28" y="256" fill="#dbe2ff" font-size="16">Pickup location</text>
+      <rect x="28" y="280" width="172" height="28" rx="14" fill="#ffffff"/>
+      <text x="114" y="299" fill="#1d3fd4" text-anchor="middle" font-size="11" font-weight="900" letter-spacing="1.2">SIMULATED ONLY</text>
+    </g>
+  </g>
+
+  <rect x="88" y="700" width="1424" height="102" rx="25" fill="#e7ebdf"/>
+  <text x="124" y="742" fill="#112d24" font-family="Avenir Next, Inter, Arial, sans-serif" font-size="14" font-weight="800" letter-spacing="3">THE TRUST BOUNDARY</text>
+  <text x="124" y="778" fill="#112d24" font-family="Georgia, 'Times New Roman', serif" font-size="26" font-weight="700">The AI recommends. Only the user authorizes exact terms.</text>
+  <text x="1476" y="778" fill="#687c74" text-anchor="end" font-family="Avenir Next, Inter, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.5">SEEDED MERCHANTS · SIMULATED VISA · NO LIVE CHARGE</text>
+
+  <rect x="88" y="842" width="1424" height="2" fill="#d7ddd6"/>
+  <text x="88" y="873" fill="#687c74" font-family="Avenir Next, Inter, Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="1.7">COMPLETE CARTS · ONE PICKUP LOCATION · PRICE AND STOCK REVALIDATED BEFORE CONFIRMATION</text>
+</svg>

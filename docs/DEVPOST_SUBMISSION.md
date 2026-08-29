@@ -140,15 +140,18 @@ All gallery assets are 1600 × 900 and live in the repository.
 
 | Order | File | Devpost title | Caption |
 | --- | --- | --- | --- |
-| 1 | `docs/assets/devpost/cover.png` | One mission. One ready-to-go kit. | MissionCart turns one urgent request into a compatible cart and an exact confirmation. |
-| 2 | `docs/assets/screenshots/buyer-overview.png` | Complete carts, not loose links | Three one-merchant options satisfy the budget, compatibility, stock, and pickup constraints. |
-| 3 | `docs/assets/screenshots/checkout-confirmation.png` | The human stays in control | Merchant, pickup, cart version, and total are bound to one expiring confirmation. |
-| 4 | `docs/assets/screenshots/order-success.png` | From mission to pickup receipt | A successful simulated Visa result reserves the kit and returns a pickup-ready receipt. |
-| 5 | `docs/assets/screenshots/merchant-dashboard.png` | Trust you can test live | Change inventory or trigger decline/reversal scenarios while the audit trail updates. |
-| 6 | `docs/assets/devpost/architecture.png` | Built inside the AI workflow | ChatGPT/Codex coordinates intent; MissionCart validates commerce; the user authorizes exact terms. |
+| 1 | `docs/assets/devpost/cover.png` | One mission. One mission-ready cart. | Complete, compatible, pickup-ready—then one exact, explicit confirmation. |
+| 2 | `docs/assets/devpost/problem-benefits.png` | Search finds products. MissionCart completes the mission. | MissionCart replaces loose links and fragmented pickup with one verified cart and a clear human authorization boundary. |
+| 3 | `docs/assets/devpost/how-it-works.png` | From one sentence to a pickup-ready cart | Describe the mission, build complete carts, recheck exact terms, confirm once, and receive pickup details. |
+| 4 | `docs/assets/screenshots/buyer-overview.png` | Complete carts, not loose links | Three one-merchant options satisfy the budget, compatibility, stock, and pickup constraints. |
+| 5 | `docs/assets/screenshots/checkout-confirmation.png` | The human stays in control | The AI recommends. Only the user authorizes the exact merchant, cart version, and total. |
+| 6 | `docs/assets/screenshots/merchant-dashboard.png` | Trust you can test live | Change price or stock, trigger declines or reversals, and inspect the audit trail. |
+| 7 | `docs/assets/devpost/architecture.png` | Built inside the AI workflow | ChatGPT/Codex coordinates intent; MissionCart validates commerce; the user authorizes exact terms. |
 
 Use `cover.png` as the Devpost thumbnail. Keep the raw product screenshots
-uncropped so judges can inspect the visible prototype boundaries.
+uncropped so judges can inspect the visible prototype boundaries. The successful
+order screenshot remains available at `docs/assets/screenshots/order-success.png`
+as a supplementary README asset, not part of this upload sequence.
 
 ## 90-second demo script
 
@@ -228,5 +231,5 @@ transactions safely.
 - [ ] Confirm the event's rules for using “Visa” in tags and screenshots
 - [ ] Verify the repository visibility required by the hackathon
 - [ ] Test every public link in a logged-out browser
-- [ ] Upload the six gallery files in the order above
+- [ ] Upload the seven gallery files in the order above
 - [ ] Reset the demo database to the normal scenario before judging

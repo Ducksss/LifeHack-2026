@@ -35,16 +35,20 @@ IDs, audit events, and operational labels.
 | `docs/assets/brand/missioncart-kit-concept.png` | Text-free campaign/hero art |
 | `docs/assets/devpost/cover.png` | Primary Devpost thumbnail and social card |
 | `docs/assets/devpost/cover.svg` | Editable cover source |
+| `docs/assets/devpost/problem-benefits.png` | Search-versus-MissionCart comparison slide |
+| `docs/assets/devpost/problem-benefits.svg` | Editable comparison source |
+| `docs/assets/devpost/how-it-works.png` | Five-step buyer journey slide |
+| `docs/assets/devpost/how-it-works.svg` | Editable buyer-journey source |
 | `docs/assets/devpost/architecture.png` | Devpost system-story slide |
 | `docs/assets/devpost/architecture.svg` | Editable architecture source |
-| `docs/assets/screenshots/*.png` | Verified product gallery |
+| `docs/assets/screenshots/*.png` | Verified product screenshots; order success is supplementary |
 
 All Devpost gallery images are 1600 × 900. Upload them uncropped in the order
 listed in `docs/DEVPOST_SUBMISSION.md`.
 
 ## Voice
 
-- Lead with the outcome: ready-to-go kit, compatible cart, exact confirmation.
+- Lead with the outcome: mission-ready cart, compatible cart, exact confirmation.
 - Prefer precise verbs: ranks, verifies, binds, rechecks, confirms, reverses.
 - Keep the user in control: “The AI recommends. The user chooses.”
 - State prototype boundaries beside payment claims, not in distant fine print.
