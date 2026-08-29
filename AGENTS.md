@@ -88,10 +88,8 @@ feature real.
 - Historical pre-Woven archive branches are not sources of truth. Do not merge
   them into `main` by default: they contain obsolete branding and pre-rename
   copy.
-- `claude/missioncart-ai-handover-d8c2bd` (mirrored as
-  `PinZheng/frontend-woven-demo-host`) carries the Woven shadcn interface and the
-  labeled simulated chat-host demo that were merged into `main` at the user's
-  direction on 30 August 2026.
+- The Woven shadcn interface and labeled simulated chat-host demo are already in
+  `main`; historical source branches are not current product dependencies.
 - Do not commit `data/`, `dist/`, `.env`, `.playwright-cli/`, secrets, logs, or
   local tool metadata unless the user explicitly requests it.
 - Do not deploy, publish Devpost, change repository visibility, integrate live

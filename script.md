@@ -47,7 +47,8 @@ Before judges arrive:
 7. Rehearse the happy path once, then reset the data again.
 
 Use the real MCP App when the host and network are dependable. Use `/demo` as the
-stage fallback; it exercises the same backend and is not a fake ChatGPT UI.
+stage fallback; it clearly labels itself **Simulated**, rehearses the same
+backend, and surfaces each tool call without presenting itself as real ChatGPT.
 
 ## Three-minute run of show
 
@@ -96,7 +97,8 @@ stage fallback; it exercises the same backend and is not a fake ChatGPT UI.
 
 ### 0:48–1:30 — Live demo: ask once
 
-Enter or reveal the canonical request:
+Enter or reveal the canonical request. In `/demo`, let the simulated host type it
+and show the staged `start_mission` activity before the real widget appears:
 
 > I fly to Tokyo tonight. Build a charging kit for my MacBook Air, iPhone and
 > AirPods under S$150, with pickup today.
@@ -233,8 +235,9 @@ Recovery line:
 
 **Is this a browser extension?**
 
-No. Woven is an MCP App/plugin inside ChatGPT or Codex. `/demo` is a browser
-transport over the same backend for rehearsal and stage reliability.
+No. Woven is an MCP App/plugin inside ChatGPT or Codex. `/demo` is a clearly
+labeled simulated host that rehearses the same backend, surfaces the tool calls,
+and never presents itself as a real ChatGPT session.
 
 **Why not build another shopping app?**
 

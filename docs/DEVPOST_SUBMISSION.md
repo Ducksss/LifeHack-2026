@@ -139,8 +139,9 @@ visible, structured, and explicitly human.
 
 ## Built with
 
-`typescript` · `react` · `node.js` · `express` · `sqlite` · `vite` · `zod` ·
-`model-context-protocol` · `mcp-apps` · `chatgpt` · `codex`
+`typescript` · `react` · `node.js` · `express` · `sqlite` · `vite` ·
+`tailwind-css` · `shadcn-ui` · `zod` · `model-context-protocol` · `mcp-apps` ·
+`chatgpt` · `codex`
 
 Add `visa` only if the event's naming policy permits prototype/simulator entries;
 do not describe this build as an official Visa integration or partnership.

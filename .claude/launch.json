@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "missioncart",
+      "name": "woven",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["start"],
       "port": 8787,

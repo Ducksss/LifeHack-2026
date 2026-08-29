@@ -105,7 +105,7 @@ live demo through the implemented review-and-confirm flow only.
 | Agent context | Current | `AGENTS.md` is canonical; Claude and Copilot use thin pointers to it |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
 | Public HTTPS deployment | Not done | Required for a shareable ChatGPT connection |
-| Devpost submission | Text ready — media blocked | Draft story was re-synced from the authoritative script, including the planned identity boundary; tags, repository, Visa prize and Digital Payments are saved; uploads and submission remain outstanding |
+| Devpost submission | Text ready — media blocked | Draft story includes the current simulated-host UI and planned identity boundary; 13 technology tags, repository, Visa prize and Digital Payments are saved; uploads and submission remain outstanding |
 | Real merchant/Visa integrations | Not started | Explicitly outside current prototype scope |
 
 ## Product vocabulary
@@ -295,7 +295,7 @@ planned state as live.
 
 The existing LifeHack Devpost draft is saved at
 <https://devpost.com/software/woven-wzefyv>. Its rendered preview has been
-verified with the project name, pitch, story, technology tags, GitHub link,
+verified with the project name, pitch, story, 13 technology tags, GitHub link,
 `Visa best submission award`, and `Digital Payments`. It is not submitted.
 The story was re-synced after the three-minute script became authoritative; the
 connector-style identity check appears only as planned roadmap work.
@@ -320,12 +320,10 @@ Do not invent these fields. Use the checklist in `docs/DEVPOST_SUBMISSION.md`.
 exist only to preserve old experiments; they are not sources of truth and should
 not be merged into `main` by default. Recover individual assets or patterns only
 after translating them to Woven and rechecking every trust and transport
-invariant. `claude/missioncart-ai-handover-d8c2bd` (mirrored as
-`PinZheng/frontend-woven-demo-host`) carries the Woven-branded shadcn interface
-and the clearly labeled simulated chat-host rehearsal that were merged into
-`main` at the user's direction on 30 August 2026; `/demo`'s labeled chat-host
-behavior is therefore current product, not an archive. Before changing branches
-or worktrees, inspect
+invariant. The Woven-branded shadcn interface and clearly labeled simulated
+chat-host rehearsal are merged into `main`; `/demo`'s labeled chat-host behavior
+is current product, not an archive. Before changing branches or worktrees,
+inspect
 `git worktree list` and preserve dirty state on a branch.
 
 ## Highest-value next work
