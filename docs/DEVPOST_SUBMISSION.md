@@ -141,7 +141,7 @@ All gallery assets are 1600 × 900 and live in the repository.
 | Order | File | Devpost title | Caption |
 | --- | --- | --- | --- |
 | 1 | `docs/assets/devpost/cover.png` | One mission. One ready-to-go kit. | MissionCart turns one urgent request into a compatible cart and an exact confirmation. |
-| 2 | `docs/assets/screenshots/buyer-overview.png` | Complete carts, not loose links | Three one-merchant options satisfy the budget, compatibility, stock, and pickup constraints. |
+| 2 | `docs/assets/screenshots/buyer-overview.png` | Born inside the chat | One message becomes a live MCP app: a visible `start_mission` call, then three complete one-merchant carts. |
 | 3 | `docs/assets/screenshots/checkout-confirmation.png` | The human stays in control | Merchant, pickup, cart version, and total are bound to one expiring confirmation. |
 | 4 | `docs/assets/screenshots/order-success.png` | From mission to pickup receipt | A successful simulated Visa result reserves the kit and returns a pickup-ready receipt. |
 | 5 | `docs/assets/screenshots/merchant-dashboard.png` | Trust you can test live | Change inventory or trigger decline/reversal scenarios while the audit trail updates. |
@@ -160,8 +160,9 @@ me a mission-ready cart.”
 
 **0:10–0:30 — Ask once**
 
-Run the canonical prompt in ChatGPT/Codex or open `/demo`. Point out the three
-complete one-merchant carts, prices, and pickup times.
+Run the canonical prompt in ChatGPT/Codex or open `/demo`, where the simulated
+chat host types the mission and shows the `start_mission` tool call live. Point
+out the three complete one-merchant carts, prices, and pickup times.
 
 **0:30–0:45 — Prove the kit**
 
@@ -198,7 +199,8 @@ boundary, so judges can test approval, stale carts, declines, and reversals live
 **Is this a browser extension?**
 
 No. The primary experience is an MCP App rendered inside ChatGPT or Codex. The
-browser route is a rehearsal fallback using the same backend, not a fake chat UI.
+browser route is a clearly labeled simulated chat host that rehearses the same
+experience — same backend, real MCP tool calls shown live, no live charge.
 
 **Does it make real Visa payments?**
 

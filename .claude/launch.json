@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "missioncart",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start"],
+      "port": 8787,
+      "autoPort": true
+    }
+  ]
+}

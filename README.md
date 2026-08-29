@@ -110,11 +110,11 @@ The AI recommends. The user chooses. MissionCart binds the exact terms.
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/assets/screenshots/buyer-overview.png" alt="MissionCart buyer experience showing the mission and three complete carts"></td>
+    <td width="50%"><img src="docs/assets/screenshots/buyer-overview.png" alt="MissionCart running inside a simulated chat host with a visible start_mission tool call"></td>
     <td width="50%"><img src="docs/assets/screenshots/checkout-confirmation.png" alt="MissionCart exact checkout mandate and explicit confirm button"></td>
   </tr>
   <tr>
-    <td><strong>Complete carts, not loose links.</strong><br>Three ranked options satisfy the whole mission.</td>
+    <td><strong>Born inside the chat.</strong><br>One message becomes a live MCP app — visible tool calls, then three complete carts.</td>
     <td><strong>A visible authorization boundary.</strong><br>The exact merchant, pickup, items, and total are bound before confirmation.</td>
   </tr>
   <tr>
@@ -148,6 +148,7 @@ are documented in [the architecture guide](docs/architecture.md).
 
 - [TypeScript](https://www.typescriptlang.org/) and [Node.js](https://nodejs.org/)
 - [React](https://react.dev/) and [Vite](https://vite.dev/)
+- [Tailwind CSS](https://tailwindcss.com/) and [shadcn/ui](https://ui.shadcn.com/)
 - [Model Context Protocol SDK](https://modelcontextprotocol.io/)
 - [MCP Apps](https://github.com/modelcontextprotocol/ext-apps)
 - [Express](https://expressjs.com/)
@@ -210,7 +211,7 @@ the repository directory through the Codex plugin workflow.
 
 ### Happy-path demo
 
-1. Open `/demo` and show the canonical mission and three ranked carts.
+1. Open `/demo` — the simulated chat host types the mission, runs `start_mission`, and renders the widget with three ranked carts.
 2. Select a kit and inspect its compatibility proof.
 3. Click **Review checkout** to force a stock and price recheck.
 4. Call out the exact, expiring mandate and click **Confirm S$133.00**.

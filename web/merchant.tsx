@@ -1,5 +1,6 @@
 import {
   AlertTriangle,
+  ArrowUpRight,
   CheckCircle2,
   Download,
   FlaskConical,
@@ -12,9 +13,15 @@ import {
   WalletCards,
   XCircle,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import type { CatalogItem, Order, Scenario } from "../src/domain";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import "./styles.css";
 
 interface Dashboard {
@@ -82,132 +89,280 @@ function MerchantDesk() {
     if (fileInput.current) fileInput.current.value = "";
   };
 
-  if (!data) return <div className="desk-loading"><RefreshCw className="spin" /> Opening merchant desk…</div>;
+  if (!data) {
+    return (
+      <div className="flex min-h-screen items-center justify-center gap-2.5 text-sm text-muted-foreground">
+        <RefreshCw className="size-4 animate-spin" /> Opening merchant desk…
+      </div>
+    );
+  }
 
   const available = data.catalog.filter((item) => item.stock > 0).length;
   const merchants = new Set(data.catalog.map((item) => item.merchantId)).size;
   const locations = new Set(data.catalog.map((item) => `${item.merchantId}:${item.locationId}`)).size;
 
   return (
-    <main className="merchant-shell">
-      <header className="desk-header">
-        <div className="desk-brand"><span className="brand-mark"><Store size={19} /></span><div><strong>MISSIONCART</strong><small>MERCHANT DESK / DEMO CONTROL</small></div></div>
-        <div className="desk-actions">
-          <a className="secondary-button" href="/demo" target="_blank" rel="noreferrer">Open buyer demo ↗</a>
-          <button className="icon-button" title="Refresh" onClick={() => void load()}><RefreshCw size={17} /></button>
+    <main className="mx-auto w-full max-w-[1220px] px-4 pb-16 sm:px-6">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b py-4">
+        <div className="flex items-center gap-2.5">
+          <span className="grid size-8 place-items-center rounded-lg bg-zinc-950 text-white">
+            <Store className="size-4" />
+          </span>
+          <div className="leading-tight">
+            <strong className="block text-sm font-semibold tracking-tight">MissionCart</strong>
+            <small className="microlabel text-muted-foreground">Merchant desk / demo control</small>
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="outline" size="sm" asChild>
+            <a href="/demo" target="_blank" rel="noreferrer">
+              Open buyer demo <ArrowUpRight className="size-3.5" />
+            </a>
+          </Button>
+          <Button variant="outline" size="icon-sm" title="Refresh" onClick={() => void load()}>
+            <RefreshCw className="size-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-destructive/30 text-destructive hover:bg-destructive/5 hover:text-destructive"
+            disabled={busy !== null}
+            onClick={() => window.confirm("Reset all local MissionCart demo data?") && void mutate("reset", "/api/merchant/reset")}
+          >
+            <RotateCcw className="size-3.5" /> {busy === "reset" ? "Resetting…" : "Reset demo"}
+          </Button>
         </div>
       </header>
 
-      <section className="desk-intro">
-        <div><span className="eyebrow">OPERATIONS / SINGAPORE</span><h1>Commerce simulation desk</h1><p>Change live demo conditions, update inventory, and inspect the authorization trail.</p></div>
-        <span className="simulation-seal"><FlaskConical size={18} /> SIMULATED ONLY</span>
+      <section className="flex flex-wrap items-center justify-between gap-4 py-6">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight">Commerce simulation desk</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            Change live demo conditions, update inventory, and inspect the authorization trail.
+          </p>
+        </div>
+        <Badge variant="visa" className="px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.1em]">
+          <FlaskConical className="size-3.5" /> Simulated only
+        </Badge>
       </section>
 
-      <section className="stat-strip">
-        <Stat label="MERCHANTS" value={String(merchants)} note={`${locations} pickup locations`} />
-        <Stat label="CATALOG OFFERS" value={String(data.catalog.length)} note={`${available} currently available`} />
-        <Stat label="ORDERS" value={String(data.orders.length)} note="latest 20 retained" />
-        <Stat label="PAYMENT RAIL" value="VISA" note="simulated authorization" accent />
+      <section className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border lg:grid-cols-4">
+        <Stat label="Merchants" value={String(merchants)} note={`${locations} pickup locations`} />
+        <Stat label="Catalog offers" value={String(data.catalog.length)} note={`${available} currently available`} />
+        <Stat label="Orders" value={String(data.orders.length)} note="latest 20 retained" />
+        <Stat label="Payment rail" value="Visa" note="simulated authorization" accent />
       </section>
 
-      <div className="desk-grid">
-        <section className="desk-panel scenario-panel">
-          <PanelHeading number="01" title="Demo scenario" note="Applies immediately to the next cart refresh or confirmation." />
-          <div className="scenario-list">
-            {scenarios.map((scenario) => (
-              <button
-                key={scenario.id}
-                className={data.scenario === scenario.id ? "active" : ""}
-                disabled={busy !== null}
-                onClick={() => void mutate("scenario", "/api/merchant/scenario", { scenario: scenario.id })}
-              >
-                <span className="scenario-radio">{data.scenario === scenario.id && <i />}</span>
-                <span><strong>{scenario.label}</strong><small>{scenario.detail}</small></span>
-                {data.scenario === scenario.id && <span className="active-tag">ACTIVE</span>}
-              </button>
-            ))}
-          </div>
-          <div className="scenario-note"><AlertTriangle size={17} /><p>Price and stock scenarios invalidate an existing preview. Payment failures apply after explicit confirmation.</p></div>
-        </section>
-
-        <section className="desk-panel orders-panel">
-          <PanelHeading number="02" title="Recent orders" note="Authorization and merchant outcome, newest first." />
-          {data.orders.length ? (
-            <div className="order-list">
-              {data.orders.map((order) => (
-                <article key={order.id}>
-                  <span className={`order-status ${order.status}`}>{order.status === "confirmed" ? <CheckCircle2 /> : order.status === "authorization_declined" ? <XCircle /> : <AlertTriangle />}</span>
-                  <div><strong>{order.merchantName}</strong><small>{order.id} · {new Date(order.createdAt).toLocaleTimeString()}</small></div>
-                  <div className="order-amount"><strong>{formatMoney(order.amountCents)}</strong><small>{order.status.replaceAll("_", " ")}</small></div>
-                </article>
-              ))}
+      <div className="mt-4 grid gap-4 lg:grid-cols-[0.8fr_1.2fr]">
+        <Card className="gap-4">
+          <PanelHeading title="Demo scenario" note="Applies immediately to the next cart refresh or confirmation." />
+          <CardContent>
+            <div className="grid gap-2">
+              {scenarios.map((scenario) => {
+                const active = data.scenario === scenario.id;
+                return (
+                  <button
+                    key={scenario.id}
+                    className={cn(
+                      "grid w-full cursor-pointer grid-cols-[16px_1fr_auto] items-center gap-3 rounded-lg border px-3.5 py-2.5 text-left transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:pointer-events-none disabled:opacity-60",
+                      active && "border-zinc-950 bg-muted/60 hover:bg-muted/60",
+                    )}
+                    disabled={busy !== null}
+                    onClick={() => void mutate("scenario", "/api/merchant/scenario", { scenario: scenario.id })}
+                  >
+                    <span className={cn("grid size-4 place-items-center rounded-full border", active && "border-zinc-950")}>
+                      {active && <i className="size-2 rounded-full bg-zinc-950" />}
+                    </span>
+                    <span className="min-w-0">
+                      <strong className="block text-sm font-medium">{scenario.label}</strong>
+                      <small className="block text-xs text-muted-foreground">{scenario.detail}</small>
+                    </span>
+                    {active && <Badge className="font-mono text-[10px] uppercase tracking-[0.08em]">Active</Badge>}
+                  </button>
+                );
+              })}
             </div>
-          ) : <div className="panel-empty"><WalletCards /><strong>No orders yet</strong><p>Complete the buyer flow to see authorization outcomes here.</p></div>}
-        </section>
+            <div className="mt-4 flex gap-2.5 rounded-lg border border-amber-200 bg-amber-50 p-3 text-amber-800">
+              <AlertTriangle className="mt-0.5 size-4 flex-none" />
+              <p className="text-xs leading-relaxed">
+                Price and stock scenarios invalidate an existing preview. Payment failures apply after explicit confirmation.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="gap-4">
+          <PanelHeading title="Recent orders" note="Authorization and merchant outcome, newest first." />
+          <CardContent>
+            {data.orders.length ? (
+              <div>
+                {data.orders.map((order) => (
+                  <article key={order.id} className="flex items-center gap-3 border-b py-3 last:border-0">
+                    <span
+                      className={cn(
+                        "grid size-8 flex-none place-items-center rounded-full [&>svg]:size-4",
+                        order.status === "confirmed" ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600",
+                      )}
+                    >
+                      {order.status === "confirmed" ? <CheckCircle2 /> : order.status === "authorization_declined" ? <XCircle /> : <AlertTriangle />}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <strong className="block truncate text-sm font-medium">{order.merchantName}</strong>
+                      <small className="block font-mono text-[11px] text-muted-foreground">
+                        {order.id} · {new Date(order.createdAt).toLocaleTimeString()}
+                      </small>
+                    </div>
+                    <div className="text-right">
+                      <strong className="block text-sm font-semibold">{formatMoney(order.amountCents)}</strong>
+                      <small className="block text-[11px] text-muted-foreground">{order.status.replaceAll("_", " ")}</small>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <EmptyState icon={<WalletCards />} title="No orders yet" note="Complete the buyer flow to see authorization outcomes here." />
+            )}
+          </CardContent>
+        </Card>
       </div>
 
-      <section className="desk-panel catalog-panel">
-        <PanelHeading number="03" title="Inventory & price feed" note="Seeded offers across every merchant pickup location." />
-        <div className="catalog-toolbar">
-          <label className="search-box"><Search size={16} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search SKU, product, merchant…" /></label>
+      <Card className="mt-4 gap-4">
+        <PanelHeading title="Inventory & price feed" note="Seeded offers across every merchant pickup location." />
+        <CardContent>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="relative w-full sm:w-72">
+              <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                className="pl-8"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search SKU, product, merchant…"
+              />
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" size="sm" asChild>
+                <a href="/api/merchant/catalog.csv"><Download className="size-3.5" /> Export CSV</a>
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => fileInput.current?.click()} disabled={busy !== null}>
+                <Upload className="size-3.5" /> Import updates
+              </Button>
+              <input
+                ref={fileInput}
+                className="sr-only"
+                type="file"
+                accept=".csv,text/csv"
+                onChange={(event) => void importCsv(event.target.files?.[0])}
+              />
+            </div>
+          </div>
+          <div className="mt-4 max-h-[410px] overflow-auto rounded-lg border">
+            <Table>
+              <TableHeader className="sticky top-0 z-10 bg-card">
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className="text-xs">Offer / SKU</TableHead>
+                  <TableHead className="text-xs">Merchant</TableHead>
+                  <TableHead className="text-xs">Pickup location</TableHead>
+                  <TableHead className="text-xs">Category</TableHead>
+                  <TableHead className="text-xs">Price</TableHead>
+                  <TableHead className="text-xs">Stock</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {visibleCatalog.map((item) => (
+                  <TableRow key={item.offerId}>
+                    <TableCell className="min-w-56">
+                      <strong className="block text-sm font-medium">{item.name}</strong>
+                      <small className="mt-0.5 block font-mono text-[11px] text-muted-foreground">{item.sku}</small>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{item.merchantName}</TableCell>
+                    <TableCell className="text-muted-foreground">{item.locationName}</TableCell>
+                    <TableCell>
+                      <Badge variant="secondary" className="font-mono text-[10px] uppercase tracking-[0.06em]">
+                        {item.category.replace("_", " ")}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="font-mono text-xs">{formatMoney(item.priceCents)}</TableCell>
+                    <TableCell>
+                      <span className={cn("inline-flex items-center gap-1.5 font-mono text-xs", item.stock <= 1 && "text-red-600")}>
+                        <i className={cn("size-1.5 rounded-full", item.stock <= 1 ? "bg-red-500" : "bg-emerald-500")} />
+                        {item.stock}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="mt-4 gap-4">
+        <PanelHeading title="Audit trail" note="No card data—only mission, preview, and result events." />
+        <CardContent>
           <div>
-            <a className="secondary-button" href="/api/merchant/catalog.csv"><Download size={15} /> Export CSV</a>
-            <button className="secondary-button" onClick={() => fileInput.current?.click()} disabled={busy !== null}><Upload size={15} /> Import updates</button>
-            <input ref={fileInput} className="visually-hidden" type="file" accept=".csv,text/csv" onChange={(event) => void importCsv(event.target.files?.[0])} />
+            {data.audit.slice(0, 12).map((entry) => (
+              <div key={entry.id} className="grid grid-cols-[40px_1fr_auto] items-center gap-2 border-b py-2 font-mono text-[11px] last:border-0">
+                <span className="text-muted-foreground">{entry.id.toString().padStart(3, "0")}</span>
+                <strong className="truncate font-medium">{entry.event}</strong>
+                <small className="text-muted-foreground">{new Date(entry.createdAt).toLocaleTimeString()}</small>
+              </div>
+            ))}
+            {!data.audit.length && (
+              <EmptyState compact icon={<PackageCheck />} note="Events will appear as the demo runs." />
+            )}
           </div>
-        </div>
-        <div className="catalog-table-wrap">
-          <table className="catalog-table">
-            <thead><tr><th>Offer / SKU</th><th>Merchant</th><th>Pickup location</th><th>Category</th><th>Price</th><th>Stock</th></tr></thead>
-            <tbody>
-              {visibleCatalog.map((item) => (
-                <tr key={item.offerId}>
-                  <td><strong>{item.name}</strong><small>{item.sku}</small></td>
-                  <td>{item.merchantName}</td>
-                  <td>{item.locationName}</td>
-                  <td><span className="category-pill">{item.category.replace("_", " ")}</span></td>
-                  <td className="mono">{formatMoney(item.priceCents)}</td>
-                  <td><span className={`stock-count ${item.stock <= 1 ? "low" : ""}`}><i />{item.stock}</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+        </CardContent>
+      </Card>
 
-      <div className="desk-grid bottom-grid">
-        <section className="desk-panel audit-panel">
-          <PanelHeading number="04" title="Audit trail" note="No card data—only mission, preview, and result events." />
-          <div className="audit-list">
-            {data.audit.slice(0, 12).map((entry) => <div key={entry.id}><span>{entry.id.toString().padStart(3, "0")}</span><strong>{entry.event}</strong><small>{new Date(entry.createdAt).toLocaleTimeString()}</small></div>)}
-            {!data.audit.length && <div className="panel-empty compact"><PackageCheck /><p>Events will appear as the demo runs.</p></div>}
-          </div>
-        </section>
-        <section className="desk-panel reset-panel">
-          <PanelHeading number="05" title="Reset the room" note="Restore seeded stock, normal scenario, and clear demo missions." />
-          <RotateCcw size={34} />
-          <h3>Clean slate for the next pitch</h3>
-          <p>This clears only MissionCart’s local demo database. The source catalog is reseeded immediately.</p>
-          <button
-            className="danger-button"
-            disabled={busy !== null}
-            onClick={() => window.confirm("Reset all local MissionCart demo data?") && void mutate("reset", "/api/merchant/reset")}
-          >{busy === "reset" ? "Resetting…" : "Reset demo data"}</button>
-        </section>
-      </div>
+      {message && (
+        <div className="fixed bottom-5 right-5 z-20 rounded-lg bg-zinc-950 px-4 py-2.5 text-xs font-medium text-white shadow-lg" role="status">
+          {message}
+        </div>
+      )}
 
-      {message && <div className="desk-message" role="status">{message}</div>}
-      <footer className="desk-footer"><span>MISSIONCART / MERCHANT OPERATIONS</span><span>Local prototype · simulated Visa rail · {data.scenario} scenario</span></footer>
+      <footer className="microlabel mt-8 flex flex-col gap-1 text-muted-foreground sm:flex-row sm:justify-between">
+        <span>MissionCart / Merchant operations</span>
+        <span>Local prototype · simulated Visa rail · {data.scenario} scenario</span>
+      </footer>
     </main>
   );
 }
 
-function PanelHeading({ number, title, note }: { number: string; title: string; note: string }) {
-  return <div className="panel-heading"><span>{number}</span><div><h2>{title}</h2><p>{note}</p></div></div>;
+function PanelHeading({ title, note }: { title: string; note: string }) {
+  return (
+    <CardHeader className="gap-1">
+      <h2 className="text-base font-semibold tracking-tight">{title}</h2>
+      <p className="text-xs text-muted-foreground">{note}</p>
+    </CardHeader>
+  );
 }
 
 function Stat({ label, value, note, accent = false }: { label: string; value: string; note: string; accent?: boolean }) {
-  return <div className={`desk-stat ${accent ? "accent" : ""}`}><span>{label}</span><strong>{value}</strong><small>{note}</small></div>;
+  return (
+    <div className="bg-card px-4 py-3.5">
+      <span className="microlabel text-muted-foreground">{label}</span>
+      <strong className="mt-1 flex items-center gap-2 text-xl font-semibold tracking-tight">
+        {value}
+        {accent && <i className="size-2 rounded-full bg-visa" />}
+      </strong>
+      <small className="mt-0.5 block text-xs text-muted-foreground">{note}</small>
+    </div>
+  );
+}
+
+function EmptyState({ icon, title, note, compact = false }: { icon: ReactNode; title?: string; note: string; compact?: boolean }) {
+  return (
+    <div
+      className={cn(
+        "grid place-items-center content-center gap-1.5 rounded-lg border border-dashed p-6 text-center",
+        compact ? "min-h-24 border-0" : "min-h-40",
+      )}
+    >
+      <span className="text-muted-foreground [&>svg]:size-5">{icon}</span>
+      {title && <strong className="text-sm font-semibold tracking-tight">{title}</strong>}
+      <p className="max-w-72 text-xs text-muted-foreground">{note}</p>
+    </div>
+  );
 }
 
 function formatMoney(cents: number) {

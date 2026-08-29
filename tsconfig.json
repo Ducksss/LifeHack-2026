@@ -10,6 +10,8 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": { "@/*": ["./web/*"] },
     "types": ["node", "vite/client"]
   },
   "include": ["src", "web", "test", "vite.config.ts"]

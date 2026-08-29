@@ -13,18 +13,26 @@ partnership.
 
 ## Visual system
 
-| Token | Hex | Use |
-| --- | --- | --- |
-| Mission Ink | `#112D24` | Primary backgrounds and text |
-| Signal Lime | `#C6F65B` | Confirm actions, waypoints, highlights |
-| Runway Paper | `#F6F1E7` | Editorial surfaces and canvas |
-| Visa Accent | `#1D3FD4` | Simulated payment boundary only |
-| Field Grey | `#566A63` | Supporting copy and dividers |
-| Alert Clay | `#B64032` | Decline or invalidation states |
+The product UI is built with Tailwind CSS and shadcn/ui in a Vercel/Linear-style
+monochrome system: white surfaces, hairline neutral borders, near-black primary
+actions, and one dark hero/ops surface. Tokens live as CSS variables in
+`web/styles.css`; shadcn primitives live in `web/components/ui/`.
 
-Use Georgia or another readable editorial serif for headlines; use Avenir Next,
-Inter, or the system sans-serif for interface copy; use a system monospace for
-IDs, audit events, and operational labels.
+| Token | Value | Use |
+| --- | --- | --- |
+| Ink | `#0A0A0A` (zinc-950) | Dark hero, primary buttons, headings |
+| Surface | `#FFFFFF` | Cards and panels |
+| Canvas | `#FAFAFA` (zinc-50) | Page background behind cards |
+| Border | `#EBEBEB` (neutral) | Hairline card and table borders |
+| Muted | `#8F8F8F` (neutral) | Supporting copy and labels |
+| Visa Accent | `#1739C6` | Simulated payment boundary only |
+| Success | emerald 500–600 | Stock dots, confirmed results |
+| Warning / Danger | amber / red | Scenario notes, declines, reversals |
+
+Type is Geist Sans for all interface copy and headings (semibold, tight
+tracking) and Geist Mono for IDs, audit events, prices in tables, and uppercase
+operational microlabels. Both are self-hosted through `@fontsource-variable`
+packages so the MCP widget's same-origin CSP holds; never load fonts from a CDN.
 
 ## Asset inventory
 
