@@ -1,53 +1,50 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
   <title id="title">Woven cover</title>
-  <desc id="desc">Woven turns one request into a complete, compatible cart inside ChatGPT and Codex.</desc>
+  <desc id="desc">Separate constraints weave into one resolved route, expressing how Woven turns a request into a complete cart.</desc>
   <defs>
     <clipPath id="frame"><rect width="1600" height="900" rx="38"/></clipPath>
     <linearGradient id="image-fade" x1="0" x2="1">
       <stop offset="0" stop-color="#0e4b3b"/>
-      <stop offset=".7" stop-color="#0e4b3b" stop-opacity=".78"/>
+      <stop offset=".72" stop-color="#0e4b3b" stop-opacity=".72"/>
       <stop offset="1" stop-color="#0e4b3b" stop-opacity="0"/>
     </linearGradient>
   </defs>
 
   <g clip-path="url(#frame)">
     <rect width="1600" height="900" fill="#f4eee4"/>
-    <image href="woven-cover-background.png" x="570" width="1030" height="900" preserveAspectRatio="xMidYMid slice"/>
-    <path d="M0 0h930L750 900H0Z" fill="#0e4b3b"/>
-    <rect x="570" width="430" height="900" fill="url(#image-fade)"/>
+    <image href="woven-cover-background.png" x="600" width="1000" height="900" preserveAspectRatio="xMaxYMid slice"/>
+    <path d="M0 0h770L650 900H0Z" fill="#0e4b3b"/>
+    <rect x="600" width="260" height="900" fill="url(#image-fade)"/>
 
-    <g transform="translate(84 72)">
-      <rect width="166" height="166" rx="38" fill="#fcfaf5"/>
-      <g transform="translate(19 19)">
+    <g transform="translate(72 66)">
+      <rect width="128" height="128" rx="30" fill="#fcfaf5"/>
+      <g transform="translate(12 12) scale(.8125)">
         <rect width="128" height="128" rx="28" fill="#0e4b3b"/>
         <path d="M20 36c14 0 13 56 30 56 13 0 13-36 21-36s8 36 21 36c16 0 15-56 18-56" fill="none" stroke="#fcfaf5" stroke-linecap="round" stroke-linejoin="round" stroke-width="13"/>
         <circle cx="20" cy="36" r="10" fill="#b7f522"/>
         <circle cx="110" cy="36" r="12" fill="#fcfaf5"/>
         <circle cx="110" cy="36" r="7" fill="#1545e8"/>
       </g>
-      <text x="202" y="82" fill="#fcfaf5" font-family="Avenir Next, Futura, Helvetica Neue, Arial, sans-serif" font-size="64" font-weight="800" letter-spacing="10">WOVEN</text>
-      <text x="207" y="122" fill="#b9cbc4" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="3.2">AGENTIC COMMERCE · LIFEHACK 2026</text>
+      <text x="166" y="65" fill="#fcfaf5" font-family="Avenir Next, Futura, Helvetica Neue, Arial, sans-serif" font-size="58" font-weight="800" letter-spacing="9">WOVEN</text>
+      <text x="170" y="103" fill="#a9bbb4" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="3">AGENTIC COMMERCE · LIFEHACK 2026</text>
     </g>
 
-    <g transform="translate(84 330)">
-      <text y="0" fill="#fcfaf5" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="88" font-weight="600" letter-spacing="-3">Everything works</text>
-      <text y="92" fill="#b7f522" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="88" font-style="italic" font-weight="500" letter-spacing="-3">together.</text>
-      <rect y="145" width="86" height="7" rx="3.5" fill="#b7f522"/>
-      <text y="205" fill="#dcece5" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="25">One request. One complete, compatible cart.</text>
-      <text y="244" fill="#aebfb8" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="21">Built inside ChatGPT and Codex. Confirmed only by you.</text>
+    <g transform="translate(72 322)">
+      <text y="0" fill="#fcfaf5" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="72" font-weight="600" letter-spacing="-2.5">Everything works</text>
+      <text y="88" fill="#b7f522" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="90" font-style="italic" font-weight="500" letter-spacing="-3">together.</text>
+      <rect y="137" width="76" height="6" rx="3" fill="#b7f522"/>
+      <text y="198" fill="#dcece5" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="23">One request becomes a complete, compatible cart</text>
+      <text y="234" fill="#a9bbb4" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="20">inside ChatGPT and Codex.</text>
     </g>
 
-    <g transform="translate(84 706)">
-      <text y="5" fill="#fcfaf5" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="17" font-weight="800" letter-spacing="3">SIN</text>
-      <line x1="60" y1="-2" x2="230" y2="-2" stroke="#819790" stroke-width="2"/>
-      <circle cx="60" cy="-2" r="8" fill="#b7f522"/>
-      <circle cx="230" cy="-2" r="10" fill="#fcfaf5"/>
-      <circle cx="230" cy="-2" r="6" fill="#1545e8"/>
-      <text x="254" y="5" fill="#fcfaf5" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="17" font-weight="800" letter-spacing="3">TYO</text>
-      <rect x="356" y="-27" width="250" height="48" rx="24" fill="#1545e8"/>
-      <text x="481" y="3" fill="#fcfaf5" text-anchor="middle" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="800" letter-spacing="2">VISA RAIL · SIMULATED</text>
+    <g transform="translate(72 710)">
+      <text fill="#fcfaf5" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="800" letter-spacing="2.8">ASK ONCE · REVIEW ONCE · CONFIRM ONCE</text>
+      <line y1="45" x2="510" y2="45" stroke="#789087" stroke-width="2"/>
+      <circle cy="45" r="8" fill="#b7f522"/>
+      <circle cx="510" cy="45" r="10" fill="#fcfaf5"/>
+      <circle cx="510" cy="45" r="6" fill="#1545e8"/>
     </g>
 
-    <text x="84" y="840" fill="#91a59d" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="2.2">SEEDED MERCHANTS · NO CARD DATA · NO LIVE CHARGE</text>
+    <text x="72" y="838" fill="#91a59d" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="2.2">THE AI RECOMMENDS. ONLY YOU AUTHORIZE.</text>
   </g>
 </svg>
