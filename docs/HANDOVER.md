@@ -67,6 +67,10 @@ Within three minutes, the audience should see:
 5. a clearly simulated Visa result and pickup receipt; and
 6. a merchant-controlled stale price, stockout, decline, or reversal scenario.
 
+The judge deck now follows this as a seven-slide main story with four Q&A
+backups. Its identity step is labeled **planned**; the speaker notes route the
+live demo through the implemented review-and-confirm flow only.
+
 ## Current product state
 
 | Area | Status | Notes |
@@ -81,6 +85,7 @@ Within three minutes, the audience should see:
 | Visa rail | Simulated only | Approval, decline, failure, and reversal semantics |
 | Automated verification | Green | Eight tests, TypeScript/build gate, GitHub CI |
 | README and gallery | Complete | Best-README structure and eight 1600×900 Devpost assets |
+| Judge pitch deck | Complete | Seven-slide story plus four backups; presenter notes and source blocks included |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
 | Public HTTPS deployment | Not done | Required for a shareable ChatGPT connection |
 | Devpost submission | Text ready — media blocked | Draft story, tags, repository, Visa prize and Digital Payments are saved; uploads and submission remain outstanding |
@@ -252,12 +257,13 @@ qualify.
 
 ## Submission handover
 
-The README, Woven brand system, cover, user-flow slide,
-authorization-boundary slide, architecture slide, product screenshots, Devpost
-story, captions, pitch, judge Q&A, and three-minute script are complete. The
-pitch deck includes the identity scene only as the next integration. Regenerate
-the slide and checkout screenshots after identity is implemented rather than
-presenting the current planned state as live.
+The README, Woven brand system, cover, authorization-boundary slide,
+architecture slide, product screenshots, Devpost story, captions, judge Q&A,
+three-minute script, and eleven-slide pitch deck are complete. The main deck
+story is: friction → complete cart → live request → human authorization →
+merchant control → takeaway. The pitch deck includes identity only as the next
+integration. Regenerate the identity and checkout evidence after identity is
+implemented rather than presenting the current planned state as live.
 
 The existing LifeHack Devpost draft is saved at
 <https://devpost.com/software/woven-wzefyv>. Its rendered preview has been
