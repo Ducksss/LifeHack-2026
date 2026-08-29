@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">MissionCart mark</title>
+  <desc id="desc">A shopping bag connected to a mission waypoint.</desc>
+  <rect width="128" height="128" rx="28" fill="#112d24"/>
+  <path d="M39 50h50l-4 44H43L39 50Z" fill="#c6f65b"/>
+  <path d="M51 53v-7c0-9 6-15 13-15s13 6 13 15v7" fill="none" stroke="#112d24" stroke-width="7" stroke-linecap="round"/>
+  <path d="M54 72c7 7 14 7 21 0" fill="none" stroke="#112d24" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="94" cy="33" r="10" fill="#1d3fd4" stroke="#f6f1e7" stroke-width="4"/>
+  <path d="M83 39 75 52" stroke="#f6f1e7" stroke-width="4" stroke-linecap="round"/>
+</svg>

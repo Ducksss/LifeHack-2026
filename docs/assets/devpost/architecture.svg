@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">MissionCart architecture</title>
+  <desc id="desc">How a natural-language mission moves through ChatGPT or Codex, MissionCart, explicit confirmation, and a simulated Visa authorization.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#749087"/></marker>
+  </defs>
+  <rect width="1600" height="900" rx="38" fill="#f6f1e7"/>
+  <text x="88" y="92" fill="#112d24" font-family="Avenir Next, Inter, Arial, sans-serif" font-size="14" font-weight="800" letter-spacing="4">MISSIONCART / SYSTEM STORY</text>
+  <text x="88" y="164" fill="#112d24" font-family="Georgia, 'Times New Roman', serif" font-size="58" font-weight="700">Built on the workflow users already trust.</text>
+  <text x="88" y="207" fill="#566a63" font-family="Avenir Next, Inter, Arial, sans-serif" font-size="22">The AI recommends. The user chooses. MissionCart binds the exact terms before payment.</text>
+  <g font-family="Avenir Next, Inter, Arial, sans-serif">
+    <g transform="translate(88 316)">
+      <rect width="244" height="236" rx="28" fill="#fff" stroke="#ced4ce" stroke-width="2"/>
+      <circle cx="54" cy="54" r="25" fill="#c6f65b"/>
+      <text x="54" y="62" text-anchor="middle" fill="#112d24" font-size="22" font-weight="900">1</text>
+      <text x="30" y="114" fill="#112d24" font-size="24" font-weight="800">Natural-language</text>
+      <text x="30" y="145" fill="#112d24" font-size="24" font-weight="800">mission</text>
+      <text x="30" y="186" fill="#667871" font-size="16">Budget, devices,</text>
+      <text x="30" y="210" fill="#667871" font-size="16">destination, pickup</text>
+    </g>
+    <line x1="348" y1="434" x2="398" y2="434" stroke="#749087" stroke-width="3" marker-end="url(#arrow)"/>
+    <g transform="translate(414 316)">
+      <rect width="244" height="236" rx="28" fill="#112d24"/>
+      <circle cx="54" cy="54" r="25" fill="#c6f65b"/>
+      <text x="54" y="62" text-anchor="middle" fill="#112d24" font-size="22" font-weight="900">2</text>
+      <text x="30" y="114" fill="#fff" font-size="24" font-weight="800">ChatGPT / Codex</text>
+      <text x="30" y="145" fill="#fff" font-size="24" font-weight="800">MCP host</text>
+      <text x="30" y="186" fill="#aec1ba" font-size="16">Calls the tool;</text>
+      <text x="30" y="210" fill="#aec1ba" font-size="16">renders the app UI</text>
+    </g>
+    <line x1="674" y1="434" x2="724" y2="434" stroke="#749087" stroke-width="3" marker-end="url(#arrow)"/>
+    <g transform="translate(740 316)">
+      <rect width="244" height="236" rx="28" fill="#fff" stroke="#ced4ce" stroke-width="2"/>
+      <circle cx="54" cy="54" r="25" fill="#c6f65b"/>
+      <text x="54" y="62" text-anchor="middle" fill="#112d24" font-size="22" font-weight="900">3</text>
+      <text x="30" y="114" fill="#112d24" font-size="24" font-weight="800">MissionCart</text>
+      <text x="30" y="145" fill="#112d24" font-size="24" font-weight="800">commerce engine</text>
+      <text x="30" y="186" fill="#667871" font-size="16">Ranks complete carts;</text>
+      <text x="30" y="210" fill="#667871" font-size="16">proves compatibility</text>
+    </g>
+    <line x1="1000" y1="434" x2="1050" y2="434" stroke="#749087" stroke-width="3" marker-end="url(#arrow)"/>
+    <g transform="translate(1066 316)">
+      <rect width="244" height="236" rx="28" fill="#fff" stroke="#ced4ce" stroke-width="2"/>
+      <circle cx="54" cy="54" r="25" fill="#c6f65b"/>
+      <text x="54" y="62" text-anchor="middle" fill="#112d24" font-size="22" font-weight="900">4</text>
+      <text x="30" y="114" fill="#112d24" font-size="24" font-weight="800">Exact user</text>
+      <text x="30" y="145" fill="#112d24" font-size="24" font-weight="800">confirmation</text>
+      <text x="30" y="186" fill="#667871" font-size="16">Merchant + cart + total;</text>
+      <text x="30" y="210" fill="#667871" font-size="16">expiring, one-time</text>
+    </g>
+    <line x1="1326" y1="434" x2="1376" y2="434" stroke="#749087" stroke-width="3" marker-end="url(#arrow)"/>
+    <g transform="translate(1392 316)">
+      <rect width="120" height="236" rx="28" fill="#1d3fd4"/>
+      <circle cx="38" cy="54" r="25" fill="#fff"/>
+      <text x="38" y="62" text-anchor="middle" fill="#1d3fd4" font-size="22" font-weight="900">5</text>
+      <text x="24" y="114" fill="#fff" font-family="Georgia, serif" font-size="25" font-weight="700">VISA</text>
+      <text x="24" y="145" fill="#fff" font-size="15" font-weight="800">SIMULATOR</text>
+      <text x="24" y="186" fill="#dbe2ff" font-size="14">Authorize</text>
+      <text x="24" y="207" fill="#dbe2ff" font-size="14">or reverse</text>
+    </g>
+    <g transform="translate(414 648)">
+      <rect width="896" height="126" rx="26" fill="#e7ebdf"/>
+      <text x="34" y="44" fill="#112d24" font-size="14" font-weight="800" letter-spacing="3">MERCHANT OPERATIONS LOOP</text>
+      <text x="34" y="83" fill="#112d24" font-size="20" font-weight="700">Inventory + prices + failure scenarios</text>
+      <text x="510" y="83" fill="#566a63" font-size="16">Audit trail · SQLite · HTTP + stdio MCP</text>
+      <path d="M448 0V-60M448 126v48" stroke="#749087" stroke-width="3" stroke-dasharray="7 8"/>
+    </g>
+  </g>
+  <rect x="88" y="808" width="1424" height="2" fill="#d7ddd6"/>
+  <text x="88" y="850" fill="#687c74" font-family="Avenir Next, Inter, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="2">PROTOTYPE BOUNDARY: SEEDED MERCHANTS · SIMULATED VISA AUTHORIZATION · NO LIVE CHARGE</text>
+</svg>
