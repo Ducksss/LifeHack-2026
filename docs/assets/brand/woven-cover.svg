@@ -1,50 +1,66 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
   <title id="title">Woven cover</title>
-  <desc id="desc">Separate constraints weave into one resolved route, expressing how Woven turns a request into a complete cart.</desc>
+  <desc id="desc">Woven product statement beside the live buyer application.</desc>
   <defs>
     <clipPath id="frame"><rect width="1600" height="900" rx="38"/></clipPath>
-    <linearGradient id="image-fade" x1="0" x2="1">
-      <stop offset="0" stop-color="#0e4b3b"/>
-      <stop offset=".72" stop-color="#0e4b3b" stop-opacity=".72"/>
-      <stop offset="1" stop-color="#0e4b3b" stop-opacity="0"/>
-    </linearGradient>
+    <clipPath id="app-screen"><rect x="676" y="172" width="824" height="464" rx="10"/></clipPath>
+    <filter id="soft-shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#0e4b3b" flood-opacity=".14"/>
+    </filter>
   </defs>
 
   <g clip-path="url(#frame)">
     <rect width="1600" height="900" fill="#f4eee4"/>
-    <image href="woven-cover-background.png" x="600" width="1000" height="900" preserveAspectRatio="xMaxYMid slice"/>
-    <path d="M0 0h770L650 900H0Z" fill="#0e4b3b"/>
-    <rect x="600" width="260" height="900" fill="url(#image-fade)"/>
+    <rect width="610" height="900" fill="#0e4b3b"/>
+    <path d="M610 0h22v900h-22z" fill="#b7f522"/>
+    <circle cx="564" cy="88" r="122" fill="none" stroke="#dcece5" stroke-width="2" opacity=".13"/>
+    <circle cx="564" cy="88" r="82" fill="none" stroke="#b7f522" stroke-width="2" opacity=".2"/>
 
-    <g transform="translate(72 66)">
-      <rect width="128" height="128" rx="30" fill="#fcfaf5"/>
-      <g transform="translate(12 12) scale(.8125)">
+    <g transform="translate(64 58)">
+      <rect width="104" height="104" rx="25" fill="#fcfaf5"/>
+      <g transform="translate(10 10) scale(.65625)">
         <rect width="128" height="128" rx="28" fill="#0e4b3b"/>
         <path d="M20 36c14 0 13 56 30 56 13 0 13-36 21-36s8 36 21 36c16 0 15-56 18-56" fill="none" stroke="#fcfaf5" stroke-linecap="round" stroke-linejoin="round" stroke-width="13"/>
         <circle cx="20" cy="36" r="10" fill="#b7f522"/>
         <circle cx="110" cy="36" r="12" fill="#fcfaf5"/>
         <circle cx="110" cy="36" r="7" fill="#1545e8"/>
       </g>
-      <text x="166" y="65" fill="#fcfaf5" font-family="Avenir Next, Futura, Helvetica Neue, Arial, sans-serif" font-size="58" font-weight="800" letter-spacing="9">WOVEN</text>
-      <text x="170" y="103" fill="#a9bbb4" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="3">AGENTIC COMMERCE · LIFEHACK 2026</text>
+      <text x="138" y="53" fill="#fcfaf5" font-family="Avenir Next, Futura, Helvetica Neue, Arial, sans-serif" font-size="48" font-weight="800" letter-spacing="8">WOVEN</text>
+      <text x="142" y="84" fill="#a9bbb4" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="11" font-weight="700" letter-spacing="2.6">CHATGPT + CODEX MCP APP</text>
     </g>
 
-    <g transform="translate(72 322)">
-      <text y="0" fill="#fcfaf5" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="72" font-weight="600" letter-spacing="-2.5">Everything works</text>
-      <text y="88" fill="#b7f522" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="90" font-style="italic" font-weight="500" letter-spacing="-3">together.</text>
-      <rect y="137" width="76" height="6" rx="3" fill="#b7f522"/>
-      <text y="198" fill="#dcece5" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="23">One request becomes a complete, compatible cart</text>
-      <text y="234" fill="#a9bbb4" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="20">inside ChatGPT and Codex.</text>
+    <g transform="translate(64 286)">
+      <text fill="#fcfaf5" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="68" font-weight="600" letter-spacing="-2">Ask once.</text>
+      <text y="78" fill="#fcfaf5" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="68" font-weight="600" letter-spacing="-2">Review once.</text>
+      <text y="156" fill="#b7f522" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="76" font-style="italic" font-weight="500" letter-spacing="-2.5">Confirm once.</text>
+      <text y="225" fill="#dcece5" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="21">Complete, compatible carts from</text>
+      <text y="258" fill="#dcece5" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="21">one merchant and one pickup.</text>
     </g>
 
-    <g transform="translate(72 710)">
-      <text fill="#fcfaf5" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="800" letter-spacing="2.8">ASK ONCE · REVIEW ONCE · CONFIRM ONCE</text>
-      <line y1="45" x2="510" y2="45" stroke="#789087" stroke-width="2"/>
-      <circle cy="45" r="8" fill="#b7f522"/>
-      <circle cx="510" cy="45" r="10" fill="#fcfaf5"/>
-      <circle cx="510" cy="45" r="6" fill="#1545e8"/>
+    <g transform="translate(64 652)" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="11" font-weight="800" letter-spacing="1.5">
+      <rect width="150" height="36" rx="18" fill="#dcece5"/>
+      <text x="75" y="23" fill="#0e4b3b" text-anchor="middle">COMPLETE CARTS</text>
+      <rect x="162" width="136" height="36" rx="18" fill="#dcece5"/>
+      <text x="230" y="23" fill="#0e4b3b" text-anchor="middle">DEMO STOCK</text>
+      <rect x="310" width="176" height="36" rx="18" fill="#1545e8"/>
+      <text x="398" y="23" fill="#fcfaf5" text-anchor="middle">EXACT CONFIRMATION</text>
     </g>
 
-    <text x="72" y="838" fill="#91a59d" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="2.2">THE AI RECOMMENDS. ONLY YOU AUTHORIZE.</text>
+    <text x="64" y="828" fill="#91a59d" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="2">SIMULATED VISA · NO CARD DATA · NO LIVE CHARGE</text>
+
+    <g filter="url(#soft-shadow)">
+      <rect x="650" y="84" width="886" height="670" rx="30" fill="#fcfaf5"/>
+      <path d="M680 84h826a30 30 0 0 1 30 30v38H650v-38a30 30 0 0 1 30-30Z" fill="#0e4b3b"/>
+      <circle cx="682" cy="119" r="6" fill="#b7f522"/>
+      <circle cx="703" cy="119" r="6" fill="#dcece5"/>
+      <circle cx="724" cy="119" r="6" fill="#1545e8"/>
+      <text x="757" y="124" fill="#fcfaf5" font-family="SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700" letter-spacing="1.6">WOVEN BUYER APP · LIVE PROTOTYPE</text>
+      <image href="../screenshots/buyer-overview.png" x="676" y="172" width="824" height="464" preserveAspectRatio="xMidYMid slice" clip-path="url(#app-screen)"/>
+      <rect x="676" y="657" width="824" height="1" fill="#d8d0c4"/>
+      <text x="676" y="704" fill="#0e4b3b" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="26" font-weight="600">The tool builds the whole cart—not another list of links.</text>
+      <text x="676" y="730" fill="#6d7974" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="14">Three ranked options · one pickup each · exact terms before confirmation</text>
+    </g>
+
+    <text x="650" y="820" fill="#0e4b3b" font-family="SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700" letter-spacing="1.5">REAL UI · SHARED MCP BACKEND · STAGE-SAFE BROWSER FALLBACK</text>
   </g>
 </svg>
