@@ -74,7 +74,7 @@ Within three minutes, the audience should see:
 | README and gallery | Complete | Best-README structure and eight 1600×900 Devpost assets |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
 | Public HTTPS deployment | Not done | Required for a shareable ChatGPT connection |
-| Devpost submission | Not published | Needs human/team and launch details |
+| Devpost submission | Text ready — media blocked | Draft story, tags, repository, Visa prize and Digital Payments are saved; uploads and submission remain outstanding |
 | Real merchant/Visa integrations | Not started | Explicitly outside current prototype scope |
 
 ## Product vocabulary
@@ -241,13 +241,20 @@ The README, Woven brand system, cover, how-it-works slide,
 authorization-boundary slide, architecture slide, product screenshots, Devpost
 story, captions, pitch, judge Q&A, and recording script are complete.
 
+The existing LifeHack Devpost draft is saved at
+<https://devpost.com/software/woven-wzefyv>. Its rendered preview has been
+verified with the project name, pitch, story, technology tags, GitHub link,
+`Visa best submission award`, and `Digital Payments`. It is not submitted.
+Thumbnail/gallery uploads, the demo video URL, and the required project PDF were
+left empty at the user's request.
+
 Before publishing Devpost, a human must provide or confirm:
 
 - public HTTPS demo URL;
 - demo video URL;
 - team member names and roles;
-- eligible event categories and sponsor tracks;
-- whether the event permits `visa` as a prototype tag;
+- project-description PDF;
+- whether the event permits `visa` as a public technology tag;
 - required repository visibility; and
 - final logged-out link checks.
 

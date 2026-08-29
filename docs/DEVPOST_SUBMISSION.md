@@ -224,10 +224,12 @@ transactions safely.
 
 ## Before publishing
 
+- [x] Save the project name, pitch, story, technology tags, and GitHub link
+- [x] Select `Visa best submission award` and `Digital Payments`
 - [ ] Add the public HTTPS demo URL
 - [ ] Record and upload the 90-second demo
+- [ ] Upload the required project-description PDF
 - [ ] Add team member names and roles without inventing missing details
-- [ ] Select the event's eligible categories and sponsor tracks
 - [ ] Confirm the event's rules for using “Visa” in tags and screenshots
 - [ ] Verify the repository visibility required by the hackathon
 - [ ] Test every public link in a logged-out browser
