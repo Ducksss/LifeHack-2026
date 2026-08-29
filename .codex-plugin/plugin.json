@@ -1,14 +1,14 @@
 {
   "name": "woven",
   "version": "0.1.0",
-  "description": "Everything a shopper needs, woven into one compatible cart and one exact confirmation.",
+  "description": "Ask once. Woven builds a complete compatible cart, then waits for one exact confirmation.",
   "author": {
     "name": "Chai Pin Zheng"
   },
   "interface": {
     "displayName": "Woven",
     "shortDescription": "Everything works together.",
-    "longDescription": "Woven turns a natural-language mission into complete merchant carts, checks compatibility and pickup stock, then binds the exact terms for explicit user confirmation.",
+    "longDescription": "Woven turns one shopping request into complete one-merchant carts, checks compatibility, budget, stock, and pickup, then waits for the user to approve the exact purchase.",
     "developerName": "Chai Pin Zheng",
     "category": "Shopping",
     "capabilities": ["Product discovery", "Compatibility validation", "Cart building", "Simulated Visa authorization"],
