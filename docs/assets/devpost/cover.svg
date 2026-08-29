@@ -17,7 +17,13 @@
     <path d="M1245-30c-80 155-36 294 92 383s112 250 12 378" fill="none" stroke="#b7f522" stroke-width="10" stroke-linecap="round" opacity=".9"/>
 
     <g transform="translate(84 70)">
-      <image href="../brand/woven-mark.svg" width="58" height="58"/>
+      <svg width="58" height="58" viewBox="0 0 128 128" aria-hidden="true">
+        <rect width="128" height="128" rx="28" fill="#0e4b3b"/>
+        <path d="M20 36c14 0 13 56 30 56 13 0 13-36 21-36s8 36 21 36c16 0 15-56 18-56" fill="none" stroke="#fcfaf5" stroke-linecap="round" stroke-linejoin="round" stroke-width="13"/>
+        <circle cx="20" cy="36" r="10" fill="#b7f522"/>
+        <circle cx="110" cy="36" r="12" fill="#fcfaf5"/>
+        <circle cx="110" cy="36" r="7" fill="#1545e8"/>
+      </svg>
       <text x="78" y="28" fill="#fff" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="24" font-weight="800" letter-spacing="5">WOVEN</text>
       <text x="80" y="51" fill="#b9cbc4" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="11" font-weight="700" letter-spacing="3">LIFEHACK 2026 · AGENTIC COMMERCE</text>
     </g>
