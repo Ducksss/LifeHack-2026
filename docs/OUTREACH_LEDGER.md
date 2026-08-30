@@ -4,10 +4,13 @@
 
 | Target | State | Last checked | Draft | Next action | Notes |
 | --- | --- | --- | --- | --- | --- |
-| LifeHack 2026 Devpost | Story resync needed — media blocked | 30 August 2026 | [Woven draft](https://devpost.com/software/woven-wzefyv) | Resync the saved story from the camping submission kit, add media, verify links, and review before submission | The saved draft predates the camping mission and working demo identity handoff. Existing teammates were preserved. |
+| LifeHack 2026 Devpost | Orchestration story resync needed — media blocked | 30 August 2026 | [Woven draft](https://devpost.com/software/woven-wzefyv) | Resync the saved story from the current submission kit, add media, verify links, and review before submission | The saved draft includes the camping mission and demo identity handoff but predates the bounded orchestration POC. Existing teammates were preserved. |
 
 ## Events
 
+- **30 August 2026 — Local orchestration-story sync:** Updated repository
+  documentation to distinguish the MCP interaction layer from the bounded
+  LangGraph.js backend. The saved Devpost draft was not changed.
 - **30 August 2026 — Local camping-story sync:** Updated the repository story,
   product flow, and submission kit to the rainy-weekend camping mission and the
   working demo identity boundary. The saved Devpost draft was not changed.

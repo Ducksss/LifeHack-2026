@@ -2,7 +2,15 @@
 
 ## Product statement
 
-Woven is a personal commerce plugin that builds a complete kit around a user’s mission instead of returning a list of product links. It recommends merchant carts inside an existing ChatGPT/Codex workflow and crosses the purchase boundary only after the user confirms an exact mandate. The stage demo remains deterministic camping; an implemented open-world POC demonstrates how the same trust boundary generalizes to other retail categories.
+Woven is a personal commerce system that builds a complete kit around a user’s
+mission instead of returning a list of product links. Its primary experience is
+an MCP App inside ChatGPT/Codex and a WebMCP-enabled browser workspace, while
+its backend owns mission routing,
+orchestration, deterministic commerce verification, persistence, and checkout.
+It crosses the purchase boundary only after the user confirms an exact mandate.
+The stage demo remains deterministic camping; an implemented bounded
+orchestration POC demonstrates how the same trust boundary generalizes to other
+retail categories.
 
 ## Demo objective
 
@@ -34,6 +42,15 @@ seeded; every price is in SGD.
 ## Functional requirements
 
 - Run as a current MCP App with a React widget in ChatGPT/Codex.
+- Expose a top-level `/webmcp` workspace with imperative WebMCP tools registered
+  through `navigator.modelContext.registerTool` and removed through an abort-bound
+  lifecycle.
+- Let WebMCP agents start or inspect missions, compare/select carts, apply only
+  approved swaps, refresh current carts, and verify receipts; never expose demo
+  identity, checkout-preview, or purchase-confirmation tools to the agent.
+- Treat MCP as the interaction/tool transport, not the mission engine: the
+  backend owns workflow routing, evidence classification, cart composition, and
+  checkout eligibility.
 - Offer a browser fallback that uses the same backend rules.
 - Let `/demo?loop=true` run an unattended, non-purchasing visual walkthrough of
   comparison, reranking, compatibility proof, approved swaps, the simulated
@@ -71,6 +88,9 @@ seeded; every price is in SGD.
 - Route non-camping missions through a fixed, two-pass LangGraph.js workflow:
   interpret, connected and web discovery, normalize, compose, verify, optional
   retry, then persist.
+- Keep graph edges and termination code-selected rather than model-selected; the
+  model may produce a structured `MissionSpec` and cited research, but it cannot
+  grant checkout eligibility.
 - Validate a category-neutral `MissionSpec` with hard predicates, quantities,
   compatibility links, assumptions, SGD budget, Singapore market, and pickup date.
 - Cap open-world work at two discovery passes, three web-search tool calls,
@@ -91,6 +111,8 @@ seeded; every price is in SGD.
 - Production identity verification, user accounts, merchant onboarding, fulfillment integrations,
   refunds, or disputes.
 - Production-scale multi-category optimization, scraping, or live merchant connectors.
+- An unbounded autonomous agent, model-selected workflow, or MCP host model acting
+  as Woven's checkout authority.
 
 ## Implemented demo identity extension
 
@@ -123,6 +145,11 @@ satisfy this contract.
   checkout eligibility becomes true; missing attributes and evidence fail closed.
 - Open-world graph tests cover one retry, timeout, malformed structured output,
   rate limiting, untrusted web content, bounded ranking, and guaranteed termination.
+- The MCP and browser transports enter the same server-owned mission router, and
+  only the non-camping route enters the bounded LangGraph.js workflow.
+- `/webmcp` registers exactly seven discoverable site tools with closed JSON
+  schemas, updates the shared visible Choice Center, and preserves human-only
+  identity and exact purchase confirmation.
 - Every returned cart is within S$300 and contains a tent, two sleeping bags,
   two sleeping mats, a rain-ready lantern, and a first-aid kit from one pickup
   location.
@@ -146,7 +173,8 @@ satisfy this contract.
 - Decline and reversal scenarios create no confirmed receipt.
 - A confirmed receipt verifies with its stored HMAC signature and rejects a
   modified signature.
-- `/` (landing), `/demo`, `/identity`, `/merchant`, `/architecture`, `/healthz`, and `/mcp` run from one process.
+- `/` (landing), `/demo`, `/webmcp`, `/identity`, `/merchant`, `/architecture`,
+  `/healthz`, and `/mcp` run from one process.
 - Plugin manifests pass Codex plugin validation.
 - `/demo?loop=true` completes the server-enforced simulated identity handoff,
   then replays without creating a checkout mandate, confirming a purchase, or

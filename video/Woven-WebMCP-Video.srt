@@ -1,0 +1,48 @@
+1
+00:00:00,600 --> 00:00:11,600
+We already ask ChatGPT what to buy. But actually buying still means opening tabs,
+checking compatibility, finding stock, and rebuilding everything at checkout. We built Woven to finish that process.
+
+2
+00:00:12,600 --> 00:00:29,400
+Imagine planning a first camping trip for two on a rainy weekend. Search can recommend a tent,
+but it does not guarantee rainproof shelter, two complete sleep systems, lighting and first aid, one-car fit, budget, stock, and one pickup location.
+
+3
+00:00:30,600 --> 00:00:47,000
+Woven understands the complete request, eliminates incompatible combinations, and creates ready-to-buy carts.
+Every cart comes from one merchant and one location, with proof that every component and quantity fits the same trip.
+
+4
+00:00:58,000 --> 00:01:23,000
+Woven returned five complete options—not loose product links. This S$231.00 cart includes a rainproof tent, a sleeping bag and mat for each camper, an IPX4 lantern, and water-resistant first aid.
+All seven required units fit one car boot, stay under budget, and are ready at one pickup location.
+
+5
+00:01:36,200 --> 00:01:57,800
+Before checkout, Woven enforces a simulated identity handoff, then rechecks price and stock. The AI cannot approve the purchase.
+The user sees every item and quantity, the pickup location, and the S$231.00 total before one direct confirmation.
+
+6
+00:01:59,200 --> 00:02:13,800
+Only after that click does Woven produce a simulated Visa authorization and pickup receipt.
+No card details enter Woven, and no live charge occurs.
+
+7
+00:02:14,000 --> 00:02:30,600
+On the merchant side, Woven already supports inventory import, price and stock controls, orders, and an audit trail.
+Merchants can simulate a price change, stockout, authorization decline, or reversal without changing code.
+
+8
+00:02:33,500 --> 00:02:45,200
+Why ChatGPT? Because that is where the user’s request already exists. Why a plugin? Because Woven can turn that conversation
+into merchant actions and a reviewable checkout without asking the user to start again.
+
+9
+00:02:45,200 --> 00:02:52,800
+This prototype uses seeded inventory, a server-enforced demo identity check,
+and a simulated Visa authorization. No live charge occurs.
+
+10
+00:02:52,800 --> 00:02:57,900
+Woven makes shopping through AI simple enough to use—and controlled enough to trust.

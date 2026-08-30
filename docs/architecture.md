@@ -2,7 +2,12 @@
 
 ## Shape
 
-Woven is deliberately one deployable Node.js service. ChatGPT/Codex, the browser fallback, and the merchant console all call the same domain and persistence functions.
+Woven is deliberately one deployable Node.js service with distinct runtime
+layers. ChatGPT/Codex, the WebMCP workspace, and the browser fallback enter
+through MCP, WebMCP, or HTTP; the
+server then routes the mission, optionally orchestrates non-camping discovery,
+applies deterministic commerce verification, persists state, and enforces
+checkout. MCP is the host/tool interface, not the orchestration engine.
 
 ```mermaid
 flowchart LR
@@ -12,13 +17,15 @@ flowchart LR
   Widget -->|app.callServerTool| MCP
 
   Demo[Browser /demo] -->|same actions over HTTP| API[Demo API]
+  WebMCP[Browser /webmcp] -->|7 registered site tools| API
   Identity[Browser /identity] -->|state + one-time code| API
   Merchant[Merchant /merchant] --> API
 
-  MCP --> Domain[Mission + ranking + mandate rules]
-  API --> Domain
-  MCP -->|non-camping only| Graph[Bounded LangGraph.js workflow]
-  Graph -->|connected offers| Domain
+  MCP --> Router[Server mission router]
+  API --> Router
+  Router -->|camping| Domain[Deterministic commerce verifier]
+  Router -->|non-camping| Graph[Bounded LangGraph.js orchestration]
+  Graph -->|validated MissionSpec + connected offers| Domain
   Graph -->|cited web leads| Research[Research-only results]
   Domain --> DB[(SQLite)]
   Domain --> Rail[Simulated Visa boundary]
@@ -28,7 +35,13 @@ flowchart LR
 
 ![What actually happens: the eight-step trace from the model's tool call to the receipt, with real payload shapes and failure gates](assets/devpost/woven-under-the-hood.png)
 
-The in-chat surface uses the standard MCP Apps bridge (`app.callServerTool`). `/demo` is a rehearsal transport for on-stage reliability: it renders a clearly labeled simulated chat host (marked “Simulated” in its header and footer) that drives the same backend over HTTP and surfaces each MCP tool call as it happens. It never impersonates a real host and performs no live charges.
+The in-chat surface uses the standard MCP Apps bridge (`app.callServerTool`).
+`/webmcp` registers seven imperative tools in the top-level document and maps
+them to the same HTTP API and mission router. `/demo` remains the rehearsal
+transport for on-stage reliability: it renders a clearly labeled simulated chat
+host (marked “Simulated” in its header and footer) that drives the same backend
+over HTTP and surfaces each MCP tool call as it happens. Neither browser route
+impersonates a real host or performs live charges.
 
 `/architecture` is a standalone interactive explanation of the current service
 and the credential-gated target Visa boundary. Its tracer can autoplay or be
@@ -50,6 +63,21 @@ the hosted entry also hydrates from the current tool-output snapshot before
 subscribing to later bridge results, so a cold first render does not require a
 second prompt.
 
+## Runtime layers
+
+| Layer | Responsibility | Primary implementation |
+| --- | --- | --- |
+| Interaction and transport | MCP tool schemas, HTTP/stdio transport, browser API, React MCP App, top-level WebMCP registration, app-only checkout visibility, private `_meta` | `src/server.ts`, `src/widget.ts`, `web/widget.tsx`, `web/webmcp.ts` |
+| Mission routing and orchestration | Keep canonical camping deterministic; for other retail missions interpret `MissionSpec`, discover in parallel, normalize, compose, verify, optionally retry, and terminate within fixed bounds | `src/server.ts`, `src/open-world.ts` |
+| Commerce verification | Decide requirement, compatibility, quantity, one-location, budget, stock, evidence, and checkout eligibility from typed server data | `src/domain.ts`, `src/open-world.ts` |
+| State and checkout | Rebuild carts from current catalog rows, enforce identity and exact mandates, transact inventory/orders atomically, audit, and sign receipts | `src/store.ts` |
+| Payment adapter | Return simulated approval, decline, failure, or reversal through the only approved replacement seam | `src/payment.ts` |
+
+The host model may choose `start_mission`; it does not choose graph edges, mark
+evidence verified, or authorize checkout. The graph coordinates bounded work,
+while deterministic server code remains the authority for every commercial
+claim and state transition.
+
 ## Tool contract
 
 | Tool | Visibility | Effect |
@@ -68,6 +96,24 @@ The confirmation nonce and identity authorization URL are returned in MCP result
 `_meta`, not `structuredContent`, so they are private to the widget rather than
 visible to the model. Browser fallback receives them over same-origin HTTP
 because there is no model in that path.
+
+### WebMCP site-tool contract
+
+| Tool | Effect |
+| --- | --- |
+| `start_mission` | Enter the same deterministic/open-world mission router used by MCP |
+| `get_mission` | Read the current public mission view |
+| `compare_carts` | Open and configure the visible shared Choice Center |
+| `select_cart` | Persist one currently offered cart |
+| `swap_cart_item` | Apply one current merchant-approved alternative and revalidate |
+| `refresh_carts` | Rebuild public carts from current price and stock |
+| `verify_receipt` | Verify a simulated receipt's server signature |
+
+Every schema rejects additional properties. Registration is bound to an
+`AbortSignal`, so navigation or remount removes the tools. The response headers
+include `Origin-Agent-Cluster: ?1` and `Permissions-Policy: tools=(self)`.
+There is intentionally no identity, preview, confirmation, or purchase tool;
+those actions require the person in the visible interface.
 
 ## Cart algorithm
 
@@ -93,11 +139,13 @@ bags, sleeping mats, a lantern, and first-aid supplies.
 
 The seeded catalog is intentionally small, so direct enumeration is clearer and safer than a solver. If the catalog becomes large or missions gain optional/substitutable components, replace only `buildRankedCarts` with a constrained search implementation.
 
-## Open-world cart POC
+## Bounded mission-orchestration POC
 
-Non-camping requests use an implemented TypeScript POC in the existing service.
-It adds `@langchain/langgraph`, `@langchain/core`, and `openai`; there is no
-Python process, queue, second database, or tracing service.
+Non-camping requests use an implemented TypeScript orchestration POC inside the
+existing service. LangGraph.js coordinates the stages; it does not replace MCP,
+the commerce verifier, or checkout. The implementation adds
+`@langchain/langgraph`, `@langchain/core`, and `openai`; there is no Python
+process, queue, second database, or tracing service.
 
 ```mermaid
 flowchart LR

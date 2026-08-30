@@ -3,6 +3,10 @@
 This document is field-ready. Replace only the bracketed launch details before
 publishing; the product claims below match the working repository.
 
+For the separate WebMCP Challenge entry, use
+[`WEBMCP_DEVPOST_SUBMISSION.md`](WEBMCP_DEVPOST_SUBMISSION.md). This file remains
+the canonical LifeHack/Visa submission kit.
+
 ## Listing basics
 
 **Project name:** Woven
@@ -11,9 +15,9 @@ publishing; the product claims below match the working repository.
 
 **Stage line:** Ask once. Review once. Confirm once.
 
-**One-line description:** Woven turns one shopping request into a complete,
-compatible, pickup-ready cart—and keeps the final purchase behind the user's
-explicit confirmation.
+**One-line description:** Woven combines an in-chat MCP App with a bounded
+mission-orchestration backend to turn one shopping request into a complete,
+compatible cart—and keeps purchase behind the user's explicit confirmation.
 
 **Short description:** Woven is an MCP App for mission-based shopping. Give it a
 brief—two first-time campers, a rainy weekend, one car boot, S$300, pickup
@@ -29,6 +33,13 @@ The pitch includes a working, server-enforced connector-style demo identity
 check. It is visibly simulated—not Visa login, KYC, or production identity
 verification—and remains separate from final purchase confirmation. See
 [`../script.md`](../script.md) for the authoritative narration and boundaries.
+
+MCP is Woven's interaction and tool-transport layer, not its entire backend.
+Behind `start_mission`, the server routes the deterministic camping demo or runs
+a bounded LangGraph.js workflow for other categories. The open-world POC
+interprets a validated `MissionSpec`, discovers connected offers and cited web
+research, composes and verifies candidates, and never lets web-only evidence
+enable checkout.
 
 **Repository:** https://github.com/Ducksss/LifeHack-2026
 
@@ -96,17 +107,29 @@ step in the audit trail without changing code.
 
 ### How we built it
 
-Woven is a TypeScript and React MCP App with nine tools over HTTP and stdio. The
-same repository includes a clearly labeled simulated chat host for stage-safe
-rehearsals. Both surfaces call the same domain logic; the browser demo is not a
-separate mock of the product.
+Woven is a TypeScript and React commerce system whose primary interface is an
+MCP App with nine tools over HTTP and stdio. The same repository includes a
+clearly labeled simulated chat host for stage-safe rehearsals. MCP and the
+browser API enter the same mission router; the browser demo is not a separate
+mock of the product.
 
-One Node.js and Express service hosts the MCP transports, React widget, merchant
-APIs, domain rules, and Node SQLite state. We kept it as one service so cart
-revalidation, inventory mutation, order creation, and audit writes can share one
-transaction boundary. The public HTTPS demo runs through Vercel's Express
-preset; its seeded SQLite state is temporary and may reset on a cold start or
-redeployment.
+One Node.js and Express service hosts five distinct layers: MCP/HTTP interaction,
+mission routing and bounded orchestration, deterministic commerce verification,
+Node SQLite checkout state, and the payment adapter. We kept them in one service
+so cart revalidation, inventory mutation, order creation, and audit writes can
+share one transaction boundary. The public HTTPS demo runs through Vercel's
+Express preset; its seeded SQLite state is temporary and may reset on a cold
+start or redeployment.
+
+The canonical camping request stays on the deterministic engine. Other retail
+missions enter a fixed LangGraph.js workflow: interpret, connected and web
+discovery, normalize, compose, verify, optionally retry once, then persist. The
+workflow is limited to two discovery passes, three web-search calls, eight
+connected offers per requirement, five carts, 200 beam states, and 25 seconds.
+OpenAI provides schema-constrained interpretation and cited research; typed
+server rules alone verify connected-catalog facts and set checkout eligibility.
+Without `OPENAI_API_KEY`, this path fails with retryable `AGENT_UNAVAILABLE`
+while camping, the demo, build, and CI remain available.
 
 The commerce engine enumerates complete one-merchant carts, rejects options that
 violate capacity, waterproofing, per-camper quantity, packed volume, lighting,
@@ -150,6 +173,12 @@ transactions, failure paths, MCP calls, and receipt verification are real. The
 browser rehearsal labels itself **Simulated** on screen and uses the same backend
 instead of impersonating ChatGPT or hiding prototype boundaries.
 
+**Keeping orchestration useful but bounded.** A general retail prompt can fan
+out into arbitrary research and incompatible product combinations. We made
+workflow edges code-selected, capped time and search breadth, treated web pages
+as untrusted research only, and required connected-catalog evidence before a
+cart can cross into checkout.
+
 ### Accomplishments that we're proud of
 
 - One natural-language request reliably produces five complete, one-location
@@ -158,6 +187,8 @@ instead of impersonating ChatGPT or hiding prototype boundaries.
   **S$231.00**, comfortably inside the 120 L and S$300 limits.
 - The working MCP App includes nine tools, a React Choice Center, HTTP and stdio
   transports, a public HTTPS demo, and local Codex plugin packaging.
+- A server-owned LangGraph.js layer orchestrates generic missions within fixed
+  bounds while deterministic verification remains the checkout authority.
 - Identity and purchase consent are separate server-enforced gates; neither
   their secrets nor payment credentials enter model-visible content.
 - Price changes, stockouts, duplicate confirmation, authorization decline,
@@ -176,11 +207,12 @@ mandate: which merchant, which items, which version, what total, until when, and
 who explicitly approved it. Making that state precise improved the product more
 than making the model sound more confident ever could.
 
-We also learned that MCP Apps fit this interaction unusually well. The model can
-coordinate intent and tools, while the embedded interface keeps comparison,
-proof, identity status, exact terms, and the final confirmation visible and
-structured. The best agentic flow did not remove the human—it gave the human a
-better decision to make.
+We also learned that MCP Apps fit this interaction unusually well, but MCP is
+only the interface contract. The model can select a tool and the embedded UI can
+keep comparison, proof, identity status, exact terms, and confirmation visible;
+the Woven backend must still own bounded orchestration, evidence semantics,
+deterministic verification, and transaction state. The best agentic flow did
+not remove the human—it gave the human a better decision to make.
 
 ### What's next
 
@@ -189,16 +221,18 @@ catalog, stock, pickup, and fulfilment APIs. After product approval, sandbox
 credentials, and security review, Visa Intelligent Commerce can replace only the
 isolated identity and payment simulator seams.
 
-From there, the same complete-mission model can extend to meal kits, event
+The implemented orchestration POC is the starting point for meal kits, event
 equipment, gifts, repair parts, and other purchases where compatibility matters
-more than another page of links. We want to measure whether users complete carts
-faster, recover cleanly from stale terms, and trust the exact confirmation step.
+more than another page of links. The next proof is not a larger agent: it is real
+connected merchant evidence and user validation. We want to measure whether
+users complete carts faster, recover cleanly from stale terms, and trust the
+exact confirmation step.
 
 ## Built with
 
 `typescript` · `react` · `node.js` · `express` · `sqlite` · `vite` ·
 `tailwind-css` · `shadcn-ui` · `zod` · `model-context-protocol` · `mcp-apps` ·
-`chatgpt` · `codex`
+`langgraph` · `openai-responses-api` · `chatgpt` · `codex`
 
 Add `visa` only if the event's naming policy permits prototype/simulator entries;
 do not describe this build as an official Visa integration or partnership.
@@ -217,7 +251,7 @@ All gallery assets are 1600 × 900 and live in the repository.
 | 6 | `docs/assets/devpost/woven-trust-boundary.png` | Recommendation is not permission | The model recommends, Woven binds the terms, and only a direct user click can confirm. |
 | 7 | `docs/assets/screenshots/order-success.png` | From mission to pickup receipt | A successful simulated Visa result reserves the kit and returns a pickup-ready receipt. |
 | 8 | `docs/assets/screenshots/merchant-dashboard.png` | Trust you can test live | Change inventory or trigger decline/reversal scenarios while the audit trail updates. |
-| 9 | `docs/assets/devpost/woven-system-architecture.png` | One service, one source of truth | Every surface shares the same commerce rules, SQLite transactions, and one payment adapter seam. |
+| 9 | `docs/assets/devpost/woven-system-architecture.png` | One service, five clear layers | MCP carries the request; bounded orchestration plans; deterministic rules verify; SQLite and the payment seam protect checkout. |
 | 10 | `docs/assets/devpost/woven-under-the-hood.png` | What actually happens | The request traced from the model's `start_mission` call through app-only tools, the hidden nonce, and the checkout guard to the receipt. |
 
 Use `output/devpost/woven-thumbnail-3x2.png` for Devpost's 3:2 thumbnail field
@@ -328,12 +362,21 @@ It begins where the user already expresses intent. Woven adds structured
 commerce, compatibility proof, and authorization without asking the user to
 restart the workflow elsewhere.
 
+**Is MCP the backend?**
+
+MCP is the interaction and tool-transport layer. The Woven service behind it
+owns mission routing, a bounded LangGraph.js workflow for non-camping requests,
+deterministic evidence and cart verification, SQLite transactions, and the
+checkout guard. The host model cannot choose graph edges or mark a cart eligible
+to buy.
+
 **What is technically difficult here?**
 
-The hard part is not rendering products. It is ensuring the cart remains complete
-and commercially exact between recommendation and confirmation, while keeping the
-authorization secret out of model-visible data and handling duplicate or failed
-transactions safely.
+The hard part is not rendering products. It is bounding a general mission,
+separating connected evidence from web research, and ensuring the cart remains
+complete and commercially exact between recommendation and confirmation while
+keeping authorization secrets out of model-visible data and handling duplicate
+or failed transactions safely.
 
 ## Before publishing
 

@@ -2,8 +2,10 @@
 
 ## Brand idea
 
-Woven turns separate threads—intent, compatibility, budget, inventory, pickup,
-and consent—into one complete choice. It should feel calm under pressure:
+Woven turns separate threads—intent, evidence, compatibility, budget, inventory,
+pickup, and consent—into one complete choice. Its MCP interaction layer and
+bounded mission-orchestration backend are distinct parts of that path. It should
+feel calm under pressure:
 editorial enough to be memorable, operational enough to be trusted.
 
 **Product promise:** Everything works together.
@@ -79,10 +81,14 @@ no-card-details boundary.
 | Checkout | Review the exact terms. |
 | Confirmation | Your yes is the final thread. |
 | Trust | Nothing moves until you confirm. |
+| Architecture | MCP carries the request. Woven orchestrates. Server rules decide. |
 
 Lead with outcomes and precise verbs: builds, checks, binds, revalidates,
 confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 “seamless,” or “magic.” State prototype boundaries next to payment claims.
+When architecture matters, call MCP the interaction/tool layer and LangGraph.js
+the bounded orchestration layer; never imply that MCP itself plans or verifies a
+mission.
 
 ## Asset inventory
 
@@ -98,18 +104,19 @@ confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 | `docs/assets/devpost/cover.png` | Devpost gallery cover and 16:9 campaign artwork |
 | `output/devpost/woven-thumbnail-3x2.png` | Devpost-only 3:2 thumbnail derived from the official cover without cropping its claims |
 | `docs/assets/devpost/cover.html` | Editable cover source; render at 1600 × 900 with Playwright |
-| `docs/assets/devpost/architecture.{png,svg}` | Concise system-story slide |
+| `docs/assets/devpost/architecture.{png,svg}` | Archived editorial system-story slide; not the current architecture source |
 | `docs/assets/devpost/woven-user-flow.png` | Superseded by `woven-how-it-works.png`; kept for the editorial deck variant |
 | `docs/assets/devpost/woven-trust-boundary.png` | Human authorization and simulator boundary |
 | `docs/assets/devpost/woven-architecture.png` | Superseded by `woven-system-architecture.png`; kept for the editorial deck variant |
 | `docs/assets/devpost/woven-how-it-works.png` | Six-step ask→confirm→collect flow drawn in the shipped product UI style |
-| `docs/assets/devpost/woven-system-architecture.png` | Surfaces → one service → trust boundary diagram in the shipped product UI style |
+| `docs/assets/devpost/woven-system-architecture.png` | MCP/HTTP surfaces → bounded orchestration → deterministic verification → trust boundary, in the shipped product UI style |
 | `docs/assets/devpost/woven-under-the-hood.png` | Deep-dive sequence: the model's tool call to receipt, with real payloads and gates |
 | `docs/assets/devpost/src/*.html` | Editable sources for the three product-style explainers; render at 1600 × 900 (see file comments) |
 | `docs/assets/devpost/src/_frame-template.html` | Copyable branded shell for new 1600 × 900 HTML frames; render with `npm run frame:render -- <source.html>` |
-| `docs/Woven-Devpost-Visuals.pptx` | Presentation-ready source deck for the three slides |
+| `docs/Woven-Devpost-Visuals.pptx` | Editorial source deck; the current product-style explainers use the HTML sources above |
 | `docs/assets/screenshots/*.png` | Verified product gallery |
 | `docs/assets/screenshots/demo-identity.png` | Verified `/identity` simulator evidence |
+| `docs/assets/screenshots/webmcp-workspace-{ready,desktop,mobile,status}.png` | Verified WebMCP readiness, shared comparison, responsive, and activity evidence |
 | `docs/assets/slides/*.png` | Text-free editorial backgrounds for friction, the complete kit, and explicit human confirmation |
 | `docs/assets/demo/*.{png,svg}` | Numbered 16:9 stage fallback sequence and closing card built from verified product screens |
 | `docs/assets/marketing/woven-demo-loop.gif` | Animated ~33s loop of the real `/demo` flow for README, Devpost, and social posts |
@@ -119,8 +126,10 @@ confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 | `docs/Woven-Hackathon-Pitch.pptx` | Judge deck with the camping mission and working simulated identity handoff |
 | `video/WovenJudgeVideo.tsx` | Three-minute Remotion judge-video source using the same brand tokens and verified evidence |
 | `video/Woven-Judge-Video.srt` | Sidecar captions for the judge-video master |
+| `video/Woven-WebMCP-Video.srt` | Retimed sidecar captions for the 2:58 WebMCP master |
 | `public/woven-video/` | Replaceable ElevenLabs AI narration and ambient audio for the Remotion composition |
 | `output/Woven-Judge-Video.mp4` | Generated local master; ignored by Git and uploaded only after final review |
+| `output/Woven-WebMCP-Challenge.mp4` | Generated 2:58 WebMCP challenge master; ignored by Git and must be reviewed before upload |
 
 All Devpost gallery images are 1600 × 900. Upload them uncropped in the order
 listed in `docs/DEVPOST_SUBMISSION.md`; the separate 1500 × 1000 thumbnail is

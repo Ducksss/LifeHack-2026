@@ -50,11 +50,11 @@
   .brand strong { font-size: 19px; font-weight: 600; letter-spacing: -0.02em; }
   header .microlabel { color: rgb(255 255 255 / 0.45); }
 
-  .title { position: relative; margin-top: 38px; }
+  .title { position: relative; margin-top: 30px; }
   .title h1 { font-size: 48px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; }
   .title p { margin-top: 11px; font-size: 18px; color: rgb(255 255 255 / 0.55); }
 
-  .diagram { position: relative; margin-top: 42px; flex: 1; display: grid; grid-template-columns: 360px 56px 1fr 56px 400px; align-items: stretch; }
+  .diagram { position: relative; margin-top: 30px; flex: 1; display: grid; grid-template-columns: 360px 56px 1fr 56px 400px; align-items: stretch; }
   .col { display: flex; flex-direction: column; gap: 14px; }
   .col > .microlabel { color: rgb(255 255 255 / 0.45); margin-bottom: 2px; }
 
@@ -66,19 +66,19 @@
   .links { position: relative; }
   .links svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-  .service { background: #131316; border: 1px solid rgb(255 255 255 / 0.16); border-radius: 18px; padding: 22px 24px 18px; display: flex; flex-direction: column; }
+  .service { background: #131316; border: 1px solid rgb(255 255 255 / 0.16); border-radius: 18px; padding: 18px 22px 16px; display: flex; flex-direction: column; }
   .service-head { display: flex; align-items: center; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid rgb(255 255 255 / 0.1); }
   .service-head .brand-chip { width: 36px; height: 36px; }
   .service-head .brand-chip svg { width: 23px; height: 23px; }
   .service-head strong { font-size: 18px; font-weight: 600; }
   .service-head span { display: block; margin-top: 2px; font-family: "Geist Mono Variable", monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: rgb(183 245 34 / 0.85); }
-  .layer { display: grid; grid-template-columns: 30px 1fr; gap: 10px; padding: 13px 0; border-bottom: 1px solid rgb(255 255 255 / 0.08); }
+  .layer { display: grid; grid-template-columns: 30px 1fr; gap: 10px; padding: 9px 0; border-bottom: 1px solid rgb(255 255 255 / 0.08); }
   .layer:last-of-type { border-bottom: 0; }
   .layer i { font-style: normal; font-family: "Geist Mono Variable", monospace; font-size: 12px; color: rgb(255 255 255 / 0.4); padding-top: 2px; }
   .layer h4 { font-size: 15.5px; font-weight: 600; letter-spacing: -0.01em; }
-  .layer p { margin-top: 3px; font-size: 12.5px; line-height: 1.4; color: rgb(255 255 255 / 0.5); }
+  .layer p { margin-top: 3px; font-size: 12px; line-height: 1.35; color: rgb(255 255 255 / 0.5); }
   .layer code { font-family: "Geist Mono Variable", monospace; font-size: 11.5px; color: rgb(255 255 255 / 0.7); }
-  .seams { margin-top: auto; padding: 12px 0 14px; text-align: center; font-family: "Geist Mono Variable", monospace; font-size: 11px; letter-spacing: 0.06em; color: rgb(255 255 255 / 0.35); }
+  .seams { margin-top: auto; padding: 8px 0 10px; text-align: center; font-family: "Geist Mono Variable", monospace; font-size: 10.5px; letter-spacing: 0.05em; color: rgb(255 255 255 / 0.35); }
   .service-foot { background: rgb(255 255 255 / 0.06); border-radius: 999px; text-align: center; padding: 9px; font-family: "Geist Mono Variable", monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(255 255 255 / 0.65); }
 
   .trust { background: #131316; border: 1px solid rgb(255 255 255 / 0.11); border-radius: 14px; padding: 16px 18px; }
@@ -110,8 +110,8 @@
   </header>
 
   <div class="title">
-    <h1>One service keeps every surface in sync.</h1>
-    <p>The MCP App, the browser rehearsal, and the merchant desk share the same rules and SQLite transaction boundary.</p>
+    <h1>One service. Five clear layers.</h1>
+    <p>MCP and WebMCP carry the request; bounded orchestration plans the mission; deterministic server rules decide what can reach checkout.</p>
   </div>
 
   <div class="diagram">
@@ -123,9 +123,9 @@
         <span class="tag">Primary product</span>
       </div>
       <div class="surface">
-        <h3>/demo</h3>
-        <p>Stage rehearsal of the buyer flow — the same tools over plain HTTP.</p>
-        <span class="tag">Stage rehearsal</span>
+        <h3>/webmcp + /demo</h3>
+        <p>Seven browser-native site tools plus the stage rehearsal over the same HTTP API.</p>
+        <span class="tag">Browser surfaces</span>
       </div>
       <div class="surface">
         <h3>/merchant</h3>
@@ -153,25 +153,39 @@
       <div class="layer">
         <i>01</i>
         <div>
-          <h4>Transports &amp; tools</h4>
-          <p>HTTP + stdio MCP and the browser API expose nine tools — <code>swap_cart_item</code>, <code>start_demo_identity</code>, <code>create_checkout_preview</code>, and <code>confirm_purchase</code> are app-only.</p>
+          <h4>Interaction &amp; transport</h4>
+          <p>HTTP + stdio MCP, seven WebMCP site tools, the React App, private <code>_meta</code>, and human-only checkout actions.</p>
         </div>
       </div>
       <div class="layer">
         <i>02</i>
         <div>
-          <h4>Cart engine</h4>
-          <p>Filters incompatible or out-of-stock offers, assembles complete one-merchant carts, ranks them, and explains every thread.</p>
+          <h4>Mission routing &amp; orchestration</h4>
+          <p>Camping stays deterministic. Other retail requests enter a fixed LangGraph.js flow: interpret, discover, normalize, compose, verify, and retry once at most.</p>
         </div>
       </div>
       <div class="layer">
         <i>03</i>
         <div>
-          <h4>Checkout guard</h4>
-          <p>Requires the current demo identity, rechecks price and stock, binds an expiring mandate hash, and requires the private nonce plus an idempotency key.</p>
+          <h4>Deterministic commerce verifier</h4>
+          <p>Typed connected data must satisfy every requirement, compatibility link, quantity, location, stock, and budget rule. Web leads stay research-only.</p>
         </div>
       </div>
-      <div class="seams">src/server.ts · src/domain.ts · src/store.ts · src/payment.ts</div>
+      <div class="layer">
+        <i>04</i>
+        <div>
+          <h4>State &amp; checkout guard</h4>
+          <p>SQLite rebuilds current carts, requires demo identity, binds exact expiring terms, and transacts inventory, orders, audit, and receipt state atomically.</p>
+        </div>
+      </div>
+      <div class="layer">
+        <i>05</i>
+        <div>
+          <h4>Payment adapter</h4>
+          <p><code>authorizePayment</code> is simulated and fail-closed today; it is the only approved future processor seam.</p>
+        </div>
+      </div>
+      <div class="seams">server · open-world · domain · store · payment</div>
       <div class="service-foot">Node SQLite · atomic inventory + order</div>
     </div>
 
@@ -200,10 +214,10 @@
     </div>
   </div>
 
-  <div class="tagline">One code path — the stage rehearsal cannot drift from the MCP product.</div>
+  <div class="tagline">MCP and WebMCP carry. Orchestration plans. Server rules verify. The user confirms.</div>
 
   <footer>
-    <span class="microlabel">LifeHack 2026 · MCP commerce app</span>
+    <span class="microlabel">Woven · MCP + WebMCP + bounded orchestration</span>
     <span class="microlabel">Proof of concept</span>
   </footer>
 </body>

@@ -15,11 +15,28 @@ The audience should remember one sequence:
 
 > **Ask once. Review once. Confirm once.**
 
+## WebMCP Challenge recording cut
+
+The challenge master is a separate 2:58 composition:
+`output/Woven-WebMCP-Challenge.mp4`. It preserves the narration and truth
+boundaries below, but the 0:48–1:28 product beat shows the real `/webmcp` page:
+
+1. the browser discovers seven top-level site tools;
+2. `start_mission` returns the five complete carts;
+3. `compare_carts` opens the visible Choice Center with **Most rainproof** and
+   **Central** applied; and
+4. the frame states that identity and exact purchase confirmation are human-only.
+
+The spoken voice is AI-generated. Do not use the older exact-3:00 judge video
+for this challenge: the rules require a video shorter than three minutes and a
+visible WebMCP demonstration.
+
 ## Current product versus target storyboard
 
 | Capability | Status | May be demonstrated as live? |
 | --- | --- | --- |
 | MCP App/plugin in ChatGPT or Codex | Working | Yes |
+| Bounded non-camping mission orchestration | Working, credential-dormant POC | Only in a configured technical walkthrough; not the canonical stage flow |
 | Browser fallback using the same backend | Working | Yes |
 | Complete one-merchant carts | Working | Yes |
 | Compatibility, budget, stock, and pickup proof | Working with seeded demo data | Yes, call the data seeded |
@@ -374,6 +391,15 @@ The user has already explained the request in ChatGPT. Woven adds complete-cart
 reasoning, merchant tools, and a controlled checkout without making them repeat
 the work elsewhere.
 
+**Is Woven just an MCP server?**
+
+No. MCP is the interaction and tool-transport layer. Behind `start_mission`, the
+Woven service routes the canonical camping request to its deterministic engine
+and other categories to a bounded LangGraph.js workflow that interprets a
+validated mission, discovers connected offers and cited research, composes and
+verifies candidates, and stops after at most two passes. Deterministic server
+rules—not MCP or the model—decide checkout eligibility.
+
 **Does Woven verify identity today?**
 
 Yes, through a simulated connector-style account check. The server validates
@@ -403,6 +429,7 @@ not live merchant feeds.
 Always say:
 
 - “MCP App” or “plugin”
+- “MCP interaction layer” and “bounded orchestration backend” when explaining architecture
 - “complete cart”
 - “simulated Visa authorization”
 - “seeded demo inventory”
@@ -418,6 +445,7 @@ Never say:
 - “real payment” or “charged”
 - “production identity verified”
 - “autonomous purchase” when a human confirmation is required
+- “MCP does the reasoning” or “the model decides checkout eligibility”
 
 ## Maintenance rule
 
@@ -434,3 +462,9 @@ When the identity flow changes, update all of the following in the same change:
 
 Run `npm run check`, exercise the complete buyer flow, and verify that missing,
 expired, reused, or mismatched identity sessions cannot reach confirmation.
+
+When mission routing, orchestration, or evidence rules change, update
+`AGENTS.md`, `README.md`, `docs/PRD.md`, `docs/architecture.md`,
+`docs/HANDOVER.md`, `docs/INSTALLATION.md`, `docs/DEVPOST_SUBMISSION.md`, this
+script, and the current architecture diagram source in the same change. Keep the
+canonical stage flow deterministic unless the implemented demo itself changes.

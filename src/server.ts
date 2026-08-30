@@ -97,6 +97,31 @@ function usesCampingEngine(input: { request: string; campers?: number }): boolea
   return input.campers !== undefined || /\b(?:camp(?:ing|ers?)?|tent|sleeping\s+(?:bag|mat))\b/i.test(input.request);
 }
 
+async function startMission(input: { request: string; budgetCents?: number; campers?: number; pickupDate?: string }): Promise<MissionView> {
+  if (usesCampingEngine(input)) return store.startMission(input);
+  const catalog = store.getCatalog();
+  const connectedCatalogFields = Object.fromEntries(
+    [...Map.groupBy(catalog.filter((item) => item.attributes), (item) => item.category).entries()]
+      .map(([category, items]) => [category, [...new Set(items.flatMap((item) => Object.keys(item.attributes || {})))]]),
+  );
+  const openai = createOpenAIDependencies(undefined, connectedCatalogFields);
+  const dependencies = {
+    ...openai,
+    interpret: async (request: string, signal: AbortSignal) => {
+      const interpreted = await openai.interpret(request, signal);
+      return missionSpecSchema.parse({
+        ...interpreted,
+        ...(input.budgetCents === undefined ? {} : { budgetCents: input.budgetCents }),
+        ...(input.pickupDate === undefined ? {} : { pickupDate: input.pickupDate }),
+      });
+    },
+    discoverConnected: async (spec: Parameters<typeof connectedOffersForSpec>[0]) =>
+      connectedOffersForSpec(spec, catalog),
+  };
+  const result = await runOpenWorldMission({ request: input.request, connectedOffers: [], dependencies });
+  return store.startOpenWorldMission(input.request, result);
+}
+
 function createMcpServer(): McpServer {
   const server = new McpServer({ name: "woven", version: VERSION });
 
@@ -124,31 +149,7 @@ function createMcpServer(): McpServer {
     },
     async (input) =>
       attemptAsync(async () => {
-        const view = usesCampingEngine(input)
-          ? store.startMission(input)
-          : await (async () => {
-            const catalog = store.getCatalog();
-            const connectedCatalogFields = Object.fromEntries(
-              [...Map.groupBy(catalog.filter((item) => item.attributes), (item) => item.category).entries()]
-                .map(([category, items]) => [category, [...new Set(items.flatMap((item) => Object.keys(item.attributes || {})))]]),
-            );
-            const openai = createOpenAIDependencies(undefined, connectedCatalogFields);
-            const dependencies = {
-              ...openai,
-              interpret: async (request: string, signal: AbortSignal) => {
-                const interpreted = await openai.interpret(request, signal);
-                return missionSpecSchema.parse({
-                  ...interpreted,
-                  ...(input.budgetCents === undefined ? {} : { budgetCents: input.budgetCents }),
-                  ...(input.pickupDate === undefined ? {} : { pickupDate: input.pickupDate }),
-                });
-              },
-              discoverConnected: async (spec: Parameters<typeof connectedOffersForSpec>[0]) =>
-                connectedOffersForSpec(spec, catalog),
-            };
-            const result = await runOpenWorldMission({ request: input.request, connectedOffers: [], dependencies });
-            return store.startOpenWorldMission(input.request, result);
-          })();
+        const view = await startMission(input);
         const summary = view.carts.length
           ? `Built ${view.carts.length} compatible carts under ${money(view.mission.budgetCents)}. The top match is ${view.carts[0]!.merchantName} at ${money(view.carts[0]!.totalCents)}.`
           : view.researchLeads?.length
@@ -380,6 +381,8 @@ const confirmSchema = z.object({
 });
 app.disable("x-powered-by");
 app.use((req, res, next) => {
+  res.setHeader("Origin-Agent-Cluster", "?1");
+  res.setHeader("Permissions-Policy", "tools=(self)");
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Headers", "content-type, mcp-session-id");
   res.setHeader("Access-Control-Expose-Headers", "mcp-session-id");
@@ -393,14 +396,15 @@ app.get("/healthz", (_req, res) => res.json({ ok: true, service: "woven", versio
 app.get("/favicon.ico", (_req, res) => res.sendStatus(204));
 app.get("/", (_req, res) => res.sendFile("landing.html", { root: webRoot }));
 app.get("/demo", (_req, res) => res.sendFile("demo.html", { root: webRoot }));
+app.get("/webmcp", (_req, res) => res.sendFile("demo.html", { root: webRoot }));
 app.get("/merchant", (_req, res) => res.sendFile("merchant.html", { root: webRoot }));
 app.get("/install", (_req, res) => res.sendFile("install.html", { root: webRoot }));
 app.get("/identity", (_req, res) => res.sendFile("identity.html", { root: webRoot }));
 app.get("/architecture", (_req, res) => res.sendFile("architecture.html", { root: webRoot }));
 
-app.post("/api/demo/start", (req, res) => api(res, () => {
+app.post("/api/demo/start", async (req, res) => apiAsync(res, async () => {
   const input = missionInputSchema.parse(req.body);
-  return { view: store.startMission({ ...input, request: input.request || CANONICAL_REQUEST }) };
+  return { view: await startMission({ ...input, request: input.request || CANONICAL_REQUEST }) };
 }));
 app.get("/api/missions/:missionId", (req, res) => api(res, () => ({ view: store.view(req.params.missionId) })));
 app.post("/api/tools/build_carts", (req, res) => api(res, () => {
@@ -506,8 +510,18 @@ function api(res: Response, work: () => unknown): void {
   }
 }
 
+async function apiAsync(res: Response, work: () => Promise<unknown>): Promise<void> {
+  try {
+    res.json(await work());
+  } catch (error) {
+    const status = error instanceof DomainError ? 400 : error instanceof z.ZodError ? 422 : 500;
+    const result = errorResult(error);
+    res.status(status).json(result.structuredContent);
+  }
+}
+
 const httpServer = app.listen(port, () => {
-  console.error(`Woven ready: ${baseUrl}/mcp · ${baseUrl}/demo · ${baseUrl}/identity · ${baseUrl}/merchant`);
+  console.error(`Woven ready: ${baseUrl}/mcp · ${baseUrl}/webmcp · ${baseUrl}/demo · ${baseUrl}/identity · ${baseUrl}/merchant`);
 });
 
 if (process.argv.includes("--stdio")) {

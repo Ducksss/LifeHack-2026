@@ -21,4 +21,5 @@ test("architecture keeps the global judge navigation", () => {
   assert.match(page, /href="\/architecture" aria-current="page"/);
   assert.match(page, /href="\/demo">Run the demo/);
   assert.match(page, /@media \(max-width: 767px\)/);
+  assert.match(page, /MCP and WebMCP are interfaces, not the orchestration engine/);
 });

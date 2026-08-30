@@ -1481,31 +1481,31 @@ html&gt;body{padding:0}&lt;/style&gt;
         &lt;/svg&gt;
       &lt;/span&gt;
       &lt;div&gt;
-        &lt;div class=&quot;wa-kicker text-small&quot;&gt;Woven · target integration&lt;/div&gt;
-        &lt;h1&gt;From one request to a result inside Codex.&lt;/h1&gt;
-        &lt;p class=&quot;wa-subtitle&quot;&gt;The production path keeps discovery, recommendation, consent, Visa controls, merchant checkout, and the in-chat result as separate trust boundaries.&lt;/p&gt;
+        &lt;div class=&quot;wa-kicker text-small&quot;&gt;Woven · current core + target integrations&lt;/div&gt;
+        &lt;h1&gt;From one request to a verified result.&lt;/h1&gt;
+        &lt;p class=&quot;wa-subtitle&quot;&gt;MCP and WebMCP carry the request and share the app; Woven owns bounded orchestration, deterministic commerce verification, consent, and checkout.&lt;/p&gt;
       &lt;/div&gt;
     &lt;/div&gt;
     &lt;div class=&quot;wa-status&quot; aria-label=&quot;Implementation status&quot;&gt;
-      &lt;span class=&quot;viz-badge&quot;&gt;Woven core · working&lt;/span&gt;
+      &lt;span class=&quot;viz-badge&quot;&gt;Core + bounded orchestration · working POC&lt;/span&gt;
       &lt;span class=&quot;viz-badge&quot;&gt;Visa path · future / credential-gated&lt;/span&gt;
     &lt;/div&gt;
   &lt;/header&gt;
 
   &lt;section class=&quot;wa-correction&quot; aria-label=&quot;Architecture correction&quot;&gt;
-    &lt;strong&gt;Recommendation does not go to Visa.&lt;/strong&gt;
-    &lt;p&gt;Codex sends the mission JSON to Woven. Woven queries merchant catalog or merchant MCP services and builds the recommendation. Visa enters later for authenticated payment instructions, agent-specific credentials, network controls, and commerce signals.&lt;/p&gt;
+    &lt;strong&gt;MCP and WebMCP are interfaces, not the orchestration engine.&lt;/strong&gt;
+    &lt;p&gt;Codex sends mission JSON through MCP or the top-level WebMCP page. Woven routes the request, optionally runs its bounded LangGraph.js workflow, and lets deterministic server rules verify connected offers. Visa enters only after exact user confirmation; cited web research never becomes checkout evidence.&lt;/p&gt;
   &lt;/section&gt;
 
   &lt;section aria-labelledby=&quot;wa-system-title&quot;&gt;
     &lt;div class=&quot;wa-section-head&quot;&gt;
       &lt;div&gt;
         &lt;h2 id=&quot;wa-system-title&quot;&gt;System boundaries&lt;/h2&gt;
-        &lt;p class=&quot;text-small&quot;&gt;One Woven service between the host and external commerce systems.&lt;/p&gt;
+        &lt;p class=&quot;text-small&quot;&gt;Five layers inside one Woven service between the host and external systems.&lt;/p&gt;
       &lt;/div&gt;
     &lt;/div&gt;
 
-    &lt;div class=&quot;wa-system&quot; role=&quot;img&quot; aria-label=&quot;Codex or ChatGPT connects to one Woven MCP service. Woven connects separately to merchant catalog and order systems and to Visa payment services.&quot;&gt;
+    &lt;div class=&quot;wa-system&quot; role=&quot;img&quot; aria-label=&quot;Codex or ChatGPT connects through MCP to one Woven service. Woven routes the mission, runs bounded orchestration when needed, verifies commerce facts, stores checkout state, and reaches external research, merchant, and future Visa systems through separate boundaries.&quot;&gt;
       &lt;div class=&quot;wa-lane&quot; data-lane=&quot;host&quot;&gt;
         &lt;div class=&quot;wa-lane-head&quot;&gt;
           &lt;h3&gt;Codex / ChatGPT&lt;/h3&gt;
@@ -1533,12 +1533,16 @@ html&gt;body{padding:0}&lt;/style&gt;
           &lt;span class=&quot;text-small&quot;&gt;one deployable service&lt;/span&gt;
         &lt;/div&gt;
         &lt;div class=&quot;wa-node&quot;&gt;
-          &lt;strong&gt;HTTP + stdio MCP gateway&lt;/strong&gt;
+          &lt;strong&gt;MCP + WebMCP gateway&lt;/strong&gt;
           &lt;span class=&quot;text-small&quot;&gt;Tool schemas, validation, visibility, safe errors&lt;/span&gt;
         &lt;/div&gt;
         &lt;div class=&quot;wa-node&quot;&gt;
-          &lt;strong&gt;Mission + compatibility engine&lt;/strong&gt;
-          &lt;span class=&quot;text-small&quot;&gt;Normalizes constraints, assembles complete carts, ranks&lt;/span&gt;
+          &lt;strong&gt;Mission router + bounded orchestration&lt;/strong&gt;
+          &lt;span class=&quot;text-small&quot;&gt;Camping engine or fixed LangGraph.js MissionSpec workflow&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;wa-node&quot;&gt;
+          &lt;strong&gt;Deterministic commerce verifier&lt;/strong&gt;
+          &lt;span class=&quot;text-small&quot;&gt;Connected evidence, compatibility, complete carts, ranking&lt;/span&gt;
         &lt;/div&gt;
         &lt;div class=&quot;wa-node&quot;&gt;
           &lt;strong&gt;Checkout guard&lt;/strong&gt;
@@ -1558,8 +1562,12 @@ html&gt;body{padding:0}&lt;/style&gt;
 
       &lt;div class=&quot;wa-lane&quot; data-lane=&quot;external&quot;&gt;
         &lt;div class=&quot;wa-lane-head&quot;&gt;
-          &lt;h3&gt;External commerce&lt;/h3&gt;
-          &lt;span class=&quot;text-small&quot;&gt;target boundary&lt;/span&gt;
+          &lt;h3&gt;External systems&lt;/h3&gt;
+          &lt;span class=&quot;text-small&quot;&gt;current + target boundaries&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;wa-node&quot;&gt;
+          &lt;strong&gt;OpenAI Responses + cited web search&lt;/strong&gt;
+          &lt;span class=&quot;text-small&quot;&gt;Optional structured planning and research-only leads&lt;/span&gt;
         &lt;/div&gt;
         &lt;div class=&quot;wa-node&quot;&gt;
           &lt;strong&gt;Merchant MCP / catalog APIs&lt;/strong&gt;
@@ -1609,11 +1617,11 @@ html&gt;body{padding:0}&lt;/style&gt;
         &lt;/li&gt;
         &lt;li class=&quot;wa-step&quot;&gt;
           &lt;span class=&quot;wa-step-number text-small&quot;&gt;3&lt;/span&gt;
-          &lt;div&gt;&lt;span class=&quot;wa-step-actor text-small&quot;&gt;Woven → merchant services&lt;/span&gt;&lt;strong&gt;Fetch candidate offers.&lt;/strong&gt;&lt;p class=&quot;text-small&quot;&gt;Merchant MCP/catalog APIs supply current products, price, stock, pickup, and substitutions.&lt;/p&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span class=&quot;wa-step-actor text-small&quot;&gt;Woven mission router&lt;/span&gt;&lt;strong&gt;Choose the bounded engine.&lt;/strong&gt;&lt;p class=&quot;text-small&quot;&gt;Camping stays deterministic; other categories enter the fixed LangGraph.js workflow.&lt;/p&gt;&lt;/div&gt;
         &lt;/li&gt;
         &lt;li class=&quot;wa-step&quot;&gt;
           &lt;span class=&quot;wa-step-number text-small&quot;&gt;4&lt;/span&gt;
-          &lt;div&gt;&lt;span class=&quot;wa-step-actor text-small&quot;&gt;Woven domain&lt;/span&gt;&lt;strong&gt;Build complete carts.&lt;/strong&gt;&lt;p class=&quot;text-small&quot;&gt;Hard constraints run before ranking: compatibility, quantity, one location, budget, volume, stock, pickup.&lt;/p&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;span class=&quot;wa-step-actor text-small&quot;&gt;Woven orchestration + domain&lt;/span&gt;&lt;strong&gt;Plan, discover, compose, and verify.&lt;/strong&gt;&lt;p class=&quot;text-small&quot;&gt;Connected facts may form carts; cited web findings stay research-only. Deterministic rules run before ranking.&lt;/p&gt;&lt;/div&gt;
         &lt;/li&gt;
         &lt;li class=&quot;wa-step&quot;&gt;
           &lt;span class=&quot;wa-step-number text-small&quot;&gt;5&lt;/span&gt;
@@ -1653,7 +1661,7 @@ html&gt;body{padding:0}&lt;/style&gt;
         &lt;/div&gt;
         &lt;div class=&quot;wa-guardrail&quot;&gt;
           &lt;strong id=&quot;wa-guard-title&quot;&gt;Boundary&lt;/strong&gt;
-          &lt;p id=&quot;wa-guard-copy&quot; class=&quot;text-small&quot;&gt;Visa is intentionally absent from product discovery. Recommendations come from merchant data plus Woven&#x27;s compatibility rules.&lt;/p&gt;
+          &lt;p id=&quot;wa-guard-copy&quot; class=&quot;text-small&quot;&gt;MCP only carries the request and result. Workflow edges are code-selected, web evidence stays research-only, and deterministic server rules decide checkout eligibility.&lt;/p&gt;
         &lt;/div&gt;
       &lt;/div&gt;
     &lt;/div&gt;
@@ -1671,8 +1679,8 @@ html&gt;body{padding:0}&lt;/style&gt;
           steps: [
             [&quot;User → Codex&quot;, &quot;Ask once.&quot;, &quot;The host keeps the original request and chooses Woven&#x27;s model-visible entry tool.&quot;],
             [&quot;Codex → Woven MCP&quot;, &quot;Call start_mission.&quot;, &quot;Streamable HTTP or stdio carries a validated MCP tools/call JSON envelope.&quot;],
-            [&quot;Woven → merchant services&quot;, &quot;Fetch candidate offers.&quot;, &quot;Merchant MCP/catalog APIs supply current products, price, stock, pickup, and substitutions.&quot;],
-            [&quot;Woven domain&quot;, &quot;Build complete carts.&quot;, &quot;Hard constraints run before ranking: compatibility, quantity, one location, budget, volume, stock, pickup.&quot;],
+            [&quot;Woven mission router&quot;, &quot;Choose the bounded engine.&quot;, &quot;Camping stays deterministic; other categories enter the fixed LangGraph.js workflow.&quot;],
+            [&quot;Woven orchestration + domain&quot;, &quot;Plan, discover, compose, and verify.&quot;, &quot;Connected facts may form carts; cited web findings stay research-only. Deterministic rules run before ranking.&quot;],
             [&quot;Woven → Codex&quot;, &quot;Return text + structuredContent.&quot;, &quot;Codex shows the summary and opens the full Choice Center inside the MCP App.&quot;]
           ],
           requestLabel: &quot;Codex → Woven&quot;,
@@ -1704,7 +1712,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   }
 }`,
           guardTitle: &quot;Boundary&quot;,
-          guard: &quot;Visa is intentionally absent from product discovery. Recommendations come from merchant data plus Woven&#x27;s compatibility rules.&quot;
+          guard: &quot;MCP only carries the request and result. Workflow edges are code-selected, web evidence stays research-only, and deterministic server rules decide checkout eligibility.&quot;
         },
         consent: {
           steps: [

@@ -1,12 +1,15 @@
 # Install and verify Woven
 
-Woven can be run in three ways. Use the first path for the quickest real plugin
-demo.
+Woven can be connected through three host paths. Each reaches the same Node.js
+backend, whose MCP/HTTP interface is separate from its mission orchestration,
+commerce verification, SQLite checkout, and payment layers. Use the first path
+for the quickest real plugin demo.
 
 | Goal | Use | Requires public HTTPS? |
 | --- | --- | --- |
 | Install the local plugin in Codex | ChatGPT desktop app or Codex CLI | No |
 | Use Woven inside a ChatGPT conversation | ChatGPT Developer Mode | Yes |
+| Use Woven's browser-native site tools | WebMCP workspace at `/webmcp` | Public HTTPS for remote testing |
 | Rehearse without a plugin host | Browser fallback at `/demo` | No |
 
 While the server is running, this guide is also available in-product at
@@ -57,11 +60,12 @@ The installable package is already defined by:
 - `.mcp.json` — the bundled stdio MCP server; and
 - `.agents/plugins/marketplace.json` — the repository marketplace entry.
 
-### Optional open-world POC
+### Optional bounded orchestration POC
 
 No OpenAI credential is required for the canonical camping demo, installation,
-build, or CI. Non-camping missions exercise the implemented LangGraph.js and
-Responses API POC only when the server process already has an
+build, or CI. MCP still exposes the same `start_mission` entry point, but
+non-camping requests route behind it into the implemented LangGraph.js and
+Responses API orchestration POC only when the server process already has an
 `OPENAI_API_KEY`. Without one, they return retryable `AGENT_UNAVAILABLE`; Woven
 does not invent fallback carts and `/demo` continues normally.
 
@@ -144,6 +148,7 @@ ChatGPT cannot connect to `localhost`. The verified public deployment is:
 
 - landing page: <https://visa-woven.vercel.app>
 - buyer demo: <https://visa-woven.vercel.app/demo>
+- WebMCP workspace after the challenge build is deployed: <https://visa-woven.vercel.app/webmcp>
 - merchant desk: <https://visa-woven.vercel.app/merchant>
 - MCP endpoint: <https://visa-woven.vercel.app/mcp>
 - health check: <https://visa-woven.vercel.app/healthz>
@@ -220,12 +225,20 @@ Woven ready: http://localhost:8787/mcp · http://localhost:8787/demo · http://l
 Open:
 
 - buyer fallback: <http://localhost:8787/demo>
+- WebMCP workspace: <http://localhost:8787/webmcp>
 - merchant desk: <http://localhost:8787/merchant>
 - install guide: <http://localhost:8787/install>
 - health check: <http://localhost:8787/healthz>
 
-The browser fallback uses the same store, domain rules, and payment simulator as
-the MCP App. It is a rehearsal transport, not the primary product.
+The browser fallback uses the same mission router, orchestration layer, store,
+domain rules, and payment simulator as the MCP App. It is a rehearsal transport,
+not the primary product.
+
+In a current WebMCP-capable ChatGPT or Codex browser session, `/webmcp`
+discovers seven tools: `start_mission`, `get_mission`, `compare_carts`,
+`select_cart`, `swap_cart_item`, `refresh_carts`, and `verify_receipt`. A visible
+readiness card confirms registration. Identity, checkout preview, and purchase
+confirmation must not appear in the discovered list.
 
 ## Troubleshooting
 
@@ -241,6 +254,7 @@ the MCP App. It is a rehearsal transport, not the primary product.
 | ChatGPT cannot connect | Verify public HTTPS, include the `/mcp` path, set `BASE_URL` to the same origin, and retry | Tool discovery succeeds |
 | The widget is stale after code changes | Run `npm run check`, reinstall the local plugin or refresh the ChatGPT connection, then start a new conversation | Updated tools and UI load |
 | Developer Mode is absent | Check the ChatGPT account/workspace policy | The toggle appears after an admin permits it |
+| A non-camping mission returns `AGENT_UNAVAILABLE` | Supply `OPENAI_API_KEY` only for an intentional POC run, then restart Woven; otherwise use the credential-free camping flow | The bounded workflow runs, or camping continues without an OpenAI dependency |
 
 Official Codex CLI repair/install command for macOS and Linux:
 

@@ -32,24 +32,37 @@ feature real.
 ## Current snapshot
 
 - The working product is one Node.js service with a React MCP App, HTTP/stdio MCP
-  transports, `/demo`, `/identity`, `/merchant`, `/install`, SQLite state, and
-  a simulated Visa adapter.
+  transports, a bounded LangGraph.js mission-orchestration layer, deterministic
+  commerce verification, `/demo`, `/webmcp`, `/identity`, `/merchant`, `/install`,
+  SQLite state, and a simulated Visa adapter.
+- `/webmcp` exposes seven top-level browser-native site tools over the same
+  server router and visible Choice Center; identity and purchase remain human-only.
 - The canonical rainy-weekend camping request produces complete, weather-compatible,
   one-merchant carts and an exact, expiring confirmation.
+- Non-camping requests route through a credential-dormant open-world POC that
+  interprets a validated `MissionSpec`, discovers connected offers and cited web
+  research, composes and verifies carts, retries at most once, and fails closed
+  when OpenAI is unavailable. Web research is never checkout evidence.
 - The connector-style demo identity check is implemented and enforced before
   checkout with a short-lived session, state, PKCE, an allowlisted callback,
   and a single-use code. It is simulated and never a Visa login or KYC claim.
 - The judge deck includes the working demo identity handoff between cart choice
   and exact checkout review.
-- Public HTTPS deployment, a shareable ChatGPT connection, real merchant/Visa
-  integrations, the demo video, and final Devpost publication remain outstanding.
+- Public HTTPS deployment and the demo video are complete. A shareable ChatGPT
+  connection, real merchant/Visa integrations, and final Devpost publication
+  remain outstanding.
 
 ## Product and trust invariants
 
-- The primary experience is an MCP App inside ChatGPT or Codex.
+- The primary experience is an MCP App inside ChatGPT or Codex. MCP is the
+  interaction and tool transport layer; Woven's server-owned orchestration and
+  deterministic commerce rules remain separate backend responsibilities.
 - `/demo` is a stage-safe rehearsal over the same backend: a clearly labeled
   simulated chat host (marked “Simulated” on screen) that surfaces real MCP tool
   calls. It never impersonates a real host and is not the primary product.
+- `/webmcp` may expose mission, comparison, selection, approved-swap, refresh,
+  and receipt-verification actions. Never expose identity, checkout preview,
+  confirmation secrets, or purchase authorization as WebMCP tools.
 - Recommendations are complete, compatible carts from one merchant/location.
 - The AI may recommend; only a direct user action may confirm exact terms.
 - Every checkout remains bound to the current demo identity session, merchant,
@@ -71,11 +84,16 @@ feature real.
 
 ## Architecture and scope
 
-- Prefer the existing one-service architecture and current domain seams.
+- Prefer the existing one-service architecture and current seams: MCP/HTTP
+  interface, mission router, bounded orchestration, deterministic verification,
+  persistence/checkout, and the payment adapter.
 - Keep the canonical two-person rainy-weekend camping flow working unless the user explicitly
   changes product scope.
 - Keep direct cart enumeration until catalog scale or richer substitution rules
   justify a solver.
+- Keep the open-world workflow code-routed, bounded to two passes and 25 seconds,
+  and fail-closed. Only connected-catalog facts may enable checkout; cited web
+  results remain research-only.
 - Replace real payment behavior only at `authorizePayment` in `src/payment.ts`.
 - Do not add production accounts, onboarding, scraping, refunds, disputes,
   fulfilment, extra services, queues, caches, or databases without an explicit
@@ -111,6 +129,9 @@ Update the smallest complete set whenever facts change:
   metadata, and submission captions.
 - Installation, deployment, or external readiness: `docs/INSTALLATION.md`,
   `README.md`, and `docs/HANDOVER.md`.
+- Mission routing, orchestration, or evidence semantics: `docs/PRD.md`,
+  `docs/architecture.md`, `docs/HANDOVER.md`, `README.md`, `script.md`,
+  `docs/DEVPOST_SUBMISSION.md`, and any architecture diagram sources.
 - A change to these invariants or source-of-truth rules: update this file. Thin
   agent-specific bridge files should point here instead of duplicating policy.
 

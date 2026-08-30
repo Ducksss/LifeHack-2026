@@ -8,9 +8,9 @@
   <p><strong>Everything works together.</strong></p>
 
   <p>
-    A shopping app inside ChatGPT and Codex that turns one request into a
-    complete, compatible cart—then waits for the user to approve the exact
-    purchase before a simulated Visa authorization.
+    An agentic-commerce app inside ChatGPT and Codex, backed by bounded mission
+    orchestration and deterministic checkout controls. One request becomes a
+    complete cart; only the user can approve the exact purchase.
   </p>
 
   <p><em>Ask once. Review once. Confirm once.</em></p>
@@ -20,6 +20,8 @@
     <img src="https://img.shields.io/badge/Node.js-%E2%89%A522.5-339933?logo=nodedotjs&logoColor=white" alt="Node.js 22.5 or newer">
     <img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white" alt="TypeScript 5.9">
     <img src="https://img.shields.io/badge/MCP-App-B7F522" alt="MCP App">
+    <img src="https://img.shields.io/badge/WebMCP-7_site_tools-0E4B3B" alt="Seven WebMCP site tools">
+    <img src="https://img.shields.io/badge/orchestration-LangGraph-0E4B3B" alt="Bounded LangGraph orchestration">
     <img src="https://img.shields.io/badge/payment-simulated-1545E8" alt="Simulated payment">
   </p>
 
@@ -27,6 +29,8 @@
     <a href="https://visa-woven.vercel.app"><strong>Open Woven</strong></a>
     ·
     <a href="https://visa-woven.vercel.app/demo">Run the live demo</a>
+    ·
+    <a href="docs/WEBMCP_DEVPOST_SUBMISSION.md"><strong>WebMCP challenge kit</strong></a>
     ·
     <a href="docs/INSTALLATION.md"><strong>Install Woven</strong></a>
     ·
@@ -90,6 +94,12 @@ opens a Choice Center to compare five options, shows why every item works
 together, rechecks the price and stock, and waits for a separate human
 confirmation before authorization.
 
+The in-chat MCP App and browser-native WebMCP tools are interaction layers, not
+the whole backend. Woven's
+Node.js service owns mission routing, a bounded orchestration workflow for
+non-camping requests, deterministic cart verification, SQLite state, and the
+checkout trust boundary.
+
 The canonical mission is deliberately concrete:
 
 > I need a complete rainy-weekend camping kit for 2 first-time campers. Keep it
@@ -121,33 +131,51 @@ experience: a clearly labeled simulated chat host that types the canonical
 request, shows every MCP tool call live, and drives the same backend. It is
 marked “Simulated” on screen and is not a second product.
 
+The `/webmcp` route adds seven imperative, top-level WebMCP site tools to the
+same page. An agent can start or inspect a mission, open the shared comparison
+UI, select a cart, apply a merchant-approved swap, refresh current offers, and
+verify a receipt. Identity, checkout preview, and purchase confirmation are
+deliberately absent: those remain direct human actions in the visible page.
+
+MCP supplies the host connection, tool contract, private widget metadata, and
+embedded UI. After `start_mission` reaches Woven, the server—not the host
+model—routes the request, runs any required orchestration, classifies evidence,
+and decides whether a cart is checkout-eligible.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## How it works
 
-1. **Ask once.** The host calls `start_mission` with the user's
-   budget, camper count, weather, car-space, and pickup constraints.
-2. **Build complete carts.** Woven rejects incompatible or unavailable offers,
-   stays under budget, and opens five one-location options in a native modal.
-3. **Compare and choose.** The Choice Center reranks by value, pickup speed,
+1. **Ask once.** An MCP host or the WebMCP-enabled site calls `start_mission`
+   with the user's mission and any structured constraints.
+2. **Route and orchestrate.** The canonical camping request uses the deterministic
+   engine. Other categories enter a fixed LangGraph.js workflow that interprets
+   a `MissionSpec`, discovers connected offers and cited research, normalizes,
+   composes, verifies, and retries at most once.
+3. **Build complete carts.** Deterministic server rules reject incompatible,
+   unverifiable, or unavailable offers, stay under budget, and return up to five
+   one-location options. Web findings remain research-only.
+4. **Compare and choose.** The Choice Center reranks by value, pickup speed,
    rain protection, or preferred area; optional saved preferences stay local.
-4. **Show the proof.** The MCP App widget explains tent capacity and rain rating,
+5. **Show the proof.** The MCP App widget explains tent capacity and rain rating,
    two sleeping bags, two mats, lantern protection, first-aid coverage, packed
    volume, live demo stock, total, pickup plan, and approved substitutions.
-5. **Verify the demo identity.** A provider-style page returns a single-use
+6. **Verify the demo identity.** A provider-style page returns a single-use
    code; Woven validates state + PKCE and creates a short-lived server session.
-6. **Review once.** The server rechecks price and stock and creates a ten-minute
+7. **Review once.** The server rechecks price and stock and creates a ten-minute
    mandate bound to the identity session, merchant, cart version, and amount.
-7. **Confirm once.** A private nonce, mandate hash, and idempotency key are
+8. **Confirm once.** A private nonce, mandate hash, and idempotency key are
    verified before the simulated authorization, merchant order, and signed
    server-verifiable receipt.
 
 The AI recommends. The user chooses. Woven binds the exact terms.
 
-### Open-world cart engine POC
+### Bounded orchestration backend
 
 The canonical camping demo above is still deterministic and unchanged. Woven
-also includes a credential-dormant TypeScript POC for non-camping missions:
+also includes a credential-dormant TypeScript orchestration POC for non-camping
+missions. This is a backend layer behind the same `start_mission` tool, not a
+second MCP server or a host-model prompt convention:
 
 - a fixed LangGraph.js flow interprets a validated `MissionSpec`, discovers
   connected and web offers in parallel, normalizes, composes, verifies, retries
@@ -251,16 +279,18 @@ AI-generated with ElevenLabs and can be replaced by swapping the files in
 
 ![Woven system architecture](docs/assets/devpost/woven-system-architecture.png)
 
-Woven is one deployable Node.js service. The MCP transports, browser
-fallback, and merchant desk all route through the same domain and persistence
-functions. The real payment integration boundary is isolated in
-`src/payment.ts`; the current adapter intentionally fails closed unless
-`PAYMENT_MODE=simulated`.
+Woven is one deployable Node.js service with five explicit layers: MCP/HTTP
+interaction, mission routing and bounded orchestration, deterministic commerce
+verification, SQLite checkout state, and the payment adapter. The browser
+fallback and merchant desk enter the same backend as the MCP App. The real
+payment integration boundary is isolated in `src/payment.ts`; the current
+adapter intentionally fails closed unless `PAYMENT_MODE=simulated`.
 
-The open-world POC stays inside that service: LangGraph.js provides bounded
-orchestration, OpenAI supplies structured interpretation and cited web research,
-and the existing TypeScript domain and SQLite store remain the authority for
-cart composition and checkout eligibility.
+LangGraph.js coordinates the non-camping workflow; OpenAI supplies structured
+interpretation and cited web research; deterministic TypeScript rules decide
+whether connected offers satisfy the mission; and the SQLite store revalidates
+them before checkout. MCP carries inputs and results but does not own those
+backend decisions.
 
 Detailed tool contracts, state transitions, cart rules, and trust boundaries
 are documented in [the architecture guide](docs/architecture.md). The live
@@ -312,6 +342,7 @@ Open the local surfaces:
 | --- | --- |
 | Landing page | <http://localhost:8787/> |
 | Buyer fallback | <http://localhost:8787/demo> |
+| WebMCP workspace | <http://localhost:8787/webmcp> |
 | Demo identity connector | <http://localhost:8787/identity> |
 | Merchant desk | <http://localhost:8787/merchant> |
 | Install guide | <http://localhost:8787/install> |
@@ -330,6 +361,11 @@ and reranks carts, returns to the selected kit, shows the compatibility proof
 and approved swap, completes the server-enforced simulated identity handoff,
 shows the verified state and host reply, then fades back to the start. It never
 creates a checkout mandate or confirms a purchase.
+
+Open `/webmcp` in a current WebMCP-capable ChatGPT or Codex browser session to
+discover the seven page tools. The readiness card and shared activity rail make
+agent actions visible; the browser and MCP transports enter the same
+server-owned mission router.
 
 ### Connect the ChatGPT app
 
@@ -409,6 +445,7 @@ npm run video:render # render output/Woven-Judge-Video.mp4
 | `BASE_URL` | `http://localhost:8787` | Public widget asset/CSP origin |
 | `WOVEN_DB` | `./data/woven.db` | SQLite demo state |
 | `PAYMENT_MODE` | `simulated` | Guardrail; every other value fails closed |
+| `OPENAI_API_KEY` | unset | Optional; enables non-camping orchestration. Camping, build, and CI remain credential-free |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -446,7 +483,9 @@ npm run check
 npm audit
 ```
 
-The automated suite covers cart completeness and ranking, identity state/PKCE,
+The automated suite covers bounded orchestration, `MissionSpec` validation,
+connected-versus-web evidence, workflow termination, cart completeness and
+ranking, identity state/PKCE,
 single-use codes, session expiry/replacement, mandate integrity, stale
 price/stock rejection, one-time nonce consumption, idempotent confirmation,
 merchant-approved swaps, receipt signatures, authorization decline, reversal,
@@ -467,10 +506,10 @@ the full test and production-build gate on every push and pull request.
 - [x] Simulated connector-style identity check, enforced before checkout
 - [x] Five-choice modal, comparison, preference reranking, and pickup planner
 - [x] Merchant-controlled compatible substitutions and signed receipts
+- [x] Bounded orchestration backend with generic requirements, evidence, connected-cart composition, and research-only web leads
 - [ ] Shareable ChatGPT app connection against the deployed MCP endpoint
 - [ ] Real merchant inventory/fulfilment connectors
 - [ ] Exact Visa sandbox product adapter after credentials and product approval
-- [x] Open-world architecture POC with generic requirements, evidence, bounded composition, and research-only web leads
 - [ ] Live merchant connectors and production validation for generalized missions
 
 See the [open issues](https://github.com/Ducksss/LifeHack-2026/issues) for scoped
