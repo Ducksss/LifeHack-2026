@@ -29,24 +29,27 @@ import { cn } from "@/lib/utils";
 import { WovenMark } from "./woven-mark";
 import "./styles.css";
 
-const canonicalPrompt = "Build a Tokyo charging kit under S$150 for pickup today.";
+const canonicalPrompt = "Build a rainy-weekend camping kit for 2 under S$300, one car boot, pickup today.";
 
 const toolNames = [
   "start_mission",
   "build_carts",
   "select_cart",
+  "swap_cart_item",
+  "start_demo_identity",
   "create_checkout_preview",
   "confirm_purchase",
   "get_order_status",
+  "verify_receipt",
 ];
 
 // Neutral stand-ins for the other installed plugins — never real product logos.
 const placeholderTiles = [Mail, CalendarDays, FileText, MessageSquare, Table2, Camera];
 
 const expectedCarts = [
-  { merchant: "ByteRoute", total: "S$133", badge: "Best match" },
-  { merchant: "Volt & Go", total: "S$143", badge: null },
-  { merchant: "City Mobile", total: "S$102", badge: "Best value" },
+  { merchant: "TrailHaus", total: "S$231.00", badge: "Best match" },
+  { merchant: "CampWorks", total: "S$203.00", badge: "Best value" },
+  { merchant: "Outpost Supply", total: "S$258.00", badge: null },
 ];
 
 const quickFixes = [
@@ -121,7 +124,7 @@ function InstallGuide() {
           <div className="absolute -top-32 right-[-10%] h-72 w-[480px] rounded-full bg-indigo-500/20 blur-3xl" aria-hidden />
           <div className="relative flex flex-wrap items-center justify-between gap-4">
             <Badge variant="outline" className="border-white/25 font-mono text-[10px] uppercase tracking-[0.1em] text-white/70">
-              Plugin · v0.1.2
+              Plugin · v0.2.0
             </Badge>
             <div
               className="flex items-center gap-2.5 font-mono text-xs tracking-[0.1em] text-white/60"
@@ -142,12 +145,12 @@ function InstallGuide() {
           </h1>
           <p className="relative mt-4 max-w-2xl text-sm leading-relaxed text-white/60">
             Woven is an MCP App for ChatGPT and Codex. Install the local plugin in about two minutes, or connect it to
-            ChatGPT over HTTPS — every path ends at the same six tools and the same explicit confirmation.
+            ChatGPT over HTTPS — every path ends at the same nine tools and the same explicit confirmation.
           </p>
 
           <div className="relative mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-4">
             <HeroStat label="Install paths" value="3" />
-            <HeroStat label="MCP tools" value="6" />
+            <HeroStat label="MCP tools" value="9" />
             <HeroStat label="Setup time" value="~2 min" />
             <HeroStat label="Live charges" value="None · simulated" />
           </div>
@@ -405,7 +408,7 @@ function InstallGuide() {
             <ul className="m-0 list-none space-y-0 divide-y rounded-xl border p-0">
               <Expectation>Woven is shown as installed and enabled in your host.</Expectation>
               <Expectation>
-                A new task or conversation can call six Woven tools:
+                A new task or conversation can call nine Woven tools:
                 <span className="mt-2.5 flex flex-wrap gap-1.5">
                   {toolNames.map((name) => (
                     <span key={name} className="inline-flex items-center gap-1.5 rounded-full bg-muted/60 py-1 pl-2 pr-2.5">
@@ -415,12 +418,12 @@ function InstallGuide() {
                   ))}
                 </span>
               </Expectation>
-              <Expectation>The widget renders three complete one-merchant carts for the first ask.</Expectation>
+              <Expectation>The Choice Center opens with five complete one-location carts for the first ask.</Expectation>
               <Expectation>Selecting a cart changes no inventory and makes no purchase.</Expectation>
               <Expectation>
-                <strong>Review checkout</strong> creates an exact ten-minute preview, and only the separate{" "}
-                <strong>Confirm S$133.00</strong> action produces the clearly labeled simulated Visa result and pickup
-                receipt.
+                The server-enforced demo identity handoff comes first. Then <strong>Review checkout</strong> creates an
+                exact ten-minute preview, and only the separate <strong>Confirm S$231.00</strong> action produces the
+                clearly labeled simulated Visa result and pickup receipt.
               </Expectation>
             </ul>
 

@@ -15,7 +15,7 @@
       <rect width="248" height="238" rx="8" fill="#fcfaf5" stroke="#d2c9bc" stroke-width="2"/>
       <circle cx="50" cy="52" r="24" fill="#dcece5"/><text x="50" y="60" text-anchor="middle" fill="#0e4b3b" font-size="21" font-weight="900">1</text>
       <text x="28" y="112" fill="#0e4b3b" font-size="23" font-weight="800">Ask naturally</text>
-      <text x="28" y="158" fill="#67756f" font-size="16">Devices · budget</text><text x="28" y="184" fill="#67756f" font-size="16">destination · pickup</text>
+      <text x="28" y="158" fill="#67756f" font-size="16">Campers · weather</text><text x="28" y="184" fill="#67756f" font-size="16">car space · budget</text>
       <text x="28" y="216" fill="#6f990d" font-size="12" font-weight="800" letter-spacing="2">INTENT</text>
     </g>
     <line x1="352" y1="427" x2="398" y2="427" stroke="#71847d" stroke-width="3" marker-end="url(#arrow)"/>

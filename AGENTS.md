@@ -32,14 +32,15 @@ feature real.
 ## Current snapshot
 
 - The working product is one Node.js service with a React MCP App, HTTP/stdio MCP
-  transports, `/demo`, `/merchant`, `/install`, SQLite state, and a simulated
-  Visa adapter.
-- The canonical Tokyo charging-kit request produces complete, compatible,
+  transports, `/demo`, `/identity`, `/merchant`, `/install`, SQLite state, and
+  a simulated Visa adapter.
+- The canonical rainy-weekend camping request produces complete, weather-compatible,
   one-merchant carts and an exact, expiring confirmation.
-- The connector-style demo identity check is **planned and not implemented**.
-  Use the working checkout block in `script.md`; never show identity as live.
-- The thirteen-slide judge deck contains a seven-slide main story and six backup
-  slides. Its identity slide is explicitly labeled planned.
+- The connector-style demo identity check is implemented and enforced before
+  checkout with a short-lived session, state, PKCE, an allowlisted callback,
+  and a single-use code. It is simulated and never a Visa login or KYC claim.
+- The judge deck includes the working demo identity handoff between cart choice
+  and exact checkout review.
 - Public HTTPS deployment, a shareable ChatGPT connection, real merchant/Visa
   integrations, the demo video, and final Devpost publication remain outstanding.
 
@@ -51,14 +52,15 @@ feature real.
   calls. It never impersonates a real host and is not the primary product.
 - Recommendations are complete, compatible carts from one merchant/location.
 - The AI may recommend; only a direct user action may confirm exact terms.
-- Every checkout remains bound to merchant, cart version, amount, expiry, nonce,
-  and idempotency key.
+- Every checkout remains bound to the current demo identity session, merchant,
+  cart version, amount, expiry, nonce, and idempotency key.
 - Price and stock are revalidated before preview and again on confirmation.
 - Inventory mutation and order creation remain atomic; duplicate confirmation is
   idempotent; declines create no confirmed order; post-authorization merchant
   failure enters reversal.
-- Visa authorization is simulated. Never claim a live Visa integration,
-  partnership, real inventory, identity verification, or live charge.
+- Visa authorization and demo identity are simulated. Never claim a live Visa
+  integration, partnership, real inventory, production identity verification, or live
+  charge.
 - Never accept, store, log, or pass PAN, CVV, wallet tokens, passwords, or other
   payment/identity credentials through MCP arguments.
 - Keep the model-visible result free of confirmation and identity secrets.
@@ -70,7 +72,7 @@ feature real.
 ## Architecture and scope
 
 - Prefer the existing one-service architecture and current domain seams.
-- Keep the canonical Tokyo charging-kit flow working unless the user explicitly
+- Keep the canonical two-person rainy-weekend camping flow working unless the user explicitly
   changes product scope.
 - Keep direct cart enumeration until catalog scale or richer substitution rules
   justify a solver.

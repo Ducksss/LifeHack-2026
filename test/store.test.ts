@@ -7,8 +7,89 @@ function setup() {
   const store = new WovenStore(":memory:");
   const view = store.startMission({ request: CANONICAL_REQUEST });
   const cart = view.carts[0]!;
+  verifyIdentity(store, view.mission.id);
   return { store, view, cart };
 }
+
+function verifyIdentity(store: WovenStore, missionId: string, now = new Date()) {
+  const started = store.beginDemoIdentity(missionId, "https://woven.example/auth/demo/callback", now);
+  const authorizationUrl = new URL(started.authorizationUrl);
+  const requestId = authorizationUrl.searchParams.get("request_id")!;
+  const state = authorizationUrl.searchParams.get("state")!;
+  const authorized = store.authorizeDemoIdentity(requestId, state, now);
+  const callback = new URL(authorized.redirectUrl);
+  store.completeDemoIdentity(callback.searchParams.get("code")!, state, now);
+  return { requestId, state, code: callback.searchParams.get("code")! };
+}
+
+test("checkout requires a short-lived, single-use demo identity handoff", () => {
+  const store = new WovenStore(":memory:");
+  try {
+    const view = store.startMission({ request: CANONICAL_REQUEST });
+    const cart = view.carts[0]!;
+    assert.equal(view.identity.status, "not_connected");
+    assert.throws(
+      () => store.checkoutPreview(view.mission.id, cart.id),
+      (error) => error instanceof DomainError && error.code === "IDENTITY_REQUIRED",
+    );
+
+    const started = store.beginDemoIdentity(view.mission.id, "https://woven.example/auth/demo/callback");
+    const authorizationUrl = new URL(started.authorizationUrl);
+    const requestId = authorizationUrl.searchParams.get("request_id")!;
+    const state = authorizationUrl.searchParams.get("state")!;
+    assert.equal(started.view.identity.status, "pending");
+    assert.throws(
+      () => store.demoIdentityRequest(requestId, `${state}x`),
+      (error) => error instanceof DomainError && error.code === "IDENTITY_STATE_INVALID",
+    );
+
+    const authorized = store.authorizeDemoIdentity(requestId, state);
+    const callback = new URL(authorized.redirectUrl);
+    const code = callback.searchParams.get("code")!;
+    store.completeDemoIdentity(code, state);
+    assert.equal(store.view(view.mission.id).identity.status, "verified");
+    assert.throws(
+      () => store.completeDemoIdentity(code, state),
+      (error) => error instanceof DomainError && error.code === "IDENTITY_CODE_USED",
+    );
+
+    const preview = store.checkoutPreview(view.mission.id, cart.id);
+    assert.equal("identitySessionId" in preview.view.preview!, false);
+    assert.equal("identitySubject" in preview.view.preview!, false);
+  } finally {
+    store.close();
+  }
+});
+
+test("checkout rejects expired or replaced identity sessions", () => {
+  const base = new Date("2026-08-30T08:00:00Z");
+  for (const failure of ["expired", "replaced"] as const) {
+    const store = new WovenStore(":memory:");
+    try {
+      const view = store.startMission({ request: CANONICAL_REQUEST });
+      const cart = view.carts[0]!;
+      verifyIdentity(store, view.mission.id, base);
+      const preview = store.checkoutPreview(
+        view.mission.id,
+        cart.id,
+        failure === "expired" ? new Date(base.getTime() + 14 * 60_000) : base,
+      );
+      if (failure === "replaced") verifyIdentity(store, view.mission.id, new Date(base.getTime() + 60_000));
+
+      assert.throws(
+        () => store.confirmPurchase({
+          previewId: preview.view.preview!.id,
+          mandateHash: preview.view.preview!.mandateHash,
+          confirmationNonce: preview.nonce,
+          idempotencyKey: `idem-identity-${failure}`,
+        }, new Date(base.getTime() + (failure === "expired" ? 16 : 2) * 60_000)),
+        (error) => error instanceof DomainError && error.code === (failure === "expired" ? "IDENTITY_EXPIRED" : "IDENTITY_MISMATCH"),
+      );
+    } finally {
+      store.close();
+    }
+  }
+});
 
 test("checkout is explicit, nonce-bound, idempotent, and decrements stock once", () => {
   const { store, view, cart } = setup();
@@ -38,6 +119,8 @@ test("checkout is explicit, nonce-bound, idempotent, and decrements stock once",
     const second = store.confirmPurchase(input);
     assert.equal(first.order.status, "confirmed");
     assert.match(first.order.receiptNumber ?? "", /^WV-/);
+    assert.equal(store.verifyReceipt(first.order.receipt!.receiptNumber, first.order.receipt!.signature).valid, true);
+    assert.equal(store.verifyReceipt(first.order.receipt!.receiptNumber, "0".repeat(64)).valid, false);
     assert.equal(second.order.id, first.order.id);
     assert.throws(
       () => store.confirmPurchase({ ...input, previewId: "pre_different_checkout" }),
@@ -45,7 +128,27 @@ test("checkout is explicit, nonce-bound, idempotent, and decrements stock once",
     );
 
     const after = new Map(store.getCatalog().map((item) => [item.offerId, item.stock]));
-    for (const line of cart.lines) assert.equal(after.get(line.offerId), before.get(line.offerId)! - 1);
+    for (const line of cart.lines) assert.equal(after.get(line.offerId), before.get(line.offerId)! - line.quantity);
+  } finally {
+    store.close();
+  }
+});
+
+test("merchant-approved swaps preserve a complete cart and can be withdrawn", () => {
+  const store = new WovenStore(":memory:");
+  try {
+    const view = store.startMission({ request: CANONICAL_REQUEST });
+    const cart = view.carts.find((candidate) => candidate.alternatives.length)!;
+    const alternative = cart.alternatives[0]!;
+    const swapped = store.swapCartItem(view.mission.id, cart.id, alternative.offerId);
+    const custom = swapped.carts.find((candidate) => candidate.id === swapped.selectedCartId)!;
+    assert.equal(custom.badge, "CUSTOM");
+    assert.equal(custom.lines.length, 5);
+    assert.ok(custom.lines.some((line) => line.offerId === alternative.offerId));
+
+    const pair = store.merchantAlternatives().find((candidate) => candidate.toOfferId === alternative.offerId)!;
+    store.setAlternative(pair.fromOfferId, pair.toOfferId, false);
+    assert.equal(store.view(view.mission.id).selectedCartId, null);
   } finally {
     store.close();
   }
@@ -127,7 +230,7 @@ test("catalog CSV rejects blank values instead of silently zeroing an offer", ()
   const store = new WovenStore(":memory:");
   try {
     assert.throws(
-      () => store.updateCatalogCsv("offer_id,price_sgd,stock\nbyteroute-funan-br-gan65,,4\n"),
+      () => store.updateCatalogCsv("offer_id,price_sgd,stock\ntrailhaus-funan-th-storm2,,4\n"),
       (error) => error instanceof DomainError && error.code === "INVALID_CSV_VALUE",
     );
   } finally {

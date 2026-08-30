@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 
 export const CANONICAL_REQUEST =
-  "I fly to Tokyo tonight. Build a charging kit for my MacBook Air, iPhone and AirPods under S$150, with pickup today.";
+  "I need a complete rainy-weekend camping kit for 2 first-time campers. Keep it under S$300, fit it in one car boot, and make it pickup-ready today.";
 
 export type Scenario =
   | "normal"
@@ -10,12 +10,12 @@ export type Scenario =
   | "auth-decline"
   | "order-fail";
 
-export type Category = "charger" | "mac_cable" | "iphone_cable" | "adapter";
+export type Category = "tent" | "sleeping_bag" | "sleeping_mat" | "lantern" | "first_aid";
 
 export interface MissionInput {
   request: string;
   budgetCents?: number;
-  destination?: string;
+  campers?: number;
   pickupDate?: string;
 }
 
@@ -23,10 +23,12 @@ export interface Mission {
   id: string;
   request: string;
   budgetCents: number;
-  destination: string;
+  campers: number;
+  weather: "Rainy" | "Fair";
+  maxPackedLiters: number;
+  minTentWaterproofMm: number;
   pickupDate: string;
   currency: "SGD";
-  devices: string[];
   assumptions: string[];
   createdAt: string;
 }
@@ -39,16 +41,24 @@ export interface CatalogItem {
   locationName: string;
   address: string;
   pickupMinutes: number;
+  transitMinutes: number;
+  closesAt: string;
+  area: "Central" | "East" | "North";
   sku: string;
   name: string;
   category: Category;
   priceCents: number;
   stock: number;
-  watts?: number;
-  maxWatts?: number;
-  inputVoltage?: string;
-  destination?: string;
-  connector?: string;
+  packedLiters: number;
+  capacity?: number;
+  waterproofMm?: number;
+  dampReady?: boolean;
+  rValue?: number;
+  lumens?: number;
+  ipRating?: "IPX4";
+  peopleCovered?: number;
+  waterResistant?: boolean;
+  alternativeFor?: string;
 }
 
 export interface CartLine {
@@ -57,7 +67,7 @@ export interface CartLine {
   name: string;
   category: Category;
   priceCents: number;
-  quantity: 1;
+  quantity: number;
   compatibility: string;
 }
 
@@ -70,22 +80,60 @@ export interface RankedCart {
   locationName: string;
   address: string;
   pickupMinutes: number;
+  transitMinutes: number;
+  closesAt: string;
+  area: CatalogItem["area"];
   totalCents: number;
   currency: "SGD";
   score: number;
-  badge: "BEST MATCH" | "BEST VALUE" | "ALTERNATIVE";
+  badge: "BEST MATCH" | "BEST VALUE" | "ALTERNATIVE" | "CUSTOM";
   lines: CartLine[];
   checks: string[];
+  alternatives: CartAlternative[];
   inventoryCheckedAt: string;
+}
+
+export interface CartAlternative {
+  fromOfferId: string;
+  offerId: string;
+  name: string;
+  category: Category;
+  priceCents: number;
+  stock: number;
+  compatibility: string;
+  deltaCents: number;
+  totalCents: number;
+}
+
+export interface ApprovedAlternative {
+  fromOfferId: string;
+  toOfferId: string;
+}
+
+export interface MerchantAlternative extends ApprovedAlternative {
+  fromName: string;
+  toName: string;
+  merchantName: string;
+  locationName: string;
+  category: Category;
+  active: boolean;
 }
 
 export interface MissionView {
   mission: Mission;
   carts: RankedCart[];
   selectedCartId: string | null;
+  identity: DemoIdentityStatus;
   preview?: PublicPreview;
   order?: Order;
+  receiptVerification?: ReceiptVerification;
   scenario: Scenario;
+}
+
+export interface DemoIdentityStatus {
+  status: "not_connected" | "pending" | "verified" | "expired";
+  displayLabel?: string;
+  expiresAt?: string;
 }
 
 export interface Mandate {
@@ -98,7 +146,7 @@ export interface Mandate {
   pickupLocation: string;
   currency: "SGD";
   amountCents: number;
-  lines: Array<{ offerId: string; quantity: 1; priceCents: number }>;
+  lines: Array<{ offerId: string; quantity: number; priceCents: number }>;
 }
 
 export interface CheckoutPreview {
@@ -108,12 +156,14 @@ export interface CheckoutPreview {
   mandate: Mandate;
   mandateHash: string;
   nonce: string;
+  identitySessionId: string;
+  identitySubject: string;
   expiresAt: string;
   status: "pending" | "consumed" | "expired";
   createdAt: string;
 }
 
-export type PublicPreview = Omit<CheckoutPreview, "nonce">;
+export type PublicPreview = Omit<CheckoutPreview, "nonce" | "identitySessionId" | "identitySubject">;
 
 export interface Order {
   id: string;
@@ -131,7 +181,28 @@ export interface Order {
   paymentMode: "simulated";
   authorizationCode?: string;
   receiptNumber?: string;
+  receipt?: Receipt;
   createdAt: string;
+}
+
+export interface Receipt {
+  receiptNumber: string;
+  orderId: string;
+  missionId: string;
+  request: string;
+  merchantName: string;
+  pickupLocation: string;
+  lines: Array<{ offerId: string; name: string; category: Category; priceCents: number; quantity: number }>;
+  amountCents: number;
+  currency: "SGD";
+  paymentMode: "simulated";
+  createdAt: string;
+  signature: string;
+}
+
+export interface ReceiptVerification {
+  valid: boolean;
+  receipt?: Receipt;
 }
 
 export class DomainError extends Error {
@@ -144,72 +215,82 @@ export class DomainError extends Error {
   }
 }
 
-const merchants = [
+type SeedProduct = Omit<
+  CatalogItem,
+  "offerId" | "merchantId" | "merchantName" | "locationId" | "locationName" | "address" | "pickupMinutes" | "transitMinutes" | "closesAt" | "area" | "stock"
+>;
+
+const merchants: Array<{
+  id: string;
+  name: string;
+  locations: Array<readonly [string, string, string, number, number, string, CatalogItem["area"]]>;
+  products: SeedProduct[];
+}> = [
   {
-    id: "byteroute",
-    name: "ByteRoute",
+    id: "trailhaus",
+    name: "TrailHaus",
     locations: [
-      ["funan", "Funan · Level 3", "107 North Bridge Rd", 45],
-      ["jewel", "Jewel · Level 4", "78 Airport Blvd", 70],
+      ["funan", "Funan · L3", "107 North Bridge Rd", 30, 18, "21:30", "Central"],
+      ["tampines", "Tampines Mall · L2", "4 Tampines Central 5", 70, 32, "22:00", "East"],
     ],
     products: [
-      ["BR-GAN65", "65W GaN dual-port charger", "charger", 6900, 65, "100–240V"],
-      ["BR-GAN30", "30W compact charger", "charger", 3900, 30, "100–240V"],
-      ["BR-C2C100", "100W USB-C woven cable", "mac_cable", 2400, 100, "USB-C ↔ USB-C"],
-      ["BR-C2L", "USB-C to Lightning cable", "iphone_cable", 2800, 20, "USB-C ↔ Lightning"],
-      ["BR-JP", "Japan Type-A travel adapter", "adapter", 1200, 0, "Japan / Type A"],
+      { sku: "TH-STORM2", name: "StormLite 2P tent · 3,000 mm rainfly", category: "tent", priceCents: 8_900, packedLiters: 42, capacity: 2, waterproofMm: 3_000 },
+      { sku: "TH-DRYNEST", name: "DryNest synthetic sleeping bag · 18°C", category: "sleeping_bag", priceCents: 2_800, packedLiters: 12, dampReady: true },
+      { sku: "TH-DRYNEST-LITE", name: "DryNest Lite synthetic sleeping bag · 20°C", category: "sleeping_bag", priceCents: 2_400, packedLiters: 10, dampReady: true, alternativeFor: "TH-DRYNEST" },
+      { sku: "TH-REST2", name: "RestEasy sleeping mat · R 2.0", category: "sleeping_mat", priceCents: 2_200, packedLiters: 8, rValue: 2 },
+      { sku: "TH-RAINBEAM", name: "RainBeam lantern · 250 lm · IPX4", category: "lantern", priceCents: 1_800, packedLiters: 3, lumens: 250, ipRating: "IPX4" },
+      { sku: "TH-AID4", name: "Trail first-aid kit · covers 4", category: "first_aid", priceCents: 2_400, packedLiters: 4, peopleCovered: 4, waterResistant: true },
     ],
   },
   {
-    id: "citymobile",
-    name: "City Mobile",
+    id: "campworks",
+    name: "CampWorks",
     locations: [
-      ["bugis", "Bugis Junction · B1", "200 Victoria St", 65],
-      ["plq", "Paya Lebar Quarter · L2", "10 Paya Lebar Rd", 95],
+      ["plaza", "Plaza Singapura · B1", "68 Orchard Rd", 55, 15, "21:30", "Central"],
+      ["junction8", "Junction 8 · L2", "9 Bishan Pl", 85, 25, "22:00", "North"],
     ],
     products: [
-      ["CM-PD45", "45W PD travel charger", "charger", 4900, 45, "100–240V"],
-      ["CM-C2C60", "60W USB-C cable", "mac_cable", 1800, 60, "USB-C ↔ USB-C"],
-      ["CM-C2L", "USB-C to Lightning cable", "iphone_cable", 2500, 20, "USB-C ↔ Lightning"],
-      ["CM-JP", "Japan slim travel adapter", "adapter", 1000, 0, "Japan / Type A"],
+      { sku: "CW-RAIN2", name: "Weekender 2P tent · 2,500 mm rainfly", category: "tent", priceCents: 7_900, packedLiters: 46, capacity: 2, waterproofMm: 2_500 },
+      { sku: "CW-SYN18", name: "CloudDown synthetic sleeping bag · 18°C", category: "sleeping_bag", priceCents: 2_500, packedLiters: 13, dampReady: true },
+      { sku: "CW-MAT15", name: "CampRoll sleeping mat · R 1.5", category: "sleeping_mat", priceCents: 1_900, packedLiters: 9, rValue: 1.5 },
+      { sku: "CW-MAT20", name: "CampRoll Plus sleeping mat · R 2.0", category: "sleeping_mat", priceCents: 2_200, packedLiters: 8, rValue: 2, alternativeFor: "CW-MAT15" },
+      { sku: "CW-GLOW200", name: "CampGlow lantern · 200 lm · IPX4", category: "lantern", priceCents: 1_500, packedLiters: 3, lumens: 200, ipRating: "IPX4" },
+      { sku: "CW-AID2", name: "Weekend first-aid kit · covers 2", category: "first_aid", priceCents: 2_100, packedLiters: 4, peopleCovered: 2, waterResistant: true },
     ],
   },
   {
-    id: "voltandgo",
-    name: "Volt & Go",
+    id: "outpostsupply",
+    name: "Outpost Supply",
     locations: [
-      ["orchard", "Orchard Gateway · L2", "277 Orchard Rd", 55],
-      ["marina", "Marina Square · L2", "6 Raffles Blvd", 85],
+      ["greatworld", "Great World · L2", "1 Kim Seng Promenade", 45, 20, "21:30", "Central"],
+      ["northpoint", "Northpoint City · B1", "930 Yishun Ave 2", 75, 35, "22:00", "North"],
     ],
     products: [
-      ["VG-GAN67", "67W GaN charger", "charger", 7300, 67, "100–240V"],
-      ["VG-C2C100", "100W USB-C cable", "mac_cable", 2600, 100, "USB-C ↔ USB-C"],
-      ["VG-C2L", "Braided Lightning cable", "iphone_cable", 3000, 20, "USB-C ↔ Lightning"],
-      ["VG-JP", "Japan grounded travel adapter", "adapter", 1400, 0, "Japan / Type A"],
+      { sku: "OS-SQUALL2", name: "SquallShield 2P tent · 4,000 mm rainfly", category: "tent", priceCents: 9_900, packedLiters: 38, capacity: 2, waterproofMm: 4_000 },
+      { sku: "OS-DRY15", name: "DryTrail synthetic sleeping bag · 15°C", category: "sleeping_bag", priceCents: 3_000, packedLiters: 11, dampReady: true },
+      { sku: "OS-MAT25", name: "TrailCore sleeping mat · R 2.5", category: "sleeping_mat", priceCents: 2_400, packedLiters: 7, rValue: 2.5 },
+      { sku: "OS-BEACON", name: "StormBeacon lantern · 350 lm · IPX4", category: "lantern", priceCents: 2_200, packedLiters: 3, lumens: 350, ipRating: "IPX4" },
+      { sku: "OS-BEACON-LITE", name: "StormBeacon Lite lantern · 250 lm · IPX4", category: "lantern", priceCents: 1_900, packedLiters: 3, lumens: 250, ipRating: "IPX4", alternativeFor: "OS-BEACON" },
+      { sku: "OS-AID4", name: "Waterproof first-aid kit · covers 4", category: "first_aid", priceCents: 2_900, packedLiters: 4, peopleCovered: 4, waterResistant: true },
     ],
   },
-] as const;
+];
 
 export const seedCatalog: CatalogItem[] = merchants.flatMap((merchant) =>
-  merchant.locations.flatMap(([locationId, locationName, address, pickupMinutes]) =>
-    merchant.products.map(([sku, name, category, priceCents, watts, detail], index) => ({
-      offerId: `${merchant.id}-${locationId}-${sku}`.toLowerCase(),
+  merchant.locations.flatMap(([locationId, locationName, address, pickupMinutes, transitMinutes, closesAt, area]) =>
+    merchant.products.map((product, index) => ({
+      ...product,
+      offerId: `${merchant.id}-${locationId}-${product.sku}`.toLowerCase(),
       merchantId: merchant.id,
       merchantName: merchant.name,
       locationId,
       locationName,
       address,
       pickupMinutes,
-      sku,
-      name,
-      category,
-      priceCents,
-      stock: locationId === "plq" && index === 0 ? 1 : 4 + (index % 3),
-      ...(category === "charger"
-        ? { watts, inputVoltage: detail }
-        : category === "adapter"
-          ? { destination: detail }
-          : { maxWatts: watts, connector: detail }),
+      transitMinutes,
+      closesAt,
+      area,
+      stock: locationId === "junction8" && index === 0 ? 1 : 4 + (index % 3),
     })),
   ),
 );
@@ -229,23 +310,34 @@ export function createMission(input: MissionInput, now = new Date()): Mission {
 
   const budgetMatch = request.match(/(?:S\$|SGD\s*)\s?(\d+(?:\.\d{1,2})?)/i);
   const budgetCents = input.budgetCents ??
-    (budgetMatch ? Math.round(Number(budgetMatch[1]) * 100) : 15_000);
+    (budgetMatch ? Math.round(Number(budgetMatch[1]) * 100) : 30_000);
   if (!Number.isInteger(budgetCents) || budgetCents < 1_000 || budgetCents > 100_000) {
     throw new DomainError("INVALID_BUDGET", "Budget must be between S$10 and S$1,000.");
   }
+
+  const campersMatch = request.match(/(\d+)\s*(?:first-time\s+)?(?:campers?|people|adults?)/i);
+  const campers = input.campers ?? (campersMatch ? Number(campersMatch[1]) : 2);
+  if (!Number.isInteger(campers) || campers < 1 || campers > 6) {
+    throw new DomainError("INVALID_CAMPERS", "Camping kits support between 1 and 6 campers.");
+  }
+
+  const weather = /rain|wet/i.test(request) ? "Rainy" : "Fair";
 
   return {
     id: `mis_${randomUUID().replaceAll("-", "").slice(0, 12)}`,
     request,
     budgetCents,
-    destination: input.destination?.trim() || (/tokyo|japan/i.test(request) ? "Tokyo, Japan" : "Tokyo, Japan"),
+    campers,
+    weather,
+    maxPackedLiters: 120,
+    minTentWaterproofMm: weather === "Rainy" ? 2_000 : 0,
     pickupDate: input.pickupDate || today(),
     currency: "SGD",
-    devices: ["MacBook Air (USB-C PD)", "iPhone (Lightning)", "AirPods (Lightning)"],
     assumptions: [
-      "iPhone and AirPods use Lightning; change the mission if yours use USB-C.",
+      "The essential gear scope covers shelter, sleep, lighting, and first aid; food, water, clothing, transport, and campsite booking are already handled.",
+      "A 120 L packed-gear allowance represents the available car-boot space.",
       "Pickup time is an estimate from seeded merchant inventory.",
-      "Prices include the full demo cart; no delivery or hidden fees.",
+      "Prices include the complete demo gear cart; no delivery or hidden fees.",
     ],
     createdAt: now.toISOString(),
   };
@@ -253,30 +345,37 @@ export function createMission(input: MissionInput, now = new Date()): Mission {
 
 export function effectiveCatalog(items: CatalogItem[], scenario: Scenario): CatalogItem[] {
   return items.map((item) => {
-    if (scenario === "stockout" && item.offerId === "byteroute-funan-br-gan65") {
+    if (scenario === "stockout" && item.offerId === "trailhaus-funan-th-storm2") {
       return { ...item, stock: 0 };
     }
-    if (scenario === "price-change" && item.offerId === "byteroute-funan-br-gan65") {
-      return { ...item, priceCents: item.priceCents + 1_000 };
+    if (scenario === "price-change" && item.offerId === "trailhaus-funan-th-storm2") {
+      return { ...item, priceCents: item.priceCents + 3_000 };
     }
     return { ...item };
   });
 }
 
-function compatibility(item: CatalogItem): string | null {
+function requiredQuantity(category: Category, mission: Mission): number {
+  return category === "sleeping_bag" || category === "sleeping_mat" ? mission.campers : 1;
+}
+
+function compatibility(item: CatalogItem, mission: Mission): string | null {
   switch (item.category) {
-    case "charger":
-      if ((item.watts ?? 0) < 45 || item.inputVoltage !== "100–240V") return null;
-      return `${item.watts}W USB-C PD covers the MacBook Air and smaller devices; ${item.inputVoltage} input works in Japan.`;
-    case "mac_cable":
-      if ((item.maxWatts ?? 0) < 45 || item.connector !== "USB-C ↔ USB-C") return null;
-      return `${item.maxWatts}W USB-C cable supports the selected charger and MacBook Air.`;
-    case "iphone_cable":
-      if (item.connector !== "USB-C ↔ Lightning") return null;
-      return "USB-C to Lightning matches the assumed iPhone and AirPods ports.";
-    case "adapter":
-      if (!item.destination?.includes("Japan")) return null;
-      return "Type-A plug adapter fits standard Japanese outlets; the charger handles voltage conversion.";
+    case "tent":
+      if ((item.capacity ?? 0) < mission.campers || (item.waterproofMm ?? 0) < mission.minTentWaterproofMm) return null;
+      return `${item.capacity}-person tent with a ${item.waterproofMm?.toLocaleString()} mm rainfly keeps both campers covered in wet weather.`;
+    case "sleeping_bag":
+      if (!item.dampReady) return null;
+      return `${mission.campers} synthetic sleeping bags stay dependable in damp conditions—one per camper.`;
+    case "sleeping_mat":
+      if ((item.rValue ?? 0) < 1.5) return null;
+      return `${mission.campers} sleeping mats with R-value ${item.rValue} keep both campers off the wet ground.`;
+    case "lantern":
+      if ((item.lumens ?? 0) < 200 || (mission.weather === "Rainy" && item.ipRating !== "IPX4")) return null;
+      return `${item.lumens} lumens and ${item.ipRating} protection provide rain-ready shared campsite lighting.`;
+    case "first_aid":
+      if ((item.peopleCovered ?? 0) < mission.campers || !item.waterResistant) return null;
+      return `Water-resistant first-aid supplies cover all ${mission.campers} campers.`;
   }
 }
 
@@ -284,93 +383,159 @@ function sha256(value: unknown): string {
   return createHash("sha256").update(JSON.stringify(value)).digest("hex");
 }
 
-export function buildRankedCarts(
+const requiredCategories: Category[] = ["tent", "sleeping_bag", "sleeping_mat", "lantern", "first_aid"];
+
+function createRankedCart(
+  mission: Mission,
+  chosen: CatalogItem[],
+  scenario: Scenario,
+  now: Date,
+  badge: RankedCart["badge"],
+): RankedCart | null {
+  const first = chosen[0];
+  if (!first || chosen.length !== requiredCategories.length) return null;
+  if (chosen.some((item) =>
+    item.merchantId !== first.merchantId || item.locationId !== first.locationId ||
+    item.stock < requiredQuantity(item.category, mission) || !compatibility(item, mission)
+  )) return null;
+  if (new Set(chosen.map((item) => item.category)).size !== requiredCategories.length) return null;
+
+  const ordered = requiredCategories.map((category) => chosen.find((item) => item.category === category)!);
+  const packedLiters = ordered.reduce((sum, item) => sum + item.packedLiters * requiredQuantity(item.category, mission), 0);
+  const totalCents = ordered.reduce((sum, item) => sum + item.priceCents * requiredQuantity(item.category, mission), 0);
+  if (packedLiters > mission.maxPackedLiters || totalCents > mission.budgetCents) return null;
+
+  const cartIdentity = { merchantId: first.merchantId, locationId: first.locationId, offerIds: ordered.map((item) => item.offerId) };
+  const id = `cart_${sha256(cartIdentity).slice(0, 12)}`;
+  const lines: CartLine[] = ordered.map((item) => ({
+    offerId: item.offerId,
+    sku: item.sku,
+    name: item.name,
+    category: item.category,
+    priceCents: item.priceCents,
+    quantity: requiredQuantity(item.category, mission),
+    compatibility: compatibility(item, mission)!,
+  }));
+  const tent = ordered.find((item) => item.category === "tent")!;
+  const weatherScore = Math.min(6, ((tent.waterproofMm ?? 0) - mission.minTentWaterproofMm) / 500);
+  const pickupScore = Math.max(0, 20 - first.pickupMinutes / 5);
+  const compactScore = 5 * (1 - packedLiters / mission.maxPackedLiters);
+  const valueScore = 8 * (1 - totalCents / mission.budgetCents);
+
+  return {
+    id,
+    version: sha256({
+      id,
+      prices: ordered.map((item) => [item.offerId, item.priceCents]),
+      scenario: scenario === "stockout" || scenario === "price-change" ? scenario : "normal",
+    }),
+    merchantId: first.merchantId,
+    merchantName: first.merchantName,
+    locationId: first.locationId,
+    locationName: first.locationName,
+    address: first.address,
+    pickupMinutes: first.pickupMinutes,
+    transitMinutes: first.transitMinutes,
+    closesAt: first.closesAt,
+    area: first.area,
+    totalCents,
+    currency: "SGD",
+    score: Math.round((100 + weatherScore + pickupScore + compactScore + valueScore) * 10) / 10,
+    badge,
+    lines,
+    checks: [
+      `Rain-rated shelter, ${mission.campers} sleeping bags, ${mission.campers} mats, lighting, and first aid are in stock at one pickup location.`,
+      `Packed volume is ${packedLiters} L—within the ${mission.maxPackedLiters} L car-boot allowance.`,
+      `Every component covers ${mission.campers} campers and the cart stays within the hard budget.`,
+    ],
+    alternatives: [],
+    inventoryCheckedAt: now.toISOString(),
+  };
+}
+
+export function buildRankedCarts(mission: Mission, catalog: CatalogItem[], scenario: Scenario, now = new Date()): RankedCart[] {
+  const eligible = effectiveCatalog(catalog, scenario).filter(
+    (item) => item.stock >= requiredQuantity(item.category, mission) && compatibility(item, mission) && !item.alternativeFor,
+  );
+  const carts = [...Map.groupBy(eligible, (item) => `${item.merchantId}:${item.locationId}`).values()]
+    .map((items) => createRankedCart(
+      mission,
+      requiredCategories.map((category) => items.find((item) => item.category === category)!).filter(Boolean),
+      scenario,
+      now,
+      "ALTERNATIVE",
+    ))
+    .filter((cart): cart is RankedCart => Boolean(cart))
+    .sort((a, b) => b.score - a.score || a.totalCents - b.totalCents);
+  const selected = [...Map.groupBy(carts, (cart) => cart.merchantId).values()].map((group) => group[0]!);
+  for (const area of ["East", "North"] as const) {
+    const choice = carts.find((cart) => cart.area === area && !selected.includes(cart));
+    if (choice) selected.push(choice);
+  }
+  for (const cart of carts) {
+    if (selected.length >= 5) break;
+    if (!selected.includes(cart)) selected.push(cart);
+  }
+  selected.sort((a, b) => b.score - a.score || a.totalCents - b.totalCents);
+  if (selected[0]) selected[0].badge = "BEST MATCH";
+  const cheapest = selected.toSorted((a, b) => a.totalCents - b.totalCents)[0];
+  if (cheapest && cheapest !== selected[0]) cheapest.badge = "BEST VALUE";
+  return selected.slice(0, 5);
+}
+
+export function buildCartFromOfferIds(
   mission: Mission,
   catalog: CatalogItem[],
   scenario: Scenario,
+  offerIds: string[],
   now = new Date(),
-): RankedCart[] {
-  const catalogScenario = scenario === "stockout" || scenario === "price-change" ? scenario : "normal";
-  const eligible = effectiveCatalog(catalog, scenario).filter(
-    (item) => item.stock > 0 && compatibility(item),
-  );
-  const locations = Map.groupBy(eligible, (item) => `${item.merchantId}:${item.locationId}`);
-  const carts: RankedCart[] = [];
+): RankedCart {
+  const current = new Map(effectiveCatalog(catalog, scenario).map((item) => [item.offerId, item]));
+  const chosen = offerIds.map((offerId) => current.get(offerId)).filter((item): item is CatalogItem => Boolean(item));
+  const cart = createRankedCart(mission, chosen, scenario, now, "CUSTOM");
+  if (!cart) throw new DomainError("INVALID_SUBSTITUTION", "That substitution no longer forms a complete, compatible, in-stock cart under budget.", true);
+  return cart;
+}
 
-  for (const items of locations.values()) {
-    const first = items[0];
-    if (!first) continue;
-    const byCategory = Map.groupBy(items, (item) => item.category);
-    const categories: Category[] = ["charger", "mac_cable", "iphone_cable", "adapter"];
-    if (categories.some((category) => !byCategory.get(category)?.length)) continue;
-
-    for (const charger of byCategory.get("charger") ?? []) {
-      const chosen = [
-        charger,
-        byCategory.get("mac_cable")![0]!,
-        byCategory.get("iphone_cable")![0]!,
-        byCategory.get("adapter")![0]!,
-      ];
-      const totalCents = chosen.reduce((sum, item) => sum + item.priceCents, 0);
-      if (totalCents > mission.budgetCents) continue;
-
-      const cartCore = {
-        merchantId: first.merchantId,
-        locationId: first.locationId,
-        lines: chosen.map((item) => [item.offerId, item.priceCents]),
-      };
-      const lines: CartLine[] = chosen.map((item) => ({
-        offerId: item.offerId,
-        sku: item.sku,
-        name: item.name,
-        category: item.category,
-        priceCents: item.priceCents,
-        quantity: 1,
-        compatibility: compatibility(item)!,
-      }));
-      const powerScore = (charger.watts ?? 0) >= 65 ? 30 : 15;
-      const pickupScore = Math.max(0, 18 - first.pickupMinutes / 10);
-      const valueScore = 12 * (1 - totalCents / mission.budgetCents);
-      const score = Math.round((100 + powerScore + pickupScore + valueScore) * 10) / 10;
-
-      carts.push({
-        id: `cart_${sha256(cartCore).slice(0, 12)}`,
-        version: sha256({ cartCore, scenario: catalogScenario }),
-        merchantId: first.merchantId,
-        merchantName: first.merchantName,
-        locationId: first.locationId,
-        locationName: first.locationName,
-        address: first.address,
-        pickupMinutes: first.pickupMinutes,
-        totalCents,
-        currency: "SGD",
-        score,
-        badge: "ALTERNATIVE",
-        lines,
-        checks: [
-          "All four required components are in stock at one pickup location.",
-          "Charger supports USB-C Power Delivery and 100–240V input.",
-          "Cart stays within the hard budget with no substitutions.",
-        ],
-        inventoryCheckedAt: now.toISOString(),
+export function buildCartAlternatives(
+  mission: Mission,
+  cart: RankedCart,
+  catalog: CatalogItem[],
+  scenario: Scenario,
+  approved: ApprovedAlternative[],
+): CartAlternative[] {
+  const current = new Map(effectiveCatalog(catalog, scenario).map((item) => [item.offerId, item]));
+  const alternatives: CartAlternative[] = [];
+  for (const pair of approved) {
+    const source = cart.lines.find((line) => line.offerId === pair.fromOfferId || line.offerId === pair.toOfferId);
+    const replacement = current.get(source?.offerId === pair.fromOfferId ? pair.toOfferId : pair.fromOfferId);
+    if (!source || !replacement || replacement.category !== source.category) continue;
+    try {
+      const swapped = buildCartFromOfferIds(mission, catalog, scenario, cart.lines.map((line) => line.offerId === source.offerId ? replacement.offerId : line.offerId));
+      const replacementLine = swapped.lines.find((line) => line.offerId === replacement.offerId)!;
+      alternatives.push({
+        fromOfferId: source.offerId,
+        offerId: replacement.offerId,
+        name: replacementLine.name,
+        category: replacementLine.category,
+        priceCents: replacementLine.priceCents,
+        stock: replacement.stock,
+        compatibility: replacementLine.compatibility,
+        deltaCents: swapped.totalCents - cart.totalCents,
+        totalCents: swapped.totalCents,
       });
+    } catch {
+      // A stale or over-budget replacement is intentionally omitted.
     }
   }
-
-  const bestPerMerchant = [...Map.groupBy(carts, (cart) => cart.merchantId).values()]
-    .map((merchantCarts) => merchantCarts.sort((a, b) => b.score - a.score)[0]!)
-    .sort((a, b) => b.score - a.score || a.totalCents - b.totalCents)
-    .slice(0, 3);
-
-  if (bestPerMerchant[0]) bestPerMerchant[0].badge = "BEST MATCH";
-  const cheapest = bestPerMerchant.toSorted((a, b) => a.totalCents - b.totalCents)[0];
-  if (cheapest && cheapest !== bestPerMerchant[0]) cheapest.badge = "BEST VALUE";
-  return bestPerMerchant;
+  return alternatives;
 }
 
 export function createPreview(
   mission: Mission,
   cart: RankedCart,
+  identitySessionId: string,
+  identitySubject: string,
   now = new Date(),
 ): CheckoutPreview {
   const mandate: Mandate = {
@@ -385,7 +550,7 @@ export function createPreview(
     amountCents: cart.totalCents,
     lines: cart.lines.map((line) => ({
       offerId: line.offerId,
-      quantity: 1,
+      quantity: line.quantity,
       priceCents: line.priceCents,
     })),
   };
@@ -394,8 +559,10 @@ export function createPreview(
     missionId: mission.id,
     cart,
     mandate,
-    mandateHash: sha256(mandate),
+    mandateHash: sha256({ mandate, identitySessionId, identitySubject }),
     nonce: randomUUID(),
+    identitySessionId,
+    identitySubject,
     expiresAt: new Date(now.getTime() + 10 * 60_000).toISOString(),
     status: "pending",
     createdAt: now.toISOString(),
@@ -403,7 +570,12 @@ export function createPreview(
 }
 
 export function publicPreview(preview: CheckoutPreview): PublicPreview {
-  const { nonce: _nonce, ...safe } = preview;
+  const {
+    nonce: _nonce,
+    identitySessionId: _identitySessionId,
+    identitySubject: _identitySubject,
+    ...safe
+  } = preview;
   return safe;
 }
 

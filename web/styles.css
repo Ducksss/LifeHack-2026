@@ -72,6 +72,9 @@
   .merchant-body {
     @apply bg-zinc-50;
   }
+  .identity-body {
+    @apply bg-[#f3f6ff];
+  }
 }
 
 @layer utilities {
@@ -93,6 +96,20 @@
 }
 .pulse-dot {
   animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.choice-dialog::backdrop {
+  background: rgb(9 9 11 / 0.64);
+  backdrop-filter: blur(3px);
+}
+
+.choice-dialog[open] {
+  animation: choice-in 160ms ease-out;
+}
+
+@keyframes choice-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.985); }
+  to { opacity: 1; transform: none; }
 }
 
 /* ChatGPT-style activity text: a light sweep travelling across muted copy. */

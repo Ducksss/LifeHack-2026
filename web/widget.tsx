@@ -4,25 +4,34 @@ import {
   ArrowRight,
   ArrowUp,
   ArrowUpRight,
-  BatteryCharging,
-  Cable,
+  BadgeCheck,
+  BedSingle,
+  BriefcaseMedical,
   Check,
   ChevronDown,
   Clock3,
   CreditCard,
+  Fingerprint,
+  GitCompareArrows,
   Loader2,
   MapPin,
-  Plane,
-  Plug,
+  Navigation,
+  PackageSearch,
+  CloudRain,
+  Lamp,
+  Layers3,
   RotateCcw,
+  Settings2,
   ShieldCheck,
   Store,
+  TentTree,
   Terminal,
   TriangleAlert,
+  X,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import type { Category, MissionView, RankedCart } from "../src/domain";
+import type { CartAlternative, Category, MissionView, RankedCart } from "../src/domain";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -36,10 +45,19 @@ interface Payload {
   _meta?: Record<string, unknown>;
 }
 
+class WovenError extends Error {
+  constructor(public readonly code: string, message: string, public readonly retryable: boolean) {
+    super(message);
+  }
+}
+
+type RankingPriority = "balanced" | "value" | "speed" | "weather";
+type PickupArea = "Any" | RankedCart["area"];
+
 type Invoke = (name: string, arguments_: Record<string, unknown>) => Promise<Payload>;
 
 const canonicalRequest =
-  "I fly to Tokyo tonight. Build a charging kit for my MacBook Air, iPhone and AirPods under S$150, with pickup today.";
+  "I need a complete rainy-weekend camping kit for 2 first-time campers. Keep it under S$300, fit it in one car boot, and make it pickup-ready today.";
 
 function HostedWidget() {
   const [view, setView] = useState<MissionView | null>(null);
@@ -50,12 +68,12 @@ function HostedWidget() {
     const payload = (result.structuredContent || {}) as Payload;
     if (payload.view) setView(payload.view);
     if (typeof result._meta?.confirmationNonce === "string") setNonce(result._meta.confirmationNonce);
-    if (payload.error) throw new Error(payload.error.message);
+    if (payload.error) throw new WovenError(payload.error.code, payload.error.message, payload.error.retryable);
     return { ...payload, _meta: result._meta };
   };
 
   const { app, error } = useApp({
-    appInfo: { name: "Woven", version: "0.1.2" },
+    appInfo: { name: "Woven", version: "0.2.0" },
     capabilities: {},
     onAppCreated: (created: McpApp) => {
       created.ontoolresult = (result) => {
@@ -75,7 +93,15 @@ function HostedWidget() {
 
   if (error || connectionError) return <ConnectionError message={connectionError || error!.message} />;
   if (!app || !view) return <Loading message={!app ? "Connecting secure cart…" : "Building compatible kits…"} />;
-  return <Woven view={view} setView={setView} nonce={nonce} invoke={invoke} />;
+  return (
+    <Woven
+      view={view}
+      setView={setView}
+      nonce={nonce}
+      invoke={invoke}
+      openUrl={(url) => app.openLink({ url }).then(() => undefined)}
+    />
+  );
 }
 
 type ChatPhase = "typing" | "sent" | "ready" | "failed";
@@ -89,14 +115,14 @@ const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve,
 
 const activityStages = [
   "Reading your request…",
-  "Recalling device profile…",
+  "Checking the rainy-weekend brief…",
   "Calling start_mission…",
   "Checking live stock across merchants…",
-  "Weaving compatible carts…",
+  "Weaving complete camping kits…",
 ];
 
 const narrationText =
-  "Three complete carts fit your request — one pickup location each, every thread checked for compatibility, all under budget. Review the kit below; nothing is charged without your explicit confirmation.";
+  "Five complete camping kits fit your request — one pickup location each, rain-ready for 2 campers, compact enough for one car boot, and under budget. Compare the choices below; nothing is charged without your explicit confirmation.";
 
 const thanksMessage = "Perfect — that’s exactly what I needed. Thanks!";
 
@@ -232,7 +258,7 @@ function StandaloneDemo() {
     const isCancelled = () => cancelled;
     const reply =
       `You’re all set — receipt ${order.receiptNumber} is saved and the kit is being packed at ${order.pickupLocation}. ` +
-      "That was the only charge, and it was simulated. Safe travels to Tokyo ✈️";
+      "That was the only charge, and it was simulated. Have a great first camp 🏕️";
     const run = async () => {
       if (instant) {
         setThanks(true);
@@ -276,12 +302,12 @@ function StandaloneDemo() {
           <Badge variant="secondary" className="font-mono text-[10px] uppercase tracking-[0.1em]">Simulated</Badge>
         </div>
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="sm" asChild>
+          <Button variant="ghost" size="sm" className="hidden sm:inline-flex" asChild>
             <a href="/install" target="_blank" rel="noreferrer">
               How to install <ArrowUpRight className="size-3.5" />
             </a>
           </Button>
-          <Button variant="ghost" size="sm" asChild>
+          <Button variant="ghost" size="sm" className="hidden sm:inline-flex" asChild>
             <a href="/merchant" target="_blank" rel="noreferrer">
               Merchant desk <ArrowUpRight className="size-3.5" />
             </a>
@@ -333,7 +359,15 @@ function StandaloneDemo() {
                   {narration && <p className="mt-4 text-[15px] leading-7">{narration}</p>}
                   {showWidget && (
                     <div className="rise-in mt-6">
-                      <Woven view={view} setView={setView} nonce={nonce} invoke={invoke} />
+                      <Woven
+                        view={view}
+                        setView={setView}
+                        nonce={nonce}
+                        invoke={invoke}
+                        openUrl={(url) => {
+                          window.open(url, "_blank", "noopener,noreferrer");
+                        }}
+                      />
                     </div>
                   )}
                   {laterCalls.length > 0 && (
@@ -424,7 +458,9 @@ async function post(url: string, body: Record<string, unknown>): Promise<Payload
     body: JSON.stringify(body),
   });
   const payload = await response.json() as Payload;
-  if (!response.ok || payload.error) throw new Error(payload.error?.message || "Request failed.");
+  if (!response.ok || payload.error) {
+    throw new WovenError(payload.error?.code || "REQUEST_FAILED", payload.error?.message || "Request failed.", Boolean(payload.error?.retryable));
+  }
   return payload;
 }
 
@@ -433,19 +469,48 @@ function Woven({
   setView,
   nonce,
   invoke,
+  openUrl,
 }: {
   view: MissionView;
   setView: (view: MissionView) => void;
   nonce: string | null;
   invoke: Invoke;
+  openUrl: (url: string) => void | Promise<void>;
 }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [assumptionsOpen, setAssumptionsOpen] = useState(false);
+  const [checkoutRequested, setCheckoutRequested] = useState(false);
+  const savedPreferences = useMemo(() => {
+    try { return JSON.parse(localStorage.getItem("woven-choice-preferences") || "null") as { priority: RankingPriority; area: PickupArea } | null; }
+    catch { return null; }
+  }, []);
+  const [priority, setPriority] = useState<RankingPriority>(savedPreferences?.priority || "balanced");
+  const [area, setArea] = useState<PickupArea>(savedPreferences?.area || "Any");
+  const [remember, setRemember] = useState(Boolean(savedPreferences));
+  const [choiceTab, setChoiceTab] = useState<"choices" | "compare">("choices");
+  const [recovery, setRecovery] = useState<string | null>(null);
+  const choiceDialog = useRef<HTMLDialogElement>(null);
+  const swapDialog = useRef<HTMLDialogElement>(null);
+  const openedMission = useRef<string | null>(null);
+  const rankedCarts = useMemo(() => rankCarts(view.carts, priority, area), [view.carts, priority, area]);
   const activeCart = useMemo(
     () => view.carts.find((cart) => cart.id === view.selectedCartId) || view.carts[0] || null,
     [view],
   );
+  const openChoiceCenter = () => {
+    if (!choiceDialog.current?.open) choiceDialog.current?.showModal();
+  };
+
+  useEffect(() => {
+    if (view.order || openedMission.current === view.mission.id) return;
+    openedMission.current = view.mission.id;
+    openChoiceCenter();
+  }, [view.mission.id, view.order]);
+
+  useEffect(() => {
+    if (remember) localStorage.setItem("woven-choice-preferences", JSON.stringify({ priority, area }));
+  }, [priority, area, remember]);
 
   const act = async (label: string, name: string, arguments_: Record<string, unknown>) => {
     setBusy(label);
@@ -453,8 +518,21 @@ function Woven({
     try {
       const payload = await invoke(name, arguments_);
       if (payload.view) setView(payload.view);
+      return true;
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Something went wrong.");
+      if (caught instanceof WovenError && caught.retryable && (label === "preview" || label === "confirm")) {
+        try {
+          const refreshed = await invoke("build_carts", { missionId: view.mission.id });
+          if (refreshed.view) setView(refreshed.view);
+          setRecovery(`${caught.message} Woven refreshed current price and stock.`);
+          openChoiceCenter();
+        } catch {
+          setError(caught.message);
+        }
+      } else {
+        setError(caught instanceof Error ? caught.message : "Something went wrong.");
+      }
+      return false;
     } finally {
       setBusy(null);
     }
@@ -476,8 +554,66 @@ function Woven({
     });
   };
 
+  const beginIdentity = async () => {
+    setBusy("identity");
+    setError(null);
+    try {
+      const payload = await invoke("start_demo_identity", { missionId: view.mission.id });
+      if (payload.view) setView(payload.view);
+      const authorizationUrl = payload._meta?.authorizationUrl;
+      if (typeof authorizationUrl !== "string") throw new Error("The demo identity link is missing. Try again.");
+      await openUrl(authorizationUrl);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not start demo identity verification.");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const reviewCheckout = () => {
+    if (!activeCart) return;
+    if (view.identity.status !== "verified") {
+      setCheckoutRequested(true);
+      return;
+    }
+    void act("preview", "create_checkout_preview", { missionId: view.mission.id, cartId: activeCart.id });
+  };
+
+  const chooseCart = async (cartId: string) => {
+    setCheckoutRequested(false);
+    if (await act("select", "select_cart", { missionId: view.mission.id, cartId })) choiceDialog.current?.close();
+  };
+
+  const swapItem = async (offerId: string) => {
+    if (!activeCart) return;
+    if (await act("swap", "swap_cart_item", { missionId: view.mission.id, cartId: activeCart.id, offerId })) swapDialog.current?.close();
+  };
+
+  const rememberPreferences = (checked: boolean) => {
+    setRemember(checked);
+    if (!checked) localStorage.removeItem("woven-choice-preferences");
+  };
+
   return (
     <main className="mx-auto w-full max-w-[1040px] overflow-hidden rounded-2xl border bg-background shadow-sm">
+      <ChoiceCenter
+        dialogRef={choiceDialog}
+        carts={rankedCarts}
+        allCarts={view.carts}
+        selectedCartId={activeCart?.id || null}
+        priority={priority}
+        area={area}
+        remember={remember}
+        tab={choiceTab}
+        busy={busy}
+        recovery={recovery}
+        onPriority={setPriority}
+        onArea={setArea}
+        onRemember={rememberPreferences}
+        onTab={setChoiceTab}
+        onSelect={(cartId) => void chooseCart(cartId)}
+      />
+      <SwapDialog dialogRef={swapDialog} alternatives={activeCart?.alternatives || []} busy={busy} onSwap={(offerId) => void swapItem(offerId)} />
       <header className="relative overflow-hidden bg-zinc-950 px-6 py-8 text-white sm:px-10 sm:py-10">
         <div className="hero-grid absolute inset-0" aria-hidden />
         <div
@@ -494,12 +630,9 @@ function Woven({
               Prototype
             </Badge>
           </div>
-          <div className="flex items-center gap-2.5 font-mono text-xs tracking-[0.1em] text-white/60" aria-label="Travel route Singapore to Tokyo">
-            <span>SIN</span>
-            <span className="h-px w-7 bg-white/25" />
-            <Plane className="size-3.5 text-white/80" />
-            <span className="h-px w-7 bg-white/25" />
-            <span>TYO</span>
+          <div className="flex items-center gap-2.5 font-mono text-xs tracking-[0.1em] text-white/60" aria-label="Camping brief">
+            <CloudRain className="size-3.5 text-white/80" />
+            <span>RAINY WEEKEND · 2 CAMPERS · 1 CAR</span>
           </div>
         </div>
 
@@ -513,8 +646,8 @@ function Woven({
         <div className="relative mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-4">
           <Constraint label="Budget" value={formatMoney(view.mission.budgetCents)} />
           <Constraint label="Pickup" value="Today" />
-          <Constraint label="Destination" value={view.mission.destination} />
-          <Constraint label="Devices" value="3 verified" />
+          <Constraint label="Campers" value={String(view.mission.campers)} />
+          <Constraint label="Packed gear" value={`≤ ${view.mission.maxPackedLiters} L`} />
         </div>
 
         <button
@@ -536,23 +669,25 @@ function Woven({
         <Kicker number="01" label={`${view.carts.length} complete options`} />
         <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 id="results-heading" className="text-xl font-semibold tracking-tight">Three ways it comes together</h2>
+            <h2 id="results-heading" className="text-xl font-semibold tracking-tight">Five ways it comes together</h2>
             <p className="mt-1 text-sm text-muted-foreground">Every option is one complete cart from one pickup location.</p>
           </div>
-          <span className="microlabel inline-flex items-center gap-1.5 text-muted-foreground">
-            <i className="pulse-dot size-1.5 rounded-full bg-emerald-500" /> Live demo stock
-          </span>
+          <Button variant="outline" size="sm" onClick={openChoiceCenter}>
+            <GitCompareArrows className="size-3.5" /> Compare all choices
+          </Button>
         </div>
 
         {view.carts.length ? (
           <div className="mt-6 grid gap-4 sm:grid-cols-3">
-            {view.carts.map((cart, index) => (
+            {rankedCarts.slice(0, 3).map((cart, index) => (
               <CartCard
                 key={cart.id}
                 cart={cart}
                 index={index}
                 active={cart.id === activeCart?.id}
-                onSelect={() => void act("select", "select_cart", { missionId: view.mission.id, cartId: cart.id })}
+                onSelect={() => {
+                  void chooseCart(cart.id);
+                }}
               />
             ))}
           </div>
@@ -583,13 +718,20 @@ function Woven({
                       {categoryIcon(line.category)}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <strong className="block text-sm font-medium">{line.name}</strong>
+                      <strong className="block text-sm font-medium">
+                        {line.quantity > 1 ? `${line.quantity} × ` : ""}{line.name}
+                      </strong>
                       <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{line.compatibility}</p>
                     </div>
                     <Check className="mt-1 size-4 flex-none text-emerald-600" />
                   </div>
                 ))}
               </div>
+              {activeCart.alternatives.length > 0 && (
+                <Button variant="outline" size="sm" className="mt-4" onClick={() => swapDialog.current?.showModal()}>
+                  Swap a merchant-approved item · {activeCart.alternatives.length}
+                </Button>
+              )}
             </div>
             <aside className="flex flex-col self-start rounded-xl bg-zinc-950 p-6 text-white">
               <span className="microlabel text-white/40">Selected pickup</span>
@@ -602,6 +744,12 @@ function Woven({
               <span className="mt-1.5 flex items-center gap-2 text-xs text-white/50">
                 <Clock3 className="size-3.5 flex-none" />Ready in ~{activeCart.pickupMinutes} min
               </span>
+              <div className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-lg bg-white/10">
+                <PickupStat label="Ready about" value={formatReadyTime(activeCart)} />
+                <PickupStat label="Leave by" value={formatLeaveTime(activeCart)} />
+                <PickupStat label="Travel" value={`~${activeCart.transitMinutes} min`} />
+                <PickupStat label="Closes" value={activeCart.closesAt} />
+              </div>
               <div className="mt-5 flex items-end justify-between border-t border-white/10 pt-4">
                 <span className="text-xs text-white/50">Total</span>
                 <strong className="text-2xl font-semibold tracking-tight">{formatMoney(activeCart.totalCents)}</strong>
@@ -610,7 +758,7 @@ function Woven({
                 variant="inverted"
                 className="mt-4 w-full"
                 disabled={busy !== null}
-                onClick={() => void act("preview", "create_checkout_preview", { missionId: view.mission.id, cartId: activeCart.id })}
+                onClick={reviewCheckout}
               >
                 {busy === "preview" ? "Revalidating…" : "Review checkout"}
               </Button>
@@ -622,9 +770,67 @@ function Woven({
         </section>
       )}
 
+      {activeCart && checkoutRequested && !preview && !view.order && (
+        <section className="border-t px-6 py-8 sm:px-10" aria-labelledby="identity-heading">
+          <Kicker number="03" label="Verify who is approving" />
+          <div className="mt-5 grid overflow-hidden rounded-xl border border-blue-200 lg:grid-cols-[1.2fr_0.8fr]">
+            <div className="p-6 sm:p-8">
+              <Badge variant="visa" className="font-mono text-[10px] uppercase tracking-[0.1em]">
+                <Fingerprint className="size-3.5" /> Demo identity · Simulated
+              </Badge>
+              <h2 id="identity-heading" className="mt-4 text-xl font-semibold tracking-tight">
+                {view.identity.status === "verified" ? "Identity verified" : "Connect your demo identity"}
+              </h2>
+              <p className="mt-1.5 max-w-lg text-sm leading-relaxed text-muted-foreground">
+                {view.identity.status === "verified"
+                  ? `${view.identity.displayLabel} is connected for this mission. Authentication is complete; purchase confirmation is still separate.`
+                  : "Woven opens a provider-style demo page, then enforces the short-lived result on the server before checkout."}
+              </p>
+              <div className="mt-5 rounded-lg border bg-muted/40 p-4 text-xs leading-5 text-muted-foreground">
+                <strong className="block text-foreground">DEMO ONLY</strong>
+                No Visa account, password, card number, or payment credential is requested or accessed.
+              </div>
+            </div>
+            <div className="flex flex-col justify-center border-t bg-blue-50/60 p-6 sm:p-8 lg:border-l lg:border-t-0">
+              <ShieldCheck className="size-7 text-blue-700" />
+              <h3 className="mt-3 text-base font-semibold tracking-tight">
+                {view.identity.status === "verified" ? view.identity.displayLabel : "One protected handoff"}
+              </h3>
+              <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+                {view.identity.status === "pending"
+                  ? "Complete the open demo page, return here, then check the server result."
+                  : view.identity.status === "verified"
+                    ? `Verified until ${formatTime(view.identity.expiresAt!)}.`
+                    : "The request uses state, PKCE, an allowlisted callback, and a single-use authorization code."}
+              </p>
+              {view.identity.status === "verified" ? (
+                <Button className="mt-4 w-full" disabled={busy !== null} onClick={reviewCheckout}>
+                  {busy === "preview" ? "Revalidating…" : "Review exact terms"}
+                </Button>
+              ) : view.identity.status === "pending" ? (
+                <Button
+                  className="mt-4 w-full"
+                  disabled={busy !== null}
+                  onClick={() => void act("identity-check", "build_carts", { missionId: view.mission.id })}
+                >
+                  {busy === "identity-check" ? "Checking…" : "I’ve verified · check status"}
+                </Button>
+              ) : (
+                <Button className="mt-4 w-full" disabled={busy !== null} onClick={() => void beginIdentity()}>
+                  {busy === "identity" ? "Opening…" : "Verify demo identity"}
+                </Button>
+              )}
+              <small className="mt-3 text-center text-[11px] text-muted-foreground">
+                Identity does not authorize the purchase
+              </small>
+            </div>
+          </div>
+        </section>
+      )}
+
       {preview && !view.order && (
         <section className="border-t px-6 py-8 sm:px-10" aria-labelledby="checkout-heading">
-          <Kicker number="03" label="The consent boundary" />
+          <Kicker number="04" label="The consent boundary" />
           <div className="mt-5 grid overflow-hidden rounded-xl border lg:grid-cols-[1.2fr_0.8fr]">
             <div className="p-6 sm:p-8">
               <Badge variant="visa" className="font-mono text-[10px] uppercase tracking-[0.1em]">
@@ -637,9 +843,13 @@ function Woven({
                 This one click authorizes only this merchant, cart version, and total. It expires at {formatTime(preview.expiresAt)}.
               </p>
               <dl className="mt-5">
+                <MandateRow label="Demo identity" value={`${view.identity.displayLabel || "Verified demo user"} · verified`} />
                 <MandateRow label="Merchant" value={preview.mandate.merchantName} />
                 <MandateRow label="Pickup" value={preview.mandate.pickupLocation} />
-                <MandateRow label="Items" value={String(preview.mandate.lines.length)} />
+                <MandateRow
+                  label="Items"
+                  value={`${preview.mandate.lines.reduce((sum, line) => sum + line.quantity, 0)} units / ${preview.mandate.lines.length} products`}
+                />
                 <div className="flex items-end justify-between gap-6 pt-4">
                   <dt className="text-sm text-muted-foreground">Authorized total</dt>
                   <dd className="m-0 text-2xl font-semibold tracking-tight">{formatMoney(preview.mandate.amountCents)}</dd>
@@ -681,6 +891,147 @@ function Woven({
   );
 }
 
+function ChoiceCenter({
+  dialogRef,
+  carts,
+  allCarts,
+  selectedCartId,
+  priority,
+  area,
+  remember,
+  tab,
+  busy,
+  recovery,
+  onPriority,
+  onArea,
+  onRemember,
+  onTab,
+  onSelect,
+}: {
+  dialogRef: { current: HTMLDialogElement | null };
+  carts: RankedCart[];
+  allCarts: RankedCart[];
+  selectedCartId: string | null;
+  priority: RankingPriority;
+  area: PickupArea;
+  remember: boolean;
+  tab: "choices" | "compare";
+  busy: string | null;
+  recovery: string | null;
+  onPriority: (priority: RankingPriority) => void;
+  onArea: (area: PickupArea) => void;
+  onRemember: (remember: boolean) => void;
+  onTab: (tab: "choices" | "compare") => void;
+  onSelect: (cartId: string) => void;
+}) {
+  const priorities: Array<[RankingPriority, string]> = [
+    ["balanced", "Balanced"],
+    ["value", "Lowest total"],
+    ["speed", "Soonest pickup"],
+    ["weather", "Most rainproof"],
+  ];
+  return (
+    <dialog ref={dialogRef} aria-labelledby="choice-center-title" className="choice-dialog m-auto max-h-[92dvh] w-[min(960px,calc(100%-1.5rem))] overflow-hidden rounded-2xl border bg-background p-0 text-foreground shadow-2xl">
+      <div className="flex max-h-[92dvh] flex-col">
+        <header className="flex items-start justify-between gap-4 border-b px-5 py-4 sm:px-6">
+          <div>
+            <span className="microlabel text-muted-foreground">Woven decision workspace</span>
+            <h2 id="choice-center-title" className="mt-1 text-xl font-semibold tracking-tight">Choice Center</h2>
+            <p className="mt-1 text-sm text-muted-foreground">Compare five complete carts, tune priorities, then choose one.</p>
+          </div>
+          <Button variant="ghost" size="icon-sm" aria-label="Close Choice Center" onClick={() => dialogRef.current?.close()}><X className="size-4" /></Button>
+        </header>
+        <div className="overflow-y-auto px-5 py-5 sm:px-6">
+          {recovery && (
+            <div className="mb-4 flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-900">
+              <PackageSearch className="mt-0.5 size-5 flex-none" />
+              <div><strong className="block text-sm">Fresh alternatives ready</strong><p className="mt-0.5 text-xs leading-relaxed">{recovery}</p></div>
+            </div>
+          )}
+          <div className="rounded-xl border bg-muted/30 p-4">
+            <div className="flex items-center gap-2"><Settings2 className="size-4" /><strong className="text-sm">What matters most?</strong></div>
+            <div className="mt-3 grid grid-cols-2 gap-2 lg:grid-cols-4">
+              {priorities.map(([id, label]) => (
+                <button key={id} className={cn("cursor-pointer rounded-lg border bg-background px-3 py-2.5 text-left text-xs font-medium hover:bg-accent", priority === id && "border-zinc-950 bg-zinc-950 text-white hover:bg-zinc-950")} onClick={() => onPriority(id)} aria-pressed={priority === id}>{label}</button>
+              ))}
+            </div>
+            <div className="mt-3 flex flex-col gap-3 border-t pt-3 sm:flex-row sm:items-center sm:justify-between">
+              <label className="flex items-center gap-2 text-xs"><Navigation className="size-3.5" /> Preferred pickup area
+                <select className="rounded-md border bg-background px-2 py-1.5" value={area} onChange={(event) => onArea(event.target.value as PickupArea)}>
+                  <option>Any</option><option>Central</option><option>East</option><option>North</option>
+                </select>
+              </label>
+              <label className="flex cursor-pointer items-center gap-2 text-xs"><input type="checkbox" checked={remember} onChange={(event) => onRemember(event.target.checked)} />Remember on this device</label>
+            </div>
+          </div>
+          <div className="mt-4 flex gap-1 rounded-lg bg-muted p-1" role="tablist" aria-label="Choice Center views">
+            <button role="tab" aria-selected={tab === "choices"} className={cn("flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md px-3 py-2 text-xs font-medium", tab === "choices" && "bg-background shadow-xs")} onClick={() => onTab("choices")}>Choices</button>
+            <button role="tab" aria-selected={tab === "compare"} className={cn("flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md px-3 py-2 text-xs font-medium", tab === "compare" && "bg-background shadow-xs")} onClick={() => onTab("compare")}><GitCompareArrows className="size-3.5" /> Compare carts</button>
+          </div>
+          {tab === "choices" ? (
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {carts.map((cart, index) => (
+                <article key={cart.id} className={cn("flex flex-col rounded-xl border p-4", selectedCartId === cart.id && "border-zinc-950 ring-1 ring-zinc-950")}>
+                  <div className="flex flex-wrap gap-1">{cartTraits(cart, allCarts).map((trait, traitIndex) => <Badge key={trait} variant={traitIndex === 0 ? "default" : "secondary"} className="font-mono text-[9px] uppercase">{trait}</Badge>)}</div>
+                  <span className="mt-4 font-mono text-[10px] text-muted-foreground">OPTION {String(index + 1).padStart(2, "0")}</span>
+                  <h3 className="mt-1 text-base font-semibold">{cart.merchantName}</h3>
+                  <p className="text-xs text-muted-foreground">{cart.locationName} · {cart.area}</p>
+                  <dl className="mt-4 grid grid-cols-3 gap-px overflow-hidden rounded-lg border bg-border text-center">
+                    <ChoiceMetric label="Total" value={formatMoney(cart.totalCents)} />
+                    <ChoiceMetric label="Ready" value={`~${cart.pickupMinutes}m`} />
+                    <ChoiceMetric label="Rainfly" value={`${cartWaterproof(cart).toLocaleString()}mm`} />
+                  </dl>
+                  <ul className="mt-4 flex-1 space-y-1.5 text-xs text-muted-foreground">{cart.checks.map((check) => <li key={check} className="flex gap-1.5"><Check className="mt-0.5 size-3 flex-none text-emerald-600" />{check}</li>)}</ul>
+                  <Button className="mt-4 w-full" variant={selectedCartId === cart.id ? "secondary" : "default"} disabled={busy !== null} onClick={() => onSelect(cart.id)}>{selectedCartId === cart.id ? "Selected" : `Choose ${cart.merchantName}`}<ArrowRight className="size-3.5" /></Button>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="mt-4 overflow-x-auto rounded-xl border">
+              <table className="w-full min-w-[760px] border-collapse text-sm">
+                <thead><tr className="bg-muted/60 text-left"><th className="p-3 text-xs font-medium text-muted-foreground">Complete cart</th>{carts.map((cart) => <th key={cart.id} className="p-3"><strong className="block">{cart.merchantName}</strong><small className="font-normal text-muted-foreground">{cart.locationName}</small></th>)}</tr></thead>
+                <tbody>{[
+                  ["Recognition", (cart: RankedCart) => cartTraits(cart, allCarts).join(" · ")],
+                  ["Full kit", (cart: RankedCart) => `${cart.lines.length} products / ${cart.lines.reduce((sum, line) => sum + line.quantity, 0)} units`],
+                  ["Total", (cart: RankedCart) => formatMoney(cart.totalCents)],
+                  ["Pickup ready", (cart: RankedCart) => `${formatReadyTime(cart)} · ~${cart.pickupMinutes} min`],
+                  ["Travel", (cart: RankedCart) => `${cart.area} · ~${cart.transitMinutes} min`],
+                  ["Rainfly", (cart: RankedCart) => `${cartWaterproof(cart).toLocaleString()} mm`],
+                  ["Swaps", (cart: RankedCart) => `${cart.alternatives.length} approved`],
+                ].map(([label, value]) => <tr key={String(label)} className="border-t"><th className="p-3 text-left text-xs font-medium text-muted-foreground">{String(label)}</th>{carts.map((cart) => <td key={cart.id} className="p-3 text-xs">{(value as (cart: RankedCart) => string)(cart)}</td>)}</tr>)}
+                  <tr className="border-t"><th className="p-3" />{carts.map((cart) => <td key={cart.id} className="p-3"><Button size="sm" className="w-full" variant={selectedCartId === cart.id ? "secondary" : "default"} disabled={busy !== null} onClick={() => onSelect(cart.id)}>{selectedCartId === cart.id ? "Selected" : "Choose"}</Button></td>)}</tr>
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+    </dialog>
+  );
+}
+
+function SwapDialog({ dialogRef, alternatives, busy, onSwap }: { dialogRef: { current: HTMLDialogElement | null }; alternatives: CartAlternative[]; busy: string | null; onSwap: (offerId: string) => void }) {
+  return (
+    <dialog ref={dialogRef} aria-labelledby="swap-dialog-title" className="choice-dialog m-auto w-[min(560px,calc(100%-1.5rem))] rounded-2xl border bg-background p-0 text-foreground shadow-2xl">
+      <header className="flex items-start justify-between border-b px-5 py-4"><div><span className="microlabel text-muted-foreground">Compatibility preserved</span><h2 id="swap-dialog-title" className="mt-1 text-lg font-semibold">Swap item</h2><p className="mt-1 text-xs text-muted-foreground">Only active merchant-approved alternatives are shown.</p></div><Button variant="ghost" size="icon-sm" aria-label="Close swap dialog" onClick={() => dialogRef.current?.close()}><X className="size-4" /></Button></header>
+      <div className="space-y-3 p-5">{alternatives.map((alternative) => (
+        <article key={alternative.offerId} className="rounded-xl border p-4">
+          <div className="flex items-start justify-between gap-3"><div><Badge variant="secondary" className="font-mono text-[9px] uppercase">Merchant approved</Badge><h3 className="mt-2 text-sm font-semibold">{alternative.name}</h3><p className="mt-1 text-xs leading-relaxed text-muted-foreground">{alternative.compatibility}</p></div><strong className="text-sm">{alternative.deltaCents === 0 ? "Same price" : `${alternative.deltaCents > 0 ? "+" : "−"}${formatMoney(Math.abs(alternative.deltaCents))}`}</strong></div>
+          <div className="mt-3 flex items-center justify-between gap-3 border-t pt-3"><span className="text-xs text-muted-foreground">New total · {formatMoney(alternative.totalCents)} · {alternative.stock} in stock</span><Button size="sm" disabled={busy !== null} onClick={() => onSwap(alternative.offerId)}>{busy === "swap" ? "Swapping…" : "Use this item"}</Button></div>
+        </article>
+      ))}{!alternatives.length && <p className="py-6 text-center text-sm text-muted-foreground">No approved alternative is currently available.</p>}</div>
+    </dialog>
+  );
+}
+
+function ChoiceMetric({ label, value }: { label: string; value: string }) {
+  return <div className="bg-background p-2"><dt className="microlabel text-muted-foreground">{label}</dt><dd className="mt-1 text-xs font-semibold">{value}</dd></div>;
+}
+
+function PickupStat({ label, value }: { label: string; value: string }) {
+  return <div className="bg-zinc-950 p-2.5"><span className="microlabel block text-white/35">{label}</span><strong className="mt-1 block text-xs text-white/80">{value}</strong></div>;
+}
+
 function CartCard({ cart, index, active, onSelect }: { cart: RankedCart; index: number; active: boolean; onSelect: () => void }) {
   return (
     <button
@@ -705,7 +1056,7 @@ function CartCard({ cart, index, active, onSelect }: { cart: RankedCart; index: 
         {cart.lines.map((line) => (
           <span key={line.offerId} className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="flex-none [&>svg]:size-3.5">{categoryIcon(line.category)}</span>
-            <em className="truncate not-italic">{line.name}</em>
+            <em className="truncate not-italic">{line.quantity > 1 ? `${line.quantity} × ` : ""}{line.name}</em>
           </span>
         ))}
       </div>
@@ -774,6 +1125,18 @@ function OrderResult({ view }: { view: MissionView }) {
           </div>
         </dl>
       </div>
+      {order.receipt && (
+        <div className="mt-4 overflow-hidden rounded-xl border">
+          <header className="flex flex-wrap items-center justify-between gap-3 bg-zinc-950 px-5 py-4 text-white">
+            <div className="flex items-center gap-3"><BadgeCheck className="size-5 text-emerald-400" /><div><span className="microlabel text-white/45">Signed receipt</span><h3 className="text-sm font-semibold">{order.receipt.receiptNumber}</h3></div></div>
+            <Badge variant="outline" className="border-emerald-400/40 font-mono text-[9px] uppercase text-emerald-300">{view.receiptVerification?.valid ? "Signature valid" : "Verification failed"}</Badge>
+          </header>
+          <div className="grid gap-5 p-5 lg:grid-cols-[1fr_280px]">
+            <div><p className="text-sm leading-relaxed">“{order.receipt.request}”</p><div className="mt-4 divide-y rounded-lg border">{order.receipt.lines.map((line) => <div key={line.offerId} className="flex justify-between gap-4 px-3 py-2 text-xs"><span>{line.quantity > 1 ? `${line.quantity} × ` : ""}{line.name}</span><strong>{formatMoney(line.priceCents * line.quantity)}</strong></div>)}</div></div>
+            <dl className="text-xs"><MandateRow label="Merchant" value={order.receipt.merchantName} /><MandateRow label="Pickup" value={order.receipt.pickupLocation} /><MandateRow label="Payment" value="Simulated" /><MandateRow label="Signed" value={new Date(order.receipt.createdAt).toLocaleString()} /><div className="pt-3"><dt className="text-muted-foreground">Server signature</dt><dd className="mt-1 break-all font-mono text-[10px]">{order.receipt.signature}</dd></div></dl>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -832,9 +1195,11 @@ function ConnectionError({ message }: { message: string }) {
 }
 
 function categoryIcon(category: Category) {
-  if (category === "charger") return <BatteryCharging className="size-4" />;
-  if (category === "adapter") return <Plug className="size-4" />;
-  return <Cable className="size-4" />;
+  if (category === "tent") return <TentTree className="size-4" />;
+  if (category === "sleeping_bag") return <BedSingle className="size-4" />;
+  if (category === "sleeping_mat") return <Layers3 className="size-4" />;
+  if (category === "lantern") return <Lamp className="size-4" />;
+  return <BriefcaseMedical className="size-4" />;
 }
 
 function formatMoney(cents: number) {
@@ -843,6 +1208,38 @@ function formatMoney(cents: number) {
 
 function formatTime(value: string) {
   return new Intl.DateTimeFormat("en-SG", { hour: "numeric", minute: "2-digit" }).format(new Date(value));
+}
+
+function cartWaterproof(cart: RankedCart) {
+  return Number(cart.lines.find((line) => line.category === "tent")?.name.match(/([\d,]+)\s*mm/i)?.[1]?.replaceAll(",", "") || 0);
+}
+
+function rankCarts(carts: RankedCart[], priority: RankingPriority, area: PickupArea) {
+  return carts.toSorted((a, b) => {
+    const areaDifference = area === "Any" ? 0 : Number(b.area === area) - Number(a.area === area);
+    if (areaDifference) return areaDifference;
+    if (priority === "value") return a.totalCents - b.totalCents;
+    if (priority === "speed") return a.pickupMinutes - b.pickupMinutes;
+    if (priority === "weather") return cartWaterproof(b) - cartWaterproof(a);
+    return b.score - a.score;
+  });
+}
+
+function cartTraits(cart: RankedCart, carts: RankedCart[]) {
+  const traits = [cart.badge === "CUSTOM" ? "Custom" : cart.badge.replace("BEST ", "Best ").toLowerCase()];
+  if (cart.totalCents === Math.min(...carts.map((candidate) => candidate.totalCents))) traits.push("Lowest total");
+  if (cart.pickupMinutes === Math.min(...carts.map((candidate) => candidate.pickupMinutes))) traits.push("Soonest pickup");
+  if (cartWaterproof(cart) === Math.max(...carts.map(cartWaterproof))) traits.push("Most rainproof");
+  return [...new Set(traits)];
+}
+
+function formatReadyTime(cart: RankedCart) {
+  return formatTime(new Date(new Date(cart.inventoryCheckedAt).getTime() + cart.pickupMinutes * 60_000).toISOString());
+}
+
+function formatLeaveTime(cart: RankedCart) {
+  const readyAt = new Date(cart.inventoryCheckedAt).getTime() + cart.pickupMinutes * 60_000;
+  return formatTime(new Date(readyAt - cart.transitMinutes * 60_000).toISOString());
 }
 
 const root = document.getElementById("root");

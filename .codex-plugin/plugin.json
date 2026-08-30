@@ -1,6 +1,6 @@
 {
   "name": "woven",
-  "version": "0.1.2+codex.20260830023805",
+  "version": "0.2.0+codex.20260830",
   "description": "Ask once. Woven builds a complete compatible cart, then waits for one exact confirmation.",
   "author": {
     "name": "Chai Pin Zheng"
@@ -23,12 +23,14 @@
       "Product discovery",
       "Compatibility validation",
       "Cart building",
+      "Choice comparison",
+      "Merchant-approved substitutions",
       "Simulated Visa authorization"
     ],
     "websiteURL": "https://github.com/Ducksss/LifeHack-2026",
     "defaultPrompt": [
-      "Build a Tokyo charging kit under S$150 for pickup today.",
-      "Find a compatible travel charging kit for my devices."
+      "Build a complete rainy-weekend camping kit for two people under S$300, ready for pickup today.",
+      "Compare complete camping kits and help me choose the best pickup option."
     ],
     "brandColor": "#0E4B3B",
     "composerIcon": "./assets/icon.png",

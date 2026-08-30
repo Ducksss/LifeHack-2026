@@ -20,7 +20,7 @@ import {
 } from "./domain.js";
 import { WovenStore } from "./store.js";
 
-const VERSION = "0.1.2";
+const VERSION = "0.2.0";
 const WIDGET_URI = "ui://woven/mission-v1.html";
 const port = Number(process.env.PORT || 8787);
 const baseUrl = (process.env.BASE_URL || `http://localhost:${port}`).replace(/\/$/, "");
@@ -86,11 +86,11 @@ function createMcpServer(): McpServer {
     {
       title: "Build a complete Woven cart",
       description:
-        "Use when a user asks to shop for a complete, compatible kit under constraints such as devices, destination, budget, availability, or pickup time. Returns ranked one-merchant carts in an interactive confirmation widget.",
+        "Use when a user asks to shop for a complete camping kit under constraints such as group size, weather, packed volume, budget, availability, or pickup time. Returns ranked one-merchant carts in an interactive confirmation widget.",
       inputSchema: {
         request: z.string().min(1).max(1_000).describe("The user's complete shopping mission in natural language."),
         budgetCents: z.number().int().min(1_000).max(100_000).optional(),
-        destination: z.string().min(2).max(100).optional(),
+        campers: z.number().int().min(1).max(6).optional(),
         pickupDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
       },
       annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
@@ -145,10 +145,52 @@ function createMcpServer(): McpServer {
 
   registerAppTool(
     server,
+    "swap_cart_item",
+    {
+      title: "Swap a compatible cart item",
+      description: "Replace one item with an active merchant-approved alternative while preserving compatibility, pickup location, and budget. App-only.",
+      inputSchema: {
+        missionId: z.string().min(5).max(80),
+        cartId: z.string().min(5).max(80),
+        offerId: z.string().min(5).max(120),
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
+      _meta: { ui: { visibility: ["app"] } },
+    },
+    async ({ missionId, cartId, offerId }) =>
+      attempt(() => viewResult(store.swapCartItem(missionId, cartId, offerId), "Compatible item swapped.")),
+  );
+
+  registerAppTool(
+    server,
+    "start_demo_identity",
+    {
+      title: "Verify demo identity",
+      description: "Start Woven's simulated, server-enforced identity handoff before checkout. App-only.",
+      inputSchema: { missionId: z.string().min(5).max(80) },
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
+      _meta: { ui: { visibility: ["app"] } },
+    },
+    async ({ missionId }) =>
+      attempt(() => {
+        const result = store.beginDemoIdentity(
+          missionId,
+          new URL("/auth/demo/callback", baseUrl).toString(),
+        );
+        return viewResult(
+          result.view,
+          "Demo identity handoff started. No Visa account, card, or payment credential is accessed.",
+          { authorizationUrl: result.authorizationUrl },
+        );
+      }),
+  );
+
+  registerAppTool(
+    server,
     "create_checkout_preview",
     {
       title: "Review checkout",
-      description: "Revalidate a selected cart and create an expiring checkout mandate. App-only.",
+      description: "Require a verified demo identity, revalidate a selected cart, and create an expiring checkout mandate. App-only.",
       inputSchema: { missionId: z.string().min(5).max(80), cartId: z.string().min(5).max(80) },
       annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
       _meta: { ui: { visibility: ["app"] } },
@@ -208,6 +250,34 @@ function createMcpServer(): McpServer {
       }),
   );
 
+  registerAppTool(
+    server,
+    "verify_receipt",
+    {
+      title: "Verify a Woven receipt",
+      description: "Verify the server signature on a simulated Woven receipt and return its exact recorded mission, cart, merchant, pickup, and amount.",
+      inputSchema: {
+        receiptNumber: z.string().min(5).max(80),
+        signature: z.string().length(64),
+      },
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
+      _meta: { ui: { visibility: ["model", "app"] } },
+    },
+    async ({ receiptNumber, signature }) =>
+      attempt(() => {
+        const verification = store.verifyReceipt(receiptNumber, signature);
+        return {
+          content: [{
+            type: "text" as const,
+            text: verification.valid
+              ? `Receipt ${receiptNumber} has a valid Woven server signature. Payment mode: simulated.`
+              : `Receipt ${receiptNumber} could not be verified.`,
+          }],
+          structuredContent: { verification },
+        };
+      }),
+  );
+
   registerAppResource(
     server,
     "Woven checkout widget",
@@ -243,12 +313,18 @@ const app = express();
 const missionInputSchema = z.object({
   request: z.string().min(1).max(1_000).optional(),
   budgetCents: z.number().int().min(1_000).max(100_000).optional(),
-  destination: z.string().min(2).max(100).optional(),
+  campers: z.number().int().min(1).max(6).optional(),
   pickupDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
 });
 const cartActionSchema = z.object({
   missionId: z.string().min(5).max(80),
   cartId: z.string().min(5).max(80),
+});
+const swapActionSchema = cartActionSchema.extend({ offerId: z.string().min(5).max(120) });
+const alternativeActionSchema = z.object({
+  fromOfferId: z.string().min(5).max(120),
+  toOfferId: z.string().min(5).max(120),
+  active: z.boolean(),
 });
 const confirmSchema = z.object({
   previewId: z.string().min(5).max(80),
@@ -273,15 +349,32 @@ app.get("/", (_req, res) => res.sendFile("landing.html", { root: webRoot }));
 app.get("/demo", (_req, res) => res.sendFile("demo.html", { root: webRoot }));
 app.get("/merchant", (_req, res) => res.sendFile("merchant.html", { root: webRoot }));
 app.get("/install", (_req, res) => res.sendFile("install.html", { root: webRoot }));
+app.get("/identity", (_req, res) => res.sendFile("identity.html", { root: webRoot }));
 
 app.post("/api/demo/start", (req, res) => api(res, () => {
   const input = missionInputSchema.parse(req.body);
   return { view: store.startMission({ ...input, request: input.request || CANONICAL_REQUEST }) };
 }));
 app.get("/api/missions/:missionId", (req, res) => api(res, () => ({ view: store.view(req.params.missionId) })));
+app.post("/api/tools/build_carts", (req, res) => api(res, () => {
+  const missionId = z.string().min(5).max(80).parse(req.body.missionId);
+  return { view: store.view(missionId) };
+}));
 app.post("/api/tools/select_cart", (req, res) => api(res, () => {
   const input = cartActionSchema.parse(req.body);
   return { view: store.selectCart(input.missionId, input.cartId) };
+}));
+app.post("/api/tools/swap_cart_item", (req, res) => api(res, () => {
+  const input = swapActionSchema.parse(req.body);
+  return { view: store.swapCartItem(input.missionId, input.cartId, input.offerId) };
+}));
+app.post("/api/tools/build_carts", (req, res) => api(res, () => ({
+  view: store.view(z.string().min(5).max(80).parse(req.body.missionId)),
+})));
+app.post("/api/tools/start_demo_identity", (req, res) => api(res, () => {
+  const missionId = z.string().min(5).max(80).parse(req.body.missionId);
+  const result = store.beginDemoIdentity(missionId, new URL("/auth/demo/callback", baseUrl).toString());
+  return { view: result.view, _meta: { authorizationUrl: result.authorizationUrl } };
 }));
 app.post("/api/tools/create_checkout_preview", (req, res) =>
   api(res, () => {
@@ -291,6 +384,36 @@ app.post("/api/tools/create_checkout_preview", (req, res) =>
   }),
 );
 app.post("/api/tools/confirm_purchase", (req, res) => api(res, () => store.confirmPurchase(confirmSchema.parse(req.body))));
+app.post("/api/tools/verify_receipt", (req, res) => api(res, () => ({
+  verification: store.verifyReceipt(
+    z.string().min(5).max(80).parse(req.body.receiptNumber),
+    z.string().length(64).parse(req.body.signature),
+  ),
+})));
+app.get("/api/demo-identity/requests/:requestId", (req, res) => api(res, () => ({
+  request: store.demoIdentityRequest(
+    z.string().min(5).max(80).parse(req.params.requestId),
+    z.string().min(32).max(128).parse(req.query.state),
+  ),
+})));
+app.post("/api/demo-identity/authorize", (req, res) => api(res, () => store.authorizeDemoIdentity(
+  z.string().min(5).max(80).parse(req.body.requestId),
+  z.string().min(32).max(128).parse(req.body.state),
+)));
+app.get("/auth/demo/callback", (req, res) => {
+  try {
+    store.completeDemoIdentity(
+      z.string().min(32).max(128).parse(req.query.code),
+      z.string().min(32).max(128).parse(req.query.state),
+    );
+    res.redirect(303, "/identity?complete=1");
+  } catch (error) {
+    const safe = error instanceof DomainError
+      ? error
+      : new DomainError("IDENTITY_CALLBACK_FAILED", "The demo identity callback failed. Start again from Woven.");
+    res.redirect(303, `/identity?error=${encodeURIComponent(safe.message)}`);
+  }
+});
 app.get("/api/merchant/dashboard", (_req, res) => api(res, () => store.dashboard()));
 app.post("/api/merchant/scenario", (req, res) =>
   api(res, () => {
@@ -299,6 +422,11 @@ app.post("/api/merchant/scenario", (req, res) =>
     return store.dashboard();
   }),
 );
+app.post("/api/merchant/alternative", (req, res) => api(res, () => {
+  const input = alternativeActionSchema.parse(req.body);
+  store.setAlternative(input.fromOfferId, input.toOfferId, input.active);
+  return store.dashboard();
+}));
 app.post("/api/merchant/catalog", (req, res) => api(res, () => store.updateCatalogCsv(z.string().max(200_000).parse(req.body.csv))));
 app.get("/api/merchant/catalog.csv", (_req, res) => {
   res.type("text/csv").attachment("woven-catalog.csv").send(store.catalogCsv());
@@ -335,7 +463,7 @@ function api(res: Response, work: () => unknown): void {
 }
 
 const httpServer = app.listen(port, () => {
-  console.error(`Woven ready: ${baseUrl}/mcp · ${baseUrl}/demo · ${baseUrl}/merchant`);
+  console.error(`Woven ready: ${baseUrl}/mcp · ${baseUrl}/demo · ${baseUrl}/identity · ${baseUrl}/merchant`);
 });
 
 if (process.argv.includes("--stdio")) {

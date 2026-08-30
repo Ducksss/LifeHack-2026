@@ -22,12 +22,12 @@ const steps = [
   {
     icon: <MessageSquare className="size-5" />,
     title: "Ask once",
-    body: "One request in ChatGPT or Codex — devices, destination, budget, pickup — handed straight to Woven's MCP tools.",
+    body: "One request in ChatGPT or Codex — campers, weather, car space, budget, pickup — handed straight to Woven's MCP tools.",
   },
   {
     icon: <ListChecks className="size-5" />,
     title: "Review once",
-    body: "Three complete carts from one pickup location each, every thread checked for compatibility, live demo stock, and budget.",
+    body: "Five complete carts in a Choice Center, one pickup location each, every thread checked for compatibility, stock, and budget.",
   },
   {
     icon: <ShieldCheck className="size-5" />,
@@ -147,7 +147,7 @@ function Landing() {
 
           <div className="rise-in relative mt-14 [animation-delay:600ms]">
             <div className="rounded-2xl bg-gradient-to-b from-white/25 via-white/10 to-transparent p-px shadow-[0_40px_120px_-20px_rgba(21,69,232,0.35)]">
-              <Window src={buyerShot} alt="Woven buyer experience: one request becomes three complete, compatible carts" url="woven.demo/buyer" eager />
+              <Window src={buyerShot} alt="Woven buyer experience: one request becomes five complete, compatible choices" url="woven.demo/buyer" eager />
             </div>
           </div>
         </div>

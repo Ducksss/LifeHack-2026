@@ -42,7 +42,7 @@ cards). The shipped product UI uses its own system, below.
 
 ## Product UI system
 
-The web surfaces (`/demo`, `/merchant`, and the MCP widget) are built with
+The web surfaces (`/demo`, `/identity`, `/merchant`, and the MCP widget) are built with
 Tailwind CSS and shadcn/ui in a Vercel/Linear-style monochrome system: white
 cards, hairline neutral borders, near-black (`#0A0A0A`) primary actions, one
 dark hero/ops surface, and Waypoint Blue reserved for the simulated payment
@@ -54,6 +54,11 @@ Type is Geist Sans for interface copy and headings (semibold, tight tracking)
 and Geist Mono for IDs, audit events, table prices, and uppercase operational
 microlabels. Both are self-hosted through `@fontsource-variable` packages so the
 MCP widget's same-origin CSP holds; never load fonts from a CDN.
+
+The `/identity` simulator uses a denser Waypoint Blue treatment with a yellow
+security accent to signal an external-provider handoff. It must always retain
+the **Identity simulator · Demo only** header and the explicit no-Visa-account,
+no-card-details boundary.
 
 ## Logo rules
 
@@ -69,7 +74,7 @@ MCP widget's same-origin CSP holds; never load fonts from a CDN.
 | Moment | Preferred language |
 | --- | --- |
 | Hero | Everything you need. Woven into one choice. |
-| Results | Three ways it comes together. |
+| Results | Five ways it comes together. |
 | Compatibility | Every thread checked. Nothing left to connect. |
 | Checkout | Review the exact terms. |
 | Confirmation | Your yes is the final thread. |
@@ -102,16 +107,17 @@ confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 | `docs/assets/devpost/src/*.html` | Editable sources for the three product-style explainers; render at 1600 × 900 (see file comments) |
 | `docs/Woven-Devpost-Visuals.pptx` | Presentation-ready source deck for the three slides |
 | `docs/assets/screenshots/*.png` | Verified product gallery |
+| `docs/assets/screenshots/demo-identity.png` | Verified `/identity` simulator evidence |
 | `docs/assets/slides/*.png` | Text-free editorial backgrounds for friction, the complete kit, and explicit human confirmation |
 | `docs/assets/demo/*.{png,svg}` | Numbered 16:9 stage fallback sequence and closing card built from verified product screens |
 | `docs/assets/marketing/woven-demo-loop.gif` | Animated ~17s loop of the real `/demo` flow for README, Devpost, and social posts |
 | `docs/assets/marketing/woven-how-it-works-square.png` | 1080 × 1080 four-step how-it-works card for feeds |
 | `docs/assets/marketing/woven-how-it-works-story.png` | 1080 × 1920 four-step how-it-works card for stories |
 | `script.md` | Authoritative three-minute narration and language guardrails |
-| `docs/Woven-Hackathon-Pitch.pptx` | Thirteen-slide judge deck; the identity slide is explicitly labeled as planned |
+| `docs/Woven-Hackathon-Pitch.pptx` | Judge deck with the camping mission and working simulated identity handoff |
 | `video/WovenJudgeVideo.tsx` | Three-minute Remotion judge-video source using the same brand tokens and verified evidence |
 | `video/Woven-Judge-Video.srt` | Sidecar captions for the judge-video master |
-| `public/woven-video/` | Replaceable synthetic narration and ambient audio for the Remotion composition |
+| `public/woven-video/` | Replaceable ElevenLabs AI narration and ambient audio for the Remotion composition |
 | `output/Woven-Judge-Video.mp4` | Generated local master; ignored by Git and uploaded only after final review |
 
 All Devpost gallery images are 1600 × 900. Upload them uncropped in the order
@@ -127,10 +133,11 @@ ffmpeg at 8 fps, 960px wide.
 
 ## Campaign image brief
 
-The hero artwork uses a right-heavy, text-free editorial still life: a GaN
-charger, compatible cables, travel adapter, phone, and laptop on warm stone. A
-Signal Lime cable forms a loose route through the objects, with Route Ink and
-Route Mist details. The quiet left side is intentionally reserved for copy. Keep
+The hero artwork uses a right-heavy, text-free editorial still life: a compact
+rainproof tent, two rolled sleeping bags, two mats, a lantern, and a first-aid
+kit arranged beside a wet forest campsite. A Signal Lime guyline forms a loose
+route through the gear, with Route Ink and Route Mist details. The quiet left
+side is intentionally reserved for copy. Keep
 people, logos, shopping-cart icons, AI sparkles, and purple gradients out of this
 system.
 
@@ -143,7 +150,7 @@ right edge so the negative-space rhythm remains intact.
 | Asset | Best fit | Meaning |
 | --- | --- | --- |
 | `woven-friction.png` | Slide 2 | Tangled, incompatible choices make the user rebuild the cart |
-| `woven-complete-kit.png` | Slides 3–4 | One calm, complete charging kit resolves the whole request |
+| `woven-complete-kit.png` | Slides 3–4 | One calm, complete camping kit resolves the whole request |
 | `woven-human-confirmation.png` | Slides 5 or 7 | The route remains incomplete until the person makes the final connection |
 
 These are editorial metaphors, not product evidence. Keep the verified buyer,

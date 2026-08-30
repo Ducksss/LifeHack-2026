@@ -20,6 +20,7 @@ export default defineConfig({
         widget: path.resolve("web/widget.html"),
         merchant: path.resolve("web/merchant.html"),
         install: path.resolve("web/install.html"),
+        identity: path.resolve("web/identity.html"),
         landing: path.resolve("web/landing.html"),
       },
     },

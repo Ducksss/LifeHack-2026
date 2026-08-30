@@ -58,7 +58,7 @@
       <image href="../screenshots/buyer-overview.png" x="676" y="172" width="824" height="464" preserveAspectRatio="xMidYMid slice" clip-path="url(#app-screen)"/>
       <rect x="676" y="657" width="824" height="1" fill="#d8d0c4"/>
       <text x="676" y="704" fill="#0e4b3b" font-family="Iowan Old Style, Baskerville, Georgia, serif" font-size="26" font-weight="600">The tool builds the whole cart—not another list of links.</text>
-      <text x="676" y="730" fill="#6d7974" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="14">Three ranked options · one pickup each · exact terms before confirmation</text>
+      <text x="676" y="730" fill="#6d7974" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="14">Five ranked options · one pickup each · exact terms before confirmation</text>
     </g>
 
     <text x="650" y="820" fill="#0e4b3b" font-family="SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700" letter-spacing="1.5">REAL UI · SHARED MCP BACKEND · STAGE-SAFE BROWSER FALLBACK</text>

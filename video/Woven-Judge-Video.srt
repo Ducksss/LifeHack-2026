@@ -5,23 +5,23 @@ checking compatibility, finding stock, and rebuilding everything at checkout. We
 
 2
 00:00:12,600 --> 00:00:29,400
-Imagine flying tonight and needing a charger for three devices. Search can recommend individual products,
-but it does not guarantee that everything works together, fits your budget, is available today, and can be collected from one place.
+Imagine planning a first camping trip for two on a rainy weekend. Search can recommend a tent,
+but it does not guarantee rainproof shelter, two complete sleep systems, lighting and first aid, one-car fit, budget, stock, and one pickup location.
 
 3
 00:00:30,600 --> 00:00:47,000
 Woven understands the complete request, eliminates incompatible combinations, and creates ready-to-buy carts.
-Every cart comes from one merchant and one location, with an explanation of why every component works.
+Every cart comes from one merchant and one location, with proof that every component and quantity fits the same trip.
 
 4
 00:00:58,000 --> 00:01:23,000
-Woven returned three complete options—not loose product links. This S$133 cart includes the charger, both required cables, and the Japan adapter.
-Everything is compatible, under budget, available in our demo inventory, and ready at one pickup location.
+Woven returned five complete options—not loose product links. This S$231.00 cart includes a rainproof tent, a sleeping bag and mat for each camper, an IPX4 lantern, and water-resistant first aid.
+All seven required units fit one car boot, stay under budget, and are ready at one pickup location.
 
 5
 00:01:36,200 --> 00:01:57,800
-Woven rechecks the price and stock, then creates an exact ten-minute checkout preview. The AI recommended this cart, but it cannot approve it.
-The user sees the merchant, every item, the pickup location, and the S$133 total before one direct confirmation.
+Before checkout, Woven enforces a simulated identity handoff, then rechecks price and stock. The AI cannot approve the purchase.
+The user sees every item and quantity, the pickup location, and the S$231.00 total before one direct confirmation.
 
 6
 00:01:59,200 --> 00:02:13,800
@@ -40,8 +40,8 @@ into merchant actions and a reviewable checkout without asking the user to start
 
 9
 00:02:46,800 --> 00:02:54,500
-This prototype uses seeded inventory and a simulated Visa authorization; no live charge occurs.
-Our next trust step is the connector-style demo identity check.
+This prototype uses seeded inventory, a server-enforced demo identity check,
+and a simulated Visa authorization. No live charge occurs.
 
 10
 00:02:54,500 --> 00:02:59,700

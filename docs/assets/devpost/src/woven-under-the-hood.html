@@ -110,12 +110,12 @@
       <div class="rung">
         <span class="dot lime">01</span>
         <span class="actors"><b>You</b> → host</span>
-        <span class="body"><h3>Ask in the chat.</h3> <p>“Charging kit for MacBook Air, iPhone, AirPods — under S$150, pickup today.”</p></span>
+        <span class="body"><h3>Ask in the chat.</h3> <p>“Rainy camping weekend for 2 — under S$300, one car boot.”</p></span>
       </div>
       <div class="rung">
         <span class="dot">02</span>
         <span class="actors">model → <b>Woven</b></span>
-        <span class="body"><h3>The model picks <code>start_mission</code>.</h3> <p>Codex extracts budget, devices, destination, and pickup into one MCP call.</p></span>
+        <span class="body"><h3>The model picks <code>start_mission</code>.</h3> <p>Codex extracts budget, campers, weather, packed volume, and pickup into one MCP call.</p></span>
       </div>
       <div class="rung">
         <span class="dot">03</span>
@@ -130,12 +130,12 @@
       <div class="rung">
         <span class="dot lime">05</span>
         <span class="actors"><b>You</b> → widget</span>
-        <span class="body"><h3>Explore with app-only tools.</h3> <p><code>select_cart</code> runs from your clicks — the model cannot call it.</p></span>
+        <span class="body"><h3>Choose and verify with app-only tools.</h3> <p><code>select_cart</code>, <code>swap_cart_item</code>, and <code>start_demo_identity</code> run from your clicks — the model cannot call them.</p></span>
       </div>
       <div class="rung">
         <span class="dot">06</span>
         <span class="actors">widget → <b>guard</b></span>
-        <span class="body"><h3>Review mints a mandate.</h3> <p><code>create_checkout_preview</code> rechecks price and stock, binds the hash, and hides a one-time nonce from the model.</p></span>
+        <span class="body"><h3>Review mints a mandate.</h3> <p><code>create_checkout_preview</code> requires the current demo identity, rechecks price and stock, binds the hash, and hides a one-time nonce from the model.</p></span>
       </div>
       <div class="rung">
         <span class="dot lime">07</span>
@@ -153,8 +153,8 @@
       <div class="payload">
         <div class="tag"><i>02</i> the model’s only entry point</div>
         <pre>start_mission({
-  <span class="k">request</span>: <span class="s">"charging kit for…"</span>,
-  <span class="k">budgetCents</span>: 15000, <span class="k">destination</span>: <span class="s">"Tokyo"</span>
+  <span class="k">request</span>: <span class="s">"rainy camping weekend for 2…"</span>,
+  <span class="k">budgetCents</span>: 30000, <span class="k">campers</span>: 2
 })</pre>
       </div>
       <div class="payload">

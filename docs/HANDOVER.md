@@ -42,9 +42,9 @@ The current three-minute stage line is:
 
 > Ask once. Review once. Confirm once.
 
-`script.md` at the repository root is the authoritative narration. It includes a
-target connector-style identity scene, but that scene is explicitly **not live**
-until the server enforces identity before checkout.
+`script.md` at the repository root is the authoritative narration. Its
+connector-style demo identity scene is live: the server now rejects checkout
+until the short-lived identity handoff succeeds.
 
 ## Why this direction was chosen
 
@@ -70,55 +70,62 @@ real host.
 
 ## Canonical demo story
 
-> I fly to Tokyo tonight. Build a charging kit for my MacBook Air, iPhone and
-> AirPods under S$150, with pickup today.
+> I need a complete rainy-weekend camping kit for 2 first-time campers. Keep it
+> under S$300, fit it in one car boot, and make it pickup-ready today.
 
 Within three minutes, the audience should see:
 
-1. the mission become three ranked, one-merchant carts;
-2. proof that the charger, cables, adapter, destination, stock, pickup, and budget
-   constraints are all satisfied;
-3. a price/stock recheck and ten-minute checkout mandate;
-4. one explicit click confirming the exact merchant, cart version, and total;
-5. a clearly simulated Visa result and pickup receipt; and
-6. a merchant-controlled stale price, stockout, decline, or reversal scenario.
+1. the mission open five ranked, one-merchant carts in the Choice Center;
+2. the user compare full carts, rerank them, choose a pickup area, and optionally
+   use a merchant-approved compatible substitution;
+3. proof that the tent, two sleeping bags, two sleeping mats, lantern, first-aid
+   supplies, rain protection, packed volume, stock, pickup, and budget constraints
+   are all satisfied;
+4. a clearly labeled, server-enforced demo identity handoff;
+5. a price/stock recheck and ten-minute checkout mandate bound to that session;
+6. one explicit click confirming the exact merchant, cart version, and total;
+7. a clearly simulated Visa result and signed receipt; and
+8. merchant-controlled alternatives plus stale price, stockout, decline, and reversal scenarios.
 
-The judge deck now follows this as a seven-slide main story with four Q&A
-backups. Its identity step is labeled **planned**; the speaker notes route the
-live demo through the implemented review-and-confirm flow only.
+The judge deck follows this as a seven-slide main story with six Q&A backups.
+Its identity step is implemented and must remain labeled simulated.
 
 ## Current product state
 
 | Area | Status | Notes |
 | --- | --- | --- |
 | Buyer MCP App | Complete | React widget using an explicit hosted entry point and the MCP Apps bridge |
-| Local plugin packaging | Complete | Repo marketplace, branded install-page assets, cache-safe stdio launcher, real Codex CLI install, fresh-host six-tool smoke test, and verified guide |
+| Local plugin packaging | Complete | Repo marketplace, branded install-page assets, cache-safe stdio launcher, real Codex CLI install, nine-tool smoke test, and verified guide |
 | Browser fallback | Complete | `/demo`; simulated chat-host rehearsal, same domain behavior over HTTP (`?instant` skips animations) |
+| Demo identity page | Complete | `/identity`; working provider-style handoff with a prominent simulator boundary and no credential fields |
 | Install guide page | Complete | `/install`; Woven-branded guide styled after the ChatGPT Plugins tab (clearly labeled preview, three install paths, verification checklist); linked from the landing page and demo host headers |
-| Merchant desk | Complete | `/merchant`; inventory, scenarios, orders, audit, reset |
-| Cart engine | Complete for canonical mission | Four required categories; one location per cart |
-| Checkout safety | Complete for prototype | Expiry, hash, private nonce, exact terms, idempotency |
-| Demo identity check | Planned, not implemented | Target is a simulated connector-style flow; never call it Visa OAuth, KYC, or a real Visa login |
+| Merchant desk | Complete | `/merchant`; inventory, approved alternatives, scenarios, orders, audit, reset |
+| Cart engine | Complete for canonical mission | Five gear categories, seven required units, five one-location choices, merchant-approved substitutions |
+| Checkout safety | Complete for prototype | Identity-session binding, expiry, hash, private nonce, exact terms, idempotency, signed receipt verification |
+| Demo identity check | Complete for prototype | Server-enforced state + PKCE + allowlisted callback + one-time code + 15-minute session; never call it Visa OAuth, KYC, or a real Visa login |
 | Visa rail | Simulated only | Approval, decline, failure, and reversal semantics |
-| Automated verification | Green | Nine tests, TypeScript/build gate, GitHub CI |
+| Automated verification | Green | Twelve tests, TypeScript/build gate, GitHub CI |
 | README and gallery | Complete | Best-README structure and eight 1600×900 Devpost assets |
 | Stage fallback assets | Complete | Five numbered 1600×900 frames with editable SVG sources and explicit simulator boundaries |
 | Judge pitch deck | Complete | Seven-slide story plus six backups; presenter notes and source blocks included |
-| Judge demo video | Complete locally | Three-minute Remotion master with synthetic narration and sidecar captions; public upload URL remains outstanding |
+| Judge demo video | Complete locally | Three-minute Remotion master with ElevenLabs AI narration and sidecar captions; public upload URL remains outstanding |
 | Agent context | Current | `AGENTS.md` is canonical; Claude and Copilot use thin pointers to it |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
 | Public HTTPS deployment | Complete for the demo | <https://woven-pi.vercel.app> (canonical — `BASE_URL` points here, verified through `/mcp` widget assets; <https://visa-woven.vercel.app> serves the same deployment). Vercel Express preset; SQLite uses temporary `/tmp` state and may reset on cold start or redeploy — reset the demo right before presenting |
-| Devpost submission | Text ready — media blocked | Draft story includes the current simulated-host UI and planned identity boundary; 13 technology tags, repository, Visa prize and Digital Payments are saved; uploads and submission remain outstanding |
-| Real merchant/Visa integrations | Not started | Explicitly outside current prototype scope |
+| Devpost submission | Text ready — media blocked | Draft story includes the working simulated-host and identity boundaries; 13 technology tags, repository, Visa prize and Digital Payments are saved; uploads and submission remain outstanding |
+| Real merchant/Visa integrations | Credential-blocked | Visa Intelligent Commerce is the selected real path; VTS, VIC, Token Requestor, MLE, and Visa Payment Passkey credentials are required |
 
 ## Product vocabulary
 
-- **Mission:** the user's desired outcome plus hard constraints.
+- **Mission:** the user's desired outcome plus hard constraints such as camper
+  count, weather, packed volume, budget, stock, and pickup.
 - **Cart:** a complete set of compatible offers from one merchant pickup location.
-- **Compatibility proof:** the explanation for why every component satisfies the
-  devices and destination.
+- **Completeness proof:** the explanation for why every component and quantity
+  satisfies the weather, capacity, sleep, packed-volume, and safety brief.
 - **Checkout preview / mandate:** exact merchant, items, amount, cart version, and
   expiry presented before authorization.
+- **Demo identity:** a simulated provider handoff that creates a short-lived,
+  opaque server session; it is not Visa login, KYC, or purchase consent.
 - **Explicit confirmation:** the separate direct user action that consumes the
   private one-time nonce.
 - **Visa simulator:** the current payment adapter. It never contacts Visa and never
@@ -173,16 +180,16 @@ and domain rules. Do not split it into services without a measured reason.
 | `docs/architecture.md` | Detailed tool contract, state machine and trust boundaries |
 | `docs/DEVPOST_SUBMISSION.md` | Paste-ready Devpost story, captions, pitch and demo script |
 | `docs/BRAND_GUIDE.md` | Naming, visual tokens, asset inventory and campaign prompt |
-| `docs/Woven-Hackathon-Pitch.pptx` | Thirteen-slide judge deck (7 story + 6 backup); the identity scene is explicitly labeled as planned, not live |
+| `docs/Woven-Hackathon-Pitch.pptx` | Judge deck with the camping mission and working simulated identity handoff |
 | `video/WovenJudgeVideo.tsx` | Three-minute Remotion judge composition using the authoritative script and verified product frames |
 | `video/voiceover.ts` | Timed narration transcript; display copy preserves the authoritative wording |
 | `video/Woven-Judge-Video.srt` | Sidecar captions for the three-minute master |
-| `public/woven-video/` | Synthetic narration and ambient audio consumed by the composition |
+| `public/woven-video/` | ElevenLabs AI narration and ambient audio consumed by the composition |
 | `docs/Woven-Devpost-Visuals.pptx` | Editable three-slide source deck for user flow, architecture, and trust visuals |
 | `docs/assets/brand/woven-cover.{png,svg}` | Product-led repository/social cover using the working buyer UI |
 | `docs/assets/devpost/woven-{user-flow,architecture,trust-boundary}.png` | Verified 1600×900 submission visuals |
 | `docs/assets/demo/*.{png,svg}` | Numbered 1600×900 stage fallback sequence and recording close card |
-| `script.md` | Authoritative three-minute narration, stage cues, fallback, judge Q&A, and identity implementation gate |
+| `script.md` | Authoritative three-minute narration, stage cues, fallback, judge Q&A, and demo identity boundary |
 
 ## Interfaces and runtime
 
@@ -193,12 +200,15 @@ and domain rules. Do not split it into services without a measured reason.
 | `start_mission` | Model and app | Create the mission and initial carts |
 | `build_carts` | Model and app | Recompute carts from current stock/prices |
 | `select_cart` | App only | Persist the chosen cart |
-| `create_checkout_preview` | App only | Revalidate and create an exact mandate |
+| `swap_cart_item` | App only | Apply an active merchant-approved compatible substitution |
+| `start_demo_identity` | App only | Start the simulated identity handoff |
+| `create_checkout_preview` | App only | Require demo identity, revalidate, and create an exact mandate |
 | `confirm_purchase` | App only | Consume confirmation and execute the simulator outcome |
 | `get_order_status` | Model | Read the latest public mission/order state |
+| `verify_receipt` | Model and app | Verify a simulated receipt's server signature |
 
-The one-time confirmation nonce is returned in MCP result `_meta`, never in
-model-visible `structuredContent`.
+The one-time confirmation nonce and identity authorization URL are returned in
+MCP result `_meta`, never in model-visible `structuredContent`.
 
 ### HTTP surfaces
 
@@ -206,6 +216,7 @@ model-visible `structuredContent`.
 | --- | --- |
 | Landing page | `http://localhost:8787/` |
 | Buyer fallback | `http://localhost:8787/demo` |
+| Demo identity connector | `http://localhost:8787/identity` |
 | Merchant desk | `http://localhost:8787/merchant` |
 | Install guide | `http://localhost:8787/install` |
 | MCP endpoint | `http://localhost:8787/mcp` |
@@ -283,17 +294,16 @@ the currently working product flow.
 3. Keep `/demo` and `/merchant` open in separate tabs (`/demo?instant` skips
    the intro animation if time is short).
 4. Let `/demo` play: the canonical request types itself, the staged `start_mission`
-   activity runs, and the widget renders three complete carts.
-5. Select ByteRoute and show the compatibility proof.
-6. Click **Review checkout** and emphasize the price/stock recheck.
-7. Read the exact S$133 mandate, then click **Confirm**.
-8. Show the simulated result, pickup receipt, and the scripted thank-you close.
-9. If time permits, select **Price change** in `/merchant` and show stale-preview
+   activity runs, and the Choice Center opens with five complete carts.
+5. Compare the carts, show a priority/area rerank, then choose TrailHaus.
+6. Show the two-person, rain-rating, quantity, car-boot, pickup-plan, and approved-swap proof.
+7. Click **Review checkout**, then **Verify demo identity**.
+8. On `/identity`, read the **DEMO ONLY** boundary and click **Continue as Chai**.
+9. Return to Woven, check the session, and review the price/stock recheck.
+10. Read the exact mandate, then click **Confirm**.
+11. Show the simulated result, valid receipt signature, and scripted thank-you close.
+12. If time permits, select **Price change** in `/merchant` and show stale-preview
    rejection.
-
-Do not add the target identity scene to the live demo until checkout rejects a
-missing or expired server-side identity session. A static login mock does not
-qualify.
 
 ## Submission handover
 
@@ -302,16 +312,15 @@ authorization-boundary slide, architecture slide, product screenshots, numbered
 stage fallback sequence, Devpost story, captions, judge Q&A, three-minute script,
 and thirteen-slide pitch deck are complete. The main deck story is: friction →
 complete cart → live request → human authorization → merchant control →
-takeaway. The pitch deck includes identity only as the next integration.
-Regenerate the identity and checkout evidence after identity is implemented
-rather than presenting the current planned state as live.
+takeaway. The identity scene is now working and must be described as a simulated,
+server-enforced POC rather than a Visa identity product.
 
 The existing LifeHack Devpost draft is saved at
 <https://devpost.com/software/woven-wzefyv>. Its rendered preview has been
 verified with the project name, pitch, story, 13 technology tags, GitHub link,
 `Visa best submission award`, and `Digital Payments`. It is not submitted.
-The story was re-synced after the three-minute script became authoritative; the
-connector-style identity check appears only as planned roadmap work.
+The story was re-synced after the connector-style demo identity check became a
+working, server-enforced feature.
 Thumbnail/gallery uploads, the public demo video URL, and the required project
 PDF remain empty. A local three-minute Remotion master is complete at
 `output/Woven-Judge-Video.mp4`; generated `output/` artifacts remain ignored by
@@ -347,9 +356,8 @@ inspect
 
 Unless the user changes direction, prioritize in this order:
 
-1. **Simulated identity check:** add the connector-style demo authorization flow,
-   bind its opaque subject to checkout, reject missing/expired/mismatched
-   sessions, and keep final purchase confirmation separate.
+1. **Deploy and verify identity publicly:** redeploy the current build, exercise
+   `/identity` through the public MCP app, and verify private metadata and CSP.
 2. **Real ChatGPT connection:** connect the deployed `/mcp` endpoint in Developer
    Mode and verify the widget, private metadata, CSP and tool calls.
 3. **Demo video upload:** review the local three-minute master, upload it, and add
@@ -365,13 +373,12 @@ These ideas are intentionally deferred, not forgotten:
 
 - Google search result injection or a Chrome extension;
 - scraping merchants or presenting seeded stock as live;
-- production user accounts, onboarding, refunds, disputes or fulfilment; the
-  scoped simulated identity check above is the only planned exception;
+- production user accounts, onboarding, refunds, disputes or fulfilment;
 - broad multi-category optimization or a solver;
 - extra services, queues, caches or databases;
 - live Visa calls without the exact approved product and credentials.
 
-The existing four-part charging mission and direct cart enumeration are deliberate
+The existing five-category camping mission and direct cart enumeration are deliberate
 demo constraints. Generalize only when the user explicitly chooses broader scope
 or evidence shows the current ceiling matters.
 

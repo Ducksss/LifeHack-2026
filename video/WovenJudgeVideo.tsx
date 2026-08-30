@@ -209,8 +209,8 @@ const CompleteCartScene = () => {
   const frame = useCurrentFrame();
   const proof = [
     ["1", "merchant + pickup point"],
-    ["4", "compatible components"],
-    ["S$133", "under budget"],
+    ["7", "required gear units"],
+    ["89 L", "S$231 · both limits"],
   ];
 
   return (
@@ -255,11 +255,11 @@ const PromptScene = () => {
         <div style={{ left: 88, opacity: quoteReveal, position: "absolute", top: 150, transform: `translateY(${interpolate(quoteReveal, [0, 1], [30, 0])}px)`, width: 1040 }}>
           <Kicker>Ask once</Kicker>
           <div style={{ color: WHITE, fontFamily: "Georgia, serif", fontSize: 62, fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.12, marginTop: 28 }}>
-            “I fly to Tokyo tonight. Build a charging kit for my MacBook Air, iPhone and AirPods under S$150, with pickup today.”
+            “I need a complete rainy-weekend camping kit for 2 first-time campers. Keep it under S$300, fit it in one car boot, and make it pickup-ready today.”
           </div>
         </div>
         <div style={{ bottom: 105, display: "flex", gap: 14, left: 88, position: "absolute" }}>
-          {["Tokyo", "3 devices", "S$150 hard cap", "Pickup today"].map((label, index) => (
+          {["Rainy weekend", "2 campers", "S$300 hard cap", "1 car boot"].map((label, index) => (
             <div key={label} style={{ border: "1px solid rgba(252,250,245,.34)", borderRadius: 999, color: WHITE, fontFamily: "Geist Variable", fontSize: 20, fontWeight: 660, opacity: spring({ frame: frame - 75 - index * 10, fps: FPS, config: { damping: 18 } }), padding: "12px 18px" }}>{label}</div>
           ))}
         </div>
@@ -269,7 +269,7 @@ const PromptScene = () => {
         <Img src={askOnce} style={{ height: "100%", objectFit: "cover", position: "absolute", transform: `scale(${1.02 + Math.max(0, frame - 260) / 21000})`, transformOrigin: "69% 48%", width: "100%" }} />
         {frame > 400 && (
           <div style={{ background: "rgba(14,75,59,.94)", border: `2px solid ${LIME}`, borderRadius: 14, boxShadow: "0 14px 44px rgba(14,75,59,.28)", color: WHITE, fontFamily: "Geist Variable", fontSize: 24, fontWeight: 760, left: 1020, padding: "14px 18px", position: "absolute", top: 635 }}>
-            ByteRoute · S$133 · 4 compatible items
+            TrailHaus · S$231 · 7 units / 5 gear types
           </div>
         )}
       </div>
@@ -295,7 +295,7 @@ const CheckoutScene = () => {
               The AI recommends.<br /><span style={{ color: BLUE, fontStyle: "italic" }}>The user authorizes.</span>
             </div>
             <div style={{ display: "flex", gap: 12, marginTop: 36 }}>
-              <div style={{ background: "rgba(182,64,50,.11)", border: "1px solid rgba(182,64,50,.25)", borderRadius: 12, color: CLAY, fontFamily: "Geist Mono Variable", fontSize: 16, fontWeight: 800, padding: "12px 15px" }}>IDENTITY · PLANNED</div>
+              <div style={{ background: "rgba(21,69,232,.1)", border: "1px solid rgba(21,69,232,.22)", borderRadius: 12, color: BLUE, fontFamily: "Geist Mono Variable", fontSize: 16, fontWeight: 800, padding: "12px 15px" }}>DEMO IDENTITY · WORKING</div>
               <div style={{ background: "rgba(21,69,232,.1)", border: "1px solid rgba(21,69,232,.22)", borderRadius: 12, color: BLUE, fontFamily: "Geist Mono Variable", fontSize: 16, fontWeight: 800, padding: "12px 15px" }}>EXACT TERMS · WORKING</div>
             </div>
           </div>

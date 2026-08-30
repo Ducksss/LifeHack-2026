@@ -17,6 +17,6 @@
   <line x1="1153" y1="724" x2="1270" y2="724" stroke="#6f968b" stroke-width="3"/>
   <circle cx="1283" cy="724" r="10" fill="#fcfaf5"/>
   <circle cx="1283" cy="724" r="6" fill="#1545e8"/>
-  <text x="1320" y="731" fill="#fcfaf5" font-family="SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700" letter-spacing="1.4">SIN → TYO</text>
+  <text x="1278" y="731" fill="#fcfaf5" font-family="SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700" letter-spacing="1.4">RAIN → READY</text>
   <text x="90" y="838" fill="#9db7ae" font-family="SFMono-Regular, Menlo, monospace" font-size="12" font-weight="700" letter-spacing="1.8">SEEDED INVENTORY · SIMULATED VISA AUTHORIZATION · NO LIVE CHARGE</text>
 </svg>

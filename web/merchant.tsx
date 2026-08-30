@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
-import type { CatalogItem, Order, Scenario } from "../src/domain";
+import type { CatalogItem, MerchantAlternative, Order, Scenario } from "../src/domain";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -27,14 +27,15 @@ import "./styles.css";
 interface Dashboard {
   scenario: Scenario;
   catalog: CatalogItem[];
+  alternatives: MerchantAlternative[];
   orders: Order[];
   audit: Array<{ id: number; event: string; detail: Record<string, unknown>; createdAt: string }>;
 }
 
 const scenarios: Array<{ id: Scenario; label: string; detail: string }> = [
   { id: "normal", label: "Normal", detail: "Approval and order succeed" },
-  { id: "stockout", label: "Stockout", detail: "Top charger disappears" },
-  { id: "price-change", label: "Price change", detail: "Top cart changes by S$10" },
+  { id: "stockout", label: "Stockout", detail: "Top rainproof tent disappears" },
+  { id: "price-change", label: "Price change", detail: "Top tent increases by S$30" },
   { id: "auth-decline", label: "Auth decline", detail: "Visa simulation declines" },
   { id: "order-fail", label: "Order failure", detail: "Authorization reverses" },
 ];
@@ -225,6 +226,32 @@ function MerchantDesk() {
           </CardContent>
         </Card>
       </div>
+
+      <Card className="mt-4 gap-4">
+        <PanelHeading title="Approved alternatives" note="Publish or withdraw compatible substitutions shown in the buyer Choice Center." />
+        <CardContent>
+          <div className="grid gap-3 lg:grid-cols-3">
+            {data.alternatives.map((alternative) => (
+              <article key={`${alternative.fromOfferId}:${alternative.toOfferId}`} className="flex flex-col rounded-xl border p-4">
+                <div className="flex items-center justify-between gap-2"><Badge variant={alternative.active ? "default" : "secondary"} className="font-mono text-[9px] uppercase">{alternative.active ? "Published" : "Withdrawn"}</Badge><span className="text-[11px] text-muted-foreground">{alternative.locationName}</span></div>
+                <h3 className="mt-3 text-sm font-semibold">{alternative.merchantName}</h3>
+                <p className="mt-1 text-xs text-muted-foreground">{alternative.fromName}</p>
+                <p className="my-1 text-center text-xs text-muted-foreground">↕</p>
+                <p className="text-xs font-medium">{alternative.toName}</p>
+                <Button
+                  variant={alternative.active ? "outline" : "default"}
+                  size="sm"
+                  className="mt-4 w-full"
+                  disabled={busy !== null}
+                  onClick={() => void mutate("alternative", "/api/merchant/alternative", { fromOfferId: alternative.fromOfferId, toOfferId: alternative.toOfferId, active: !alternative.active })}
+                >
+                  {alternative.active ? "Withdraw alternative" : "Publish alternative"}
+                </Button>
+              </article>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       <Card className="mt-4 gap-4">
         <PanelHeading title="Inventory & price feed" note="Seeded offers across every merchant pickup location." />

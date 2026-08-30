@@ -27,12 +27,11 @@ The audience should remember one sequence:
 | Separate direct user confirmation | Working | Yes |
 | Simulated Visa approval, decline, and reversal | Working | Yes, always say simulated |
 | Merchant inventory, scenarios, orders, and audit | Working | Yes |
-| Connector-style identity verification | **Planned, not implemented** | **No** |
+| Connector-style demo identity handoff | Working simulator | Yes, always say simulated |
 | Live Visa authorization or partnership | Not implemented | No |
 
-Until the identity feature is implemented and tested, use the working checkout
-block below. After implementation, replace it with the target identity block;
-never pretend that a static screen verifies a user.
+The identity screen is backed by a server-enforced session gate. Present it as a
+working simulator, never as production identity verification, KYC, or a Visa login.
 
 ## Stage setup
 
@@ -43,7 +42,7 @@ Before judges arrive:
 3. Open `http://localhost:8787/merchant` and select **Reset demo data**.
 4. Keep the MCP App or `http://localhost:8787/demo` ready in the foreground.
 5. Keep `/merchant` open in a second tab with the scenario set to **Normal**.
-6. Confirm that ByteRoute totals **S$133.00** for the canonical request.
+6. Confirm that TrailHaus totals **S$231.00** for the canonical request.
 7. Rehearse the happy path once, then reset the data again.
 
 Use the real MCP App when the host and network are dependable. Use `/demo` as the
@@ -59,8 +58,8 @@ working product evidence, or the conclusion.
 
 | Beat | Primary screen | What the judge must notice |
 | --- | --- | --- |
-| Slides 1–3 | Full-screen deck | The problem, complete-cart promise, and concrete S$133 proof |
-| Slide 4 → buyer demo | Prompt slide, then MCP App or `/demo` | One natural-language request becomes three complete carts |
+| Slides 1–3 | Full-screen deck | The problem, complete-cart promise, and concrete S$231.00 proof |
+| Slide 4 → buyer demo | Prompt slide, then MCP App or `/demo` | One natural-language request becomes five complete carts |
 | Slide 5 → checkout demo | Trust-boundary slide, then buyer checkout | The exact terms are visible and only the user can confirm |
 | Slide 6 → Merchant Desk | Merchant-control slide, then `/merchant` if time permits | Stock, scenarios, orders, and audit are controllable |
 | Slide 7 | Full-screen deck | Why the product belongs inside ChatGPT/Codex |
@@ -73,7 +72,7 @@ Deck rules:
   (`#F4EEE4`) evidence slides. Signal Lime highlights progress; Waypoint Blue is
   reserved for the simulated payment boundary.
 - Use one large claim, one supporting composition, and no paragraphs on screen.
-- Use verified product screenshots for product claims. Editorial charging-kit
+- Use verified product screenshots for product claims. Editorial camping
   imagery may introduce the story but must not substitute for product evidence.
 - In the live browser, use a readable zoom level, close unrelated tabs and
   notifications, and keep the visible **Simulated** label when using `/demo`.
@@ -95,8 +94,9 @@ Deck rules:
 - Route Ink full-bleed background.
 - Left 55%: the headline in two or three large lines, with the stage line
   **Ask once. Review once. Confirm once.** small at the bottom.
-- Right 35%: the complete charging-kit hero image, showing the charger, cables,
-  adapter, phone, and laptop connected by the Signal Lime route.
+- Right 35%: the complete camping hero image, showing a rainproof tent, two
+  sleeping bags, two mats, a lantern, and first-aid kit connected by the Signal
+  Lime route.
 - Show no interface yet. This slide establishes the human problem and the Woven
   name before demonstrating the product.
 
@@ -113,15 +113,15 @@ that process.”
 
 **Visible copy**
 
-> Compare products · Check compatibility · Find one store · Rebuild checkout
+> Size every item · Check rain ratings · Fit one car · Rebuild checkout
 
 **Layout and what to show**
 
 - Runway Paper background.
 - Left 42%: the title, with **Rebuild the cart at checkout** in Alert Clay as the
   consequence.
-- Right 50%: three numbered horizontal steps—**Compare products**, **Check
-  compatibility**, **Find one store**—ending at a lime rule that visually stops
+- Right 50%: three numbered horizontal steps—**Size every item**, **Check rain
+  ratings**, **Fit one car**—ending at a lime rule that visually stops
   before checkout.
 - Do not show logos or generic search screenshots. The incomplete process is the
   visual.
@@ -131,34 +131,35 @@ fits your budget, is available today.”
 
 **Say**
 
-> “Imagine flying tonight and needing a charger for three devices. Search can
-> recommend individual products, but it does not guarantee that everything works
-> together, fits your budget, is available today, and can be collected from one
-> place.”
+> “Imagine planning a first camping trip for two on a rainy weekend. Search can
+> recommend a tent, but it does not guarantee rainproof shelter, a complete sleep
+> system for each person, lighting and first aid, one-car fit, budget, stock, and
+> one pickup location.”
 
 ### 0:30–0:48 — Slide 3: Woven returns a complete cart, not another list
 
 **Visible copy**
 
-> One merchant · Everything compatible · Under budget · Pickup today
+> One merchant · Seven required units · Rain-ready · One car boot
 
 **Layout and what to show**
 
 - Runway Paper background with the claim across the top.
 - Left 28%: three oversized proof points stacked vertically—**1 merchant and
-  pickup point**, **4 compatible components**, **S$133 under budget**.
-- Right 62%: a large verified buyer-results screenshot showing the three complete
-  carts. Crop closely enough that the cards and total are legible.
-- Signal Lime marks completeness; Alert Clay may emphasize the S$133 total.
+  pickup point**, **7 units across 5 gear categories**, **89 L and S$231.00
+  within both hard limits**.
+- Right 62%: a large verified buyer-results screenshot showing the five-choice
+  modal. Crop closely enough that the choices and totals are legible.
+- Signal Lime marks completeness; Alert Clay may emphasize the S$231.00 total.
 
-**Presenter cue:** Point in order to **1**, **4**, then **S$133**. End by moving
+**Presenter cue:** Point in order to **1**, **7**, then **S$231.00**. End by moving
 your hand toward the product screenshot and say, “Let me show you.”
 
 **Say**
 
 > “Woven understands the complete request, eliminates incompatible combinations,
 > and creates ready-to-buy carts. Every cart comes from one merchant and one
-> location, with an explanation of why every component works.”
+> location, with proof that every component and quantity fits the same trip.”
 
 **Transition**
 
@@ -170,9 +171,9 @@ your hand toward the product screenshot and say, “Let me show you.”
 
 - Route Ink full-bleed background.
 - Left 68%: the canonical request as one large quotation.
-- Right 24%: a thin constraint rail listing **Tokyo**, **MacBook + iPhone +
-  AirPods**, **S$150 hard cap**, and **Pickup today**.
-- Bottom-left: **3 complete carts. 1 natural sentence.** in Signal Lime.
+- Right 24%: a thin constraint rail listing **Rainy weekend**, **2 first-time
+  campers**, **S$300 hard cap**, and **1 car boot**.
+- Bottom-left: **5 complete choices. 1 natural sentence.** in Signal Lime.
 - Keep this slide up only long enough for the judges to read the request, then
   cut directly to the live buyer surface.
 
@@ -181,31 +182,34 @@ your hand toward the product screenshot and say, “Let me show you.”
 Enter or reveal the canonical request. In `/demo`, let the simulated host type it
 and show the staged `start_mission` activity before the real widget appears:
 
-> I fly to Tokyo tonight. Build a charging kit for my MacBook Air, iPhone and
-> AirPods under S$150, with pickup today.
+> I need a complete rainy-weekend camping kit for 2 first-time campers. Keep it
+> under S$300, fit it in one car boot, and make it pickup-ready today.
 
 Then:
 
 1. Show the host header so the environment is honest: real ChatGPT/Codex when
    connected, or the clearly labeled **Simulated** host in `/demo`.
 2. Let the `start_mission` tool call appear; do not narrate the protocol details.
-3. When the widget loads, pause on the three ranked one-merchant carts.
-4. Select **ByteRoute**.
-5. Point to the charger wattage and voltage, both cables, Japan adapter, pickup
-   location, seeded demo stock, and **S$133.00** total.
+3. When the widget loads, pause on the Choice Center with five ranked one-location carts.
+4. Open **Compare carts**, switch to **Most rainproof**, then select **TrailHaus**.
+5. Point to the pickup plan and merchant-approved swap before the two-person
+   tent and 3,000 mm rainfly, two sleeping bags, two
+   mats, IPX4 lantern, first-aid coverage, 89 L packed volume, pickup location,
+   seeded demo stock, and **S$231.00** total.
 
 **Screen priority:** Keep the widget large enough that the product names,
-compatibility proof, pickup location, and total are readable. Browser chrome and
+quantity proof, pickup location, and total are readable. Browser chrome and
 developer tools are never part of the shot.
 
 **Fallback frame:** `docs/assets/demo/01-ask-once.png`.
 
 **Say**
 
-> “Woven returned three complete options—not loose product links. This S$133 cart
-> includes the charger, both required cables, and the Japan adapter. Everything
-> is compatible, under budget, available in our demo inventory, and ready at one
-> pickup location.”
+> “Woven returned five complete choices—not loose product links. I can compare
+> full carts, optimize for rain protection or pickup, and still choose. This S$231.00
+> cart includes a rainproof tent, a sleeping bag and mat for each camper, an
+> IPX4 lantern, and water-resistant first aid. All seven required units fit one
+> car boot, stay under budget, and are ready at one pickup location.”
 
 Do not explain the ranking algorithm unless a judge asks. The visible result is
 the proof.
@@ -215,45 +219,12 @@ the proof.
 **Slide 5 layout and what to show**
 
 - Runway Paper background.
-- Left 35%: **The AI recommends. The user authorizes.** with **Identity is the
-  next integration** in Alert Clay.
-- Right 57%: a three-step vertical path—**Verify identity** labeled **PLANNED**,
-  then **Review exact terms** and **Confirm once** labeled **WORKING**.
-- Keep the planned label visible. Never animate the identity step into a
-  completed state.
+- Left 35%: **The AI recommends. The user authorizes.** with **Two separate trust
+  gates** in Alert Clay.
+- Right 57%: a three-step vertical path—**Verify demo identity**, **Review exact
+  terms**, and **Confirm once**, each labeled **WORKING · SIMULATED** where relevant.
 - Use this slide as a five-second trust-boundary bridge, then cut back to the
-  selected ByteRoute cart in the live buyer surface.
-
-#### Working checkout block — use now
-
-1. Click **Review checkout**.
-2. Let the preview load without moving the cursor.
-3. Point to the exact merchant, four items, pickup location, total, and expiry—in
-   that order.
-4. Rest the cursor beside, not on, **Confirm S$133.00** while explaining that the
-   AI cannot approve the purchase.
-5. Pause for one beat, click **Confirm S$133.00**, and show the blue simulated
-   Visa result and pickup receipt.
-
-**What must remain visible:** the full amount on the confirmation button, the
-expiry, the **simulated** payment label, and the receipt state after the click.
-
-**Fallback frames:** `docs/assets/demo/02-review-once.png` followed by
-`docs/assets/demo/03-confirm-once.png`.
-
-**Say**
-
-> “Woven rechecks the price and stock, then creates an exact ten-minute checkout
-> preview. The AI recommended this cart, but it cannot approve it. The user sees
-> the merchant, every item, the pickup location, and the S$133 total before one
-> direct confirmation.”
->
-> “Only after that click does Woven produce a simulated Visa authorization and
-> pickup receipt. No card details enter Woven, and no live charge occurs.”
-
-#### Target identity block — use only after implementation
-
-This replaces the working checkout block; it is not an extra slide.
+  selected TrailHaus cart in the live buyer surface.
 
 1. Click **Review checkout**.
 2. Woven displays **Verify demo identity**.
@@ -263,25 +234,34 @@ This replaces the working checkout block; it is not an extra slide.
    > **DEMO ONLY — No Visa account or card details are accessed.**  
    > Continue as Chai
 
-4. Click **Continue** and return to Woven with **Identity verified**.
-5. Show the exact merchant, items, pickup location, total, and expiry.
-6. Pause before clicking **Confirm S$133.00**.
-7. Confirm and show the simulated result and receipt.
+4. Click **Continue as Chai**, close the completed handoff tab, and select
+   **I’ve verified · check status** in Woven.
+5. Select **Review exact terms**, then show the exact merchant, five products,
+   seven units, pickup location, total, and expiry.
+6. Rest the cursor beside **Confirm S$231.00** and pause for one beat.
+7. Confirm and show the blue simulated Visa result and valid signed receipt.
+
+**What must remain visible:** **Demo only** on the identity page, the full amount
+on the confirmation button, the expiry, the **simulated** payment label, and the
+receipt state after the click.
+
+**Fallback frames:** `docs/assets/demo/02-review-once.png` followed by
+`docs/assets/demo/03-confirm-once.png`.
 
 **Say**
 
-> “Before checkout, Woven verifies who is approving the purchase through a
-> connector-style demo identity flow. It never asks for a Visa password, card
-> number, or payment credentials.”
+> “Before checkout, Woven enforces a connector-style demo identity handoff. It
+> never asks for a Visa password, card number, or payment credentials.”
 >
 > “Woven then rechecks price and stock and presents the exact merchant, products,
 > and total. The AI cannot approve this screen—the user must click confirm.”
 >
 > “Only after that confirmation does Woven produce a simulated Visa authorization
-> and pickup receipt. No real charge occurs.”
+> and a server-verifiable signed receipt. No real charge occurs.”
 
-Authentication and purchase confirmation must remain two separate user actions.
-Do not describe the planned flow as KYC, a real Visa login, or Visa OAuth.
+Demo authentication and purchase confirmation must remain two separate user
+actions. Do not describe the flow as KYC, production identity verification, a
+real Visa login, or Visa OAuth.
 
 ### 2:15–2:35 — Slide 6 → Merchant Desk: merchants control what the AI can sell
 
@@ -301,7 +281,7 @@ Show the Merchant Desk with inventory, orders, scenario controls, and audit.
 - Right 62%: a large verified Merchant Desk screenshot with inventory, scenario
   controls, and recent activity visible.
 - If the live tab is already prepared, cut to `/merchant` after two seconds and
-  point to **Normal**, the ByteRoute stock row, the confirmed order, and the audit
+  point to **Normal**, the TrailHaus stock row, the confirmed order, and the audit
   event. Otherwise remain on the verified screenshot; do not waste time loading.
 
 **Fallback frame:** `docs/assets/demo/04-merchant-control.png`.
@@ -333,7 +313,7 @@ Close with:
 - Left 48%: the closing claim, then three short lines—**ChatGPT understands**,
   **Woven builds**, **The user controls authorization**.
 - Right 42%: one verified composite showing the cart and exact confirmation
-  states. Keep **Identity planned** and **Visa authorization simulated** visible
+  states. Keep **Demo identity simulated** and **Visa authorization simulated** visible
   in the lower edge treatment.
 - Signal Lime carries the eye from the request to the cart; Waypoint Blue marks
   only the simulated authorization result.
@@ -349,16 +329,11 @@ last sentence directly to the judges.
 > plugin? Because Woven can turn that conversation into merchant actions and a
 > reviewable checkout without asking the user to start again.”
 >
-> “This prototype uses seeded inventory and a simulated Visa authorization; no
-> live charge occurs. Our next trust step is the connector-style demo identity
-> check.”
+> “This prototype uses seeded inventory, a server-enforced demo identity check,
+> and a simulated Visa authorization. No live charge occurs.”
 >
 > “Woven makes shopping through AI simple enough to use—and controlled enough to
 > trust.”
-
-After the identity flow is implemented, replace that sentence with: “This
-prototype uses seeded inventory, a simulated identity check, and a simulated
-Visa authorization; no live charge occurs.”
 
 ## If the live demo fails
 
@@ -396,10 +371,10 @@ the work elsewhere.
 
 **Does Woven verify identity today?**
 
-Not yet. The working prototype verifies an exact, expiring purchase confirmation.
-The next planned trust step is a simulated connector-style account check that
-must be enforced by the server before checkout and remain separate from final
-confirmation.
+Yes, through a simulated connector-style account check. The server validates
+state, PKCE, an allowlisted callback, a single-use code, and a short-lived opaque
+session before checkout. It is not Visa identity verification or KYC, and final
+purchase confirmation remains separate.
 
 **Does it make real Visa payments?**
 
@@ -427,7 +402,7 @@ Always say:
 - “simulated Visa authorization”
 - “seeded demo inventory”
 - “direct user confirmation”
-- “simulated connector-style identity check” when discussing the roadmap
+- “server-enforced demo identity handoff”
 
 Never say:
 
@@ -436,13 +411,12 @@ Never say:
 - “Visa partnership”
 - “live inventory”
 - “real payment” or “charged”
-- “identity verified” until the server-enforced identity flow exists
+- “production identity verified”
 - “autonomous purchase” when a human confirmation is required
 
 ## Maintenance rule
 
-When the identity flow becomes real, update all of the following in the same
-change:
+When the identity flow changes, update all of the following in the same change:
 
 - `AGENTS.md`
 - `README.md`

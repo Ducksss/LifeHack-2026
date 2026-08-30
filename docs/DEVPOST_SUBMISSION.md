@@ -15,18 +15,18 @@ publishing; the product claims below match the working repository.
 into a complete, compatible cart and waits for the user to approve the exact
 purchase before a simulated Visa authorization.
 
-**Short description:** Flying tonight and missing the right charging kit?
-Woven works inside ChatGPT and Codex to rank complete carts by compatibility,
-budget, stock, pickup time, and merchant—then binds the chosen merchant, cart,
-and total to one visible confirmation. The prototype includes a merchant
+**Short description:** Planning a first camping trip for two in the rain?
+Woven works inside ChatGPT and Codex to rank complete carts by capacity, weather
+rating, packed volume, quantity, budget, stock, pickup time, and merchant—then binds the chosen
+merchant, cart, and total to one visible confirmation. The prototype includes a merchant
 operations desk, stale-cart protection, failure scenarios, an audit trail, and a
 simulated Visa payment boundary. No card data enters the system and no live
 charge occurs.
 
-The target pitch also includes a simulated connector-style identity check. That
-step is roadmap work and must not be submitted or demonstrated as working until
-the server enforces it. See [`../script.md`](../script.md) for the authoritative
-three-minute narration and truth boundaries.
+The pitch includes a working, server-enforced connector-style demo identity
+check. It is visibly simulated—not Visa login, KYC, or production identity
+verification—and remains separate from final purchase confirmation. See
+[`../script.md`](../script.md) for the authoritative narration and boundaries.
 
 **Repository:** https://github.com/Ducksss/LifeHack-2026
 
@@ -35,16 +35,17 @@ three-minute narration and truth boundaries.
 **Demo video:** `[ADD DEVPOST/YOUTUBE VIDEO URL]`
 
 **Local master:** `output/Woven-Judge-Video.mp4` (3:00, 1600×900, H.264/AAC,
-synthetic narration). Sidecar captions: `video/Woven-Judge-Video.srt`.
+ElevenLabs AI narration). Sidecar captions: `video/Woven-Judge-Video.srt`.
 
 ## Submission story
 
 ### Inspiration
 
-Shopping agents are good at returning links, but urgent real-world missions are
-systems problems. A traveler who leaves for Tokyo tonight does not need four
-independent recommendations. They need one complete kit that works together, is
-actually in stock, stays under budget, and can be collected on time.
+Shopping agents are good at returning links, but even a familiar task can become
+a systems problem. Two first-time campers facing a rainy weekend do not need five
+independent recommendations. They need one complete gear kit with weatherproof
+shelter, two sleep systems, lighting, first aid, one-car fit, current stock,
+budget, and pickup all resolved together.
 
 We asked a second question: if the user already starts that mission in ChatGPT or
 Codex, why force them into another destination app? Woven extends the
@@ -53,16 +54,19 @@ and human authorization.
 
 ### What it does
 
-The user describes a mission in natural language: destination, devices, budget,
-and pickup deadline. Woven then:
+The user describes a mission in natural language: two campers, rainy weather,
+one car boot, budget, and pickup deadline. Woven then:
 
-1. filters incompatible and unavailable products;
+1. filters incomplete, insufficient, and unavailable products;
 2. assembles complete carts from one pickup location;
 3. ranks the carts by mission fit, pickup speed, and budget headroom;
-4. explains why every component works with the others;
-5. rechecks price and stock before checkout;
-6. presents an exact, expiring mandate for one explicit click; and
-7. returns a simulated Visa result and pickup receipt.
+4. explains why every component and quantity fits the same trip;
+5. opens five choices with full-cart comparison, preference reranking, pickup planning, and approved swaps;
+6. enforces a short-lived connector-style demo identity handoff;
+7. rechecks price and stock before checkout;
+8. binds the demo identity session into an exact, expiring mandate;
+9. requires one separate explicit confirmation; and
+10. returns a simulated Visa result and signed, server-verifiable receipt.
 
 The merchant desk makes the trust story visible. Judges can change stock, raise a
 price, trigger an authorization decline, simulate an order failure and reversal,
@@ -78,11 +82,17 @@ Express preset at a public HTTPS origin; its seeded demo database uses temporary
 serverless storage and may reset after a cold start or redeployment.
 
 The commerce engine enumerates complete one-merchant carts, rejects options that
-violate wattage, connector, voltage, destination, stock, pickup, or budget rules,
-then ranks the surviving carts. Checkout creates a ten-minute mandate hash bound
+violate capacity, waterproofing, per-camper quantity, packed volume, lighting,
+first-aid, stock, pickup, or budget rules, then ranks the surviving carts.
+Checkout creates a ten-minute mandate hash bound
 to the exact cart version and total. A private nonce is delivered to the widget
 through MCP metadata, and confirmation is guarded by constant-time comparison,
 one-time consumption, and idempotency.
+
+The demo identity handoff uses an allowlisted callback, random `state`, PKCE, a
+hashed single-use authorization code, and a 15-minute opaque server session.
+Checkout fails closed when that session is missing, expired, reused, or replaced;
+identity secrets never enter MCP arguments or model-visible content.
 
 Payment is deliberately isolated behind a simulated Visa adapter. This lets the
 prototype demonstrate authorization, decline, merchant failure, and reversal
@@ -99,9 +109,10 @@ We made confirmation a separate, exact, expiring UI state with private metadata.
 change between recommendation and checkout. Woven revalidates the cart and
 the mandate inside the same database transaction that creates the order.
 
-**Proving compatibility across the whole kit.** The correct charger is useless
-with the wrong cable or destination adapter. We modelled the mission as a complete
-constraint set and made every compatibility decision explainable in the UI.
+**Proving completeness across the whole kit.** A rainproof tent is not a complete
+trip when one camper has no sleeping bag, the lantern cannot handle rain, or the
+gear does not fit the car. We modelled the mission as a complete constraint set
+and made every quantity and compatibility decision explainable in the UI.
 
 **Making an MCP demo stage-safe.** The production story lives inside ChatGPT or
 Codex, while the browser transport calls the same domain functions for rehearsals
@@ -111,9 +122,13 @@ when public networking or host configuration is unreliable.
 
 - A working MCP App widget, HTTP MCP endpoint, and stdio Codex transport
 - A verified public HTTPS landing page, buyer demo, merchant desk, health check,
-  and six-tool MCP endpoint
+  and nine-tool MCP endpoint
+- A working `/identity` simulator enforced by the shared checkout boundary
+- A native Choice Center with five complete carts, comparison, opt-in local preferences, and pickup planning
+- Merchant-controlled compatible substitutions revalidated by the cart engine
 - Complete carts with one merchant, hard budget, stock, pickup, and compatibility
 - Exact, expiring, one-time mandates with idempotent confirmation
+- Signed simulated receipts with server-side verification
 - Stale price/stock protection and atomic inventory/order writes
 - Simulated approval, decline, merchant failure, and reversal paths
 - A live merchant operations desk with CSV updates and audit events
@@ -133,15 +148,15 @@ visible, structured, and explicitly human.
 
 ### What's next
 
-1. Add a clearly labeled connector-style demo identity check that is enforced
-   before checkout and remains separate from purchase confirmation.
+1. Deploy and verify the working demo identity handoff through the public MCP app.
 2. Connect the deployed MCP endpoint in ChatGPT Developer Mode and publish the
    app.
 3. Connect real merchant catalog, stock, pickup, and fulfilment APIs.
-4. Choose the precise Visa sandbox product and replace only the isolated payment
-   adapter after credentials, product approval, and security review.
-5. Generalize the constraint model to medical travel kits, event equipment,
-   gifts, repair parts, and other mission-bound purchases.
+4. Onboard Visa Intelligent Commerce and replace only the isolated simulator
+   seams after receiving VTS, VIC, Token Requestor, MLE, and Visa Payment Passkey
+   credentials plus product approval and security review.
+5. Generalize the constraint model to meal kits, event equipment, gifts, repair
+   parts, and other mission-bound purchases.
 6. Measure cart completion, stale-checkout recovery, and user trust in the exact
    confirmation step.
 
@@ -161,7 +176,7 @@ All gallery assets are 1600 × 900 and live in the repository.
 | Order | File | Devpost title | Caption |
 | --- | --- | --- | --- |
 | 1 | `docs/assets/devpost/cover.png` | Everything works together | Woven turns every constraint in one urgent request into a complete cart and an exact confirmation. |
-| 2 | `docs/assets/screenshots/buyer-overview.png` | Born inside the chat | One message becomes a live MCP app: a visible `start_mission` call, then three complete one-merchant carts. |
+| 2 | `docs/assets/screenshots/buyer-overview.png` | Born inside the chat | One message becomes a live MCP app: a visible `start_mission` call, then five complete choices. |
 | 3 | `docs/assets/devpost/woven-how-it-works.png` | One request to pickup | Six steps on one thread carry the request from intent to complete cart, exact confirmation, and receipt. |
 | 4 | `docs/assets/screenshots/checkout-confirmation.png` | The human stays in control | Merchant, pickup, cart version, and total are bound to one expiring confirmation. |
 | 5 | `docs/assets/devpost/woven-trust-boundary.png` | Recommendation is not permission | The model recommends, Woven binds the terms, and only a direct user click can confirm. |
@@ -186,8 +201,9 @@ checkout. We built Woven to finish that process.”
 
 **0:12–0:30 — Make the problem concrete**
 
-Explain that a traveler needs one compatible kit, under budget, available today,
-from one pickup location—not four unrelated links.
+Explain that two first-time campers need one complete rain-ready gear kit, under
+budget, compact enough for one car, available today, from one pickup location—not
+five unrelated links.
 
 **0:30–0:48 — Introduce Woven**
 
@@ -198,19 +214,17 @@ compatible, under budget, pickup today.”
 
 Run the canonical prompt in ChatGPT/Codex or open `/demo`, where the simulated
 chat host types the canonical request and plays the `start_mission` activity live. Point
-out the three complete one-merchant carts. Select ByteRoute and show the
-compatibility proof, demo stock, pickup location, and S$133 total.
+out the five complete one-merchant carts. Compare them, select TrailHaus, and show the two-person
+quantity proof, rain ratings, 89 L packed volume, demo stock, pickup location,
+and S$231.00 total.
 
-**1:30–2:15 — Review once and confirm once**
+**1:30–2:15 — Verify, review, and confirm**
 
-Click **Review checkout**. Say: “Woven rechecks price and stock now. The AI has
-recommended; it still cannot authorize.” Read the exact merchant, items, pickup,
-expiry, and S$133 total. Pause, then click **Confirm S$133.00** and show the
+Click **Review checkout**, then **Verify demo identity**. On `/identity`, read the
+**DEMO ONLY** boundary and click **Continue as Chai**. Return, check the server
+result, and click **Review exact terms**. Read the merchant, items, pickup,
+expiry, and S$231.00 total. Pause, then click **Confirm S$231.00** and show the
 simulated Visa result and receipt.
-
-The target storyboard inserts a simulated connector-style identity check before
-the exact-cart review. Do not include it in a live recording until the product
-actually blocks checkout for a missing or expired identity session.
 
 **2:15–2:35 — Show merchant control**
 
@@ -235,7 +249,8 @@ the seeded-inventory and simulated-authorization boundaries visible.
 The checked-in Remotion source at `video/WovenJudgeVideo.tsx` already composes
 this truthful sequence into a three-minute local master. Preview it with
 `npm run video:studio` and render it with `npm run video:render`. The bundled
-voice is synthetic and should be disclosed wherever the upload platform asks.
+voice is AI-generated with ElevenLabs and should be disclosed wherever the
+upload platform asks.
 
 ## 30-second pitch
 
@@ -261,15 +276,15 @@ the exact sandbox product once credentials and approval exist.
 
 **Does Woven verify the user's identity?**
 
-Not in the current build. The target design adds a simulated connector-style
-account check before checkout, with no Visa password, card details, or KYC claim.
-It becomes part of the live pitch only after the server blocks missing and
-expired identity sessions.
+The current build enforces a simulated connector-style account handoff before
+checkout. It uses state, PKCE, a single-use code, and a short-lived server
+session, but it is not KYC or production identity verification and collects no
+Visa password, card details, or payment credentials.
 
 **Is the identity screen “Visa OAuth”?**
 
 No. That would imply a real Visa identity provider. The accurate term is a
-simulated connector-style identity check, visibly labeled as a demo.
+server-enforced demo identity handoff, visibly labeled as simulated.
 
 **Why is this better than a standalone shopping app?**
 

@@ -6,6 +6,7 @@ data/
 *.log
 *.inspect.ndjson
 .playwright-cli/
+.playwright-mcp/
 .vercel/
 /.tmp-*
 /output/
