@@ -98,6 +98,9 @@ confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 | `docs/assets/screenshots/*.png` | Verified product gallery |
 | `docs/assets/slides/*.png` | Text-free editorial backgrounds for friction, the complete kit, and explicit human confirmation |
 | `docs/assets/demo/*.{png,svg}` | Numbered 16:9 stage fallback sequence and closing card built from verified product screens |
+| `docs/assets/marketing/woven-demo-loop.gif` | Animated ~17s loop of the real `/demo` flow for README, Devpost, and social posts |
+| `docs/assets/marketing/woven-how-it-works-square.png` | 1080 × 1080 four-step how-it-works card for feeds |
+| `docs/assets/marketing/woven-how-it-works-story.png` | 1080 × 1920 four-step how-it-works card for stories |
 | `script.md` | Authoritative three-minute narration and language guardrails |
 | `docs/Woven-Hackathon-Pitch.pptx` | Eleven-slide judge deck; the identity slide is explicitly labeled as planned |
 
@@ -106,7 +109,11 @@ listed in `docs/DEVPOST_SUBMISSION.md`.
 
 The demo fallback PNGs are also 1600 × 900. Their editable SVG sources reference
 the canonical logo and raw product screenshots, so update the source screenshots
-first whenever the buyer or merchant UI changes.
+first whenever the buyer or merchant UI changes, then re-render each SVG to PNG.
+The marketing cards embed a live portrait capture of `/demo` and the current
+gallery screenshots; regenerate them after any visible UI change. The animated
+loop is recorded from the real `/demo` sequence at 1280 × 800 and assembled with
+ffmpeg at 8 fps, 960px wide.
 
 ## Campaign image brief
 

@@ -129,7 +129,7 @@ marked “Simulated” on screen and is not a second product.
 
 The AI recommends. The user chooses. Woven binds the exact terms.
 
-![How Woven turns a mission into a pickup-ready receipt](docs/assets/devpost/woven-user-flow.png)
+![Animated loop of the Woven demo: the request types itself, tool calls run, the widget renders, and one confirmation produces a simulated receipt](docs/assets/marketing/woven-demo-loop.gif)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
