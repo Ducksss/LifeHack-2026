@@ -25,6 +25,15 @@ flowchart LR
 
 The in-chat surface uses the standard MCP Apps bridge (`app.callServerTool`). `/demo` is a rehearsal transport for on-stage reliability: it renders a clearly labeled simulated chat host (marked “Simulated” in its header and footer) that drives the same backend over HTTP and surfaces each MCP tool call as it happens. It never impersonates a real host and performs no live charges.
 
+`/architecture` is a standalone interactive explanation of the current service
+and the credential-gated target Visa boundary. Its tracer can autoplay or be
+paused, and reduced-motion preferences disable autoplay by default.
+
+With `?loop=true`, the browser auto-advances the existing Choice Center controls,
+compatibility proof, approved-swap dialog, and demo identity boundary, then
+reloads. The loop is presentation-only: it never completes identity, creates a
+checkout preview, receives a confirmation nonce, or calls `confirm_purchase`.
+
 The hosted MCP resource and `/demo` use explicit HTML entry points. The hosted
 entry is bundled into one self-contained HTML resource so sandboxed hosts do
 not need to fetch scripts, styles, or fonts from localhost. It always

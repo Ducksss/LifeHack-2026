@@ -72,6 +72,7 @@ function Landing() {
             <a className="transition-colors hover:text-foreground" href="#how">How it works</a>
             <a className="transition-colors hover:text-foreground" href="#product">Product</a>
             <a className="transition-colors hover:text-foreground" href="#trust">Trust</a>
+            <a className="transition-colors hover:text-foreground" href="/architecture">Architecture</a>
           </nav>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" asChild>
@@ -276,6 +277,7 @@ function Landing() {
           <span>Woven / LifeHack 2026 prototype</span>
           <span className="flex gap-4">
             <a className="transition-colors hover:text-foreground" href="/demo">Demo</a>
+            <a className="transition-colors hover:text-foreground" href="/architecture">Architecture</a>
             <a className="transition-colors hover:text-foreground" href="/merchant">Merchant desk</a>
             <a className="transition-colors hover:text-foreground" href="/healthz">Status</a>
           </span>

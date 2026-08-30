@@ -233,7 +233,9 @@ functions. The real payment integration boundary is isolated in
 `PAYMENT_MODE=simulated`.
 
 Detailed tool contracts, state transitions, cart rules, and trust boundaries
-are documented in [the architecture guide](docs/architecture.md).
+are documented in [the architecture guide](docs/architecture.md). The live
+[target-architecture explainer](https://visa-woven.vercel.app/architecture)
+visualizes those boundaries without implying a current Visa integration.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

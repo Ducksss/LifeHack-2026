@@ -42,8 +42,8 @@ Expected result:
 - `npm run check` ends with these key lines (durations and asset hashes vary):
 
   ```text
-  # tests 15
-  # pass 15
+  # tests 17
+  # pass 17
   # fail 0
   ✓ built in ...
   ```

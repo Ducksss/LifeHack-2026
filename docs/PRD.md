@@ -125,7 +125,7 @@ satisfy this contract.
 - Decline and reversal scenarios create no confirmed receipt.
 - A confirmed receipt verifies with its stored HMAC signature and rejects a
   modified signature.
-- `/` (landing), `/demo`, `/identity`, `/merchant`, `/healthz`, and `/mcp` run from one process.
+- `/` (landing), `/demo`, `/identity`, `/merchant`, `/architecture`, `/healthz`, and `/mcp` run from one process.
 - Plugin manifests pass Codex plugin validation.
 - `/demo?loop=true` replays without verifying identity, creating a checkout
   mandate, confirming a purchase, or mutating inventory.

@@ -104,7 +104,7 @@ Its identity step is implemented and must remain labeled simulated.
 | Checkout safety | Complete for prototype | Identity-session binding, expiry, hash, private nonce, exact terms, idempotency, signed receipt verification |
 | Demo identity check | Complete for prototype | Server-enforced state + PKCE + allowlisted callback + one-time code + 15-minute session; never call it Visa OAuth, KYC, or a real Visa login |
 | Visa rail | Simulated only | Approval, decline, failure, and reversal semantics |
-| Automated verification | Green | Fifteen tests, TypeScript/build gate, GitHub CI |
+| Automated verification | Green | Seventeen tests, TypeScript/build gate, GitHub CI |
 | README and gallery | Complete | Best-README structure and nine 1600×900 Devpost assets |
 | Stage fallback assets | Complete | Five numbered 1600×900 frames with editable SVG sources and explicit simulator boundaries |
 | Judge pitch deck | Complete | Ten-slide camping story; presenter notes and source blocks included |
@@ -165,12 +165,14 @@ and domain rules. Do not split it into services without a measured reason.
 | `web/landing.tsx` | Marketing landing page served at `/` |
 | `web/merchant.tsx` | Merchant operations desk |
 | `web/install.tsx` | In-product install guide (`/install`) styled after the ChatGPT Plugins tab |
+| `web/architecture.html` | Interactive target-architecture explainer with credential-gated future Visa boundaries |
 | `web/woven-mark.tsx` | Shared Flightpath brand mark: one route from request to verified destination |
 | `web/components/ui/` | Vendored shadcn/ui primitives (button, card, badge, table, input, separator, skeleton) |
 | `web/lib/utils.ts` | `cn` class-merge helper for shadcn components |
 | `web/styles.css` | Tailwind v4 entry: shadcn design tokens, Geist fonts, shared animations |
 | `test/domain.test.ts` | Mission, compatibility and ranking behavior |
 | `test/store.test.ts` | Confirmation, security, failures, inventory and CSV behavior |
+| `test/architecture.test.ts` | Architecture tracer autoplay, pause, and reduced-motion behavior |
 | `.codex-plugin/plugin.json` | Codex plugin metadata |
 | `assets/` | Packaged plugin icon, wordmark, and verified install-page screenshots |
 | `.mcp.json` | Local stdio MCP launch configuration |
@@ -219,6 +221,7 @@ MCP result `_meta`, never in model-visible `structuredContent`.
 | Demo identity connector | `http://localhost:8787/identity` |
 | Merchant desk | `http://localhost:8787/merchant` |
 | Install guide | `http://localhost:8787/install` |
+| Target architecture | `http://localhost:8787/architecture` |
 | MCP endpoint | `http://localhost:8787/mcp` |
 | Health check | `http://localhost:8787/healthz` |
 

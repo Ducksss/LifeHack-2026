@@ -1524,7 +1524,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     &lt;div class=&quot;wa-section-head&quot;&gt;
       &lt;div&gt;
         &lt;h2 id=&quot;wa-flow-title&quot;&gt;End-to-end exchange&lt;/h2&gt;
-        &lt;p class=&quot;text-small&quot;&gt;Choose a phase to trace the calls and inspect the JSON at that seam.&lt;/p&gt;
+        &lt;p class=&quot;text-small&quot;&gt;Watch the full loop or choose a phase to inspect the JSON at that seam.&lt;/p&gt;
       &lt;/div&gt;
     &lt;/div&gt;
 
@@ -1533,6 +1533,7 @@ html&gt;body{padding:0}&lt;/style&gt;
       &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-flow=&quot;consent&quot; aria-pressed=&quot;false&quot;&gt;2 · Consent + Visa&lt;/button&gt;
       &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-flow=&quot;completion&quot; aria-pressed=&quot;false&quot;&gt;3 · Order → Codex&lt;/button&gt;
       &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-flow=&quot;failure&quot; aria-pressed=&quot;false&quot;&gt;4 · Failure safety&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost&quot; data-loop aria-pressed=&quot;false&quot;&gt;▶ Play loop&lt;/button&gt;
     &lt;/div&gt;
 
     &lt;div class=&quot;wa-flow&quot; aria-live=&quot;polite&quot;&gt;
@@ -1760,6 +1761,10 @@ success → one stock decrement + one receipt`,
       const responseCode = root.querySelector(&quot;#wa-response-code&quot;);
       const guardTitle = root.querySelector(&quot;#wa-guard-title&quot;);
       const guardCopy = root.querySelector(&quot;#wa-guard-copy&quot;);
+      const flowButtons = [...root.querySelectorAll(&quot;[data-flow]&quot;)];
+      const loopButton = root.querySelector(&quot;[data-loop]&quot;);
+      let activeIndex = 0;
+      let loopTimer;
 
       const render = (key) =&gt; {
         const flow = flows[key];
@@ -1788,12 +1793,35 @@ success → one stock decrement + one receipt`,
           const selected = button.getAttribute(&quot;data-flow&quot;) === key;
           button.setAttribute(&quot;aria-pressed&quot;, String(selected));
           button.classList.toggle(&quot;btn-primary&quot;, selected);
+          if (selected) activeIndex = flowButtons.indexOf(button);
         });
       };
 
-      root.querySelectorAll(&quot;[data-flow]&quot;).forEach((button) =&gt; {
-        button.addEventListener(&quot;click&quot;, () =&gt; render(button.getAttribute(&quot;data-flow&quot;)));
+      const stopLoop = () =&gt; {
+        window.clearInterval(loopTimer);
+        loopTimer = undefined;
+        loopButton.textContent = &quot;▶ Play loop&quot;;
+        loopButton.setAttribute(&quot;aria-pressed&quot;, &quot;false&quot;);
+      };
+
+      const startLoop = () =&gt; {
+        loopTimer = window.setInterval(() =&gt; {
+          activeIndex = (activeIndex + 1) % flowButtons.length;
+          render(flowButtons[activeIndex].getAttribute(&quot;data-flow&quot;));
+        }, 4_000);
+        loopButton.textContent = &quot;Ⅱ Pause loop&quot;;
+        loopButton.setAttribute(&quot;aria-pressed&quot;, &quot;true&quot;);
+      };
+
+      flowButtons.forEach((button) =&gt; {
+        button.addEventListener(&quot;click&quot;, () =&gt; {
+          render(button.getAttribute(&quot;data-flow&quot;));
+          stopLoop();
+        });
       });
+
+      loopButton.addEventListener(&quot;click&quot;, () =&gt; loopTimer ? stopLoop() : startLoop());
+      if (!window.matchMedia(&quot;(prefers-reduced-motion: reduce)&quot;).matches) startLoop();
     })();
   &lt;/script&gt;
 &lt;/div&gt;
