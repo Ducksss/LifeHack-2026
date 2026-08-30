@@ -144,7 +144,7 @@ function Landing() {
 
           <div className="rise-in relative mt-14 [animation-delay:600ms]">
             <div className="rounded-2xl bg-gradient-to-b from-white/25 via-white/10 to-transparent p-px shadow-[0_40px_120px_-20px_rgba(21,69,232,0.35)]">
-              <Window src={buyerShot} alt="Woven demo host: the request becomes a live MCP widget with three complete carts" url="woven.demo/host" eager />
+              <Window src={buyerShot} alt="Woven buyer experience: one request becomes three complete, compatible carts" url="woven.demo/buyer" eager />
             </div>
           </div>
         </div>
@@ -214,7 +214,7 @@ function Landing() {
               </h2>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/60">
                 The AI recommends. Only you can authorize. These boundaries hold on every
-                surface — widget, browser rehearsal, and merchant desk.
+                surface — widget, browser demo, and merchant desk.
               </p>
             </div>
             <Badge variant="visa" className="px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.1em]">
@@ -253,8 +253,8 @@ function Landing() {
         </span>
         <h2 className="mt-6 text-3xl font-semibold tracking-tight sm:text-4xl">See it weave.</h2>
         <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
-          The browser demo is a clearly labeled, simulated rehearsal of the ChatGPT experience —
-          same server, real MCP tool calls, no live charge.
+          The browser demo drives the same server and the same MCP tools as the ChatGPT
+          experience — simulated payments, no live charge.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Button size="lg" asChild>

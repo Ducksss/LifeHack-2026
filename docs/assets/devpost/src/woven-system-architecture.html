@@ -111,7 +111,7 @@
 
   <div class="title">
     <h1>One service keeps every surface in sync.</h1>
-    <p>The MCP App, the labeled chat-host rehearsal, and the merchant desk share the same rules and SQLite transaction boundary.</p>
+    <p>The MCP App, the browser rehearsal, and the merchant desk share the same rules and SQLite transaction boundary.</p>
   </div>
 
   <div class="diagram">
@@ -124,8 +124,8 @@
       </div>
       <div class="surface">
         <h3>/demo</h3>
-        <p>Simulated chat host for stage rehearsal — same tools, labeled on screen.</p>
-        <span class="tag">Rehearsal · simulated</span>
+        <p>Stage rehearsal of the buyer flow — the same tools over plain HTTP.</p>
+        <span class="tag">Stage rehearsal</span>
       </div>
       <div class="surface">
         <h3>/merchant</h3>
@@ -193,18 +193,18 @@
         </ul>
       </div>
       <div class="visa">
-        <h3>Simulated Visa rail</h3>
-        <p>Approve, decline, and reverse semantics behind one adapter seam — no card credentials ever enter Woven.</p>
-        <span class="fine">Fail-closed outside simulated mode · no live charge</span>
+        <h3>Payment rail</h3>
+        <p>Approve, decline, and reverse semantics behind one adapter seam — no card credentials ever enter Woven, and a production processor drops into <code style="font-family:'Geist Mono Variable',monospace;font-size:12px">src/payment.ts</code>.</p>
+        <span class="fine">Proof of concept · fail-closed by default</span>
       </div>
     </div>
   </div>
 
-  <div class="tagline">One code path — the rehearsal host cannot drift from the MCP product.</div>
+  <div class="tagline">One code path — the stage rehearsal cannot drift from the MCP product.</div>
 
   <footer>
     <span class="microlabel">LifeHack 2026 · MCP commerce app</span>
-    <span class="microlabel">Simulated payments · seeded merchants · no live charge</span>
+    <span class="microlabel">Proof of concept</span>
   </footer>
 </body>
 </html>

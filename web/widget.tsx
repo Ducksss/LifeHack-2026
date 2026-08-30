@@ -55,7 +55,7 @@ function HostedWidget() {
   };
 
   const { app, error } = useApp({
-    appInfo: { name: "Woven", version: "0.1.1" },
+    appInfo: { name: "Woven", version: "0.1.2" },
     capabilities: {},
     onAppCreated: (created: McpApp) => {
       created.ontoolresult = (result) => {
@@ -841,4 +841,4 @@ function formatTime(value: string) {
 }
 
 const root = document.getElementById("root");
-if (root) createRoot(root).render(window.self === window.top ? <StandaloneDemo /> : <HostedWidget />);
+if (root) createRoot(root).render(root.dataset.surface === "demo" ? <StandaloneDemo /> : <HostedWidget />);
