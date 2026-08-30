@@ -24,9 +24,13 @@
   </p>
 
   <p>
+    <a href="https://visa-woven.vercel.app"><strong>Open Woven</strong></a>
+    ·
+    <a href="https://visa-woven.vercel.app/demo">Run the live demo</a>
+    ·
     <a href="docs/INSTALLATION.md"><strong>Install Woven</strong></a>
     ·
-    <a href="#getting-started">Run the demo</a>
+    <a href="#getting-started">Run locally</a>
     ·
     <a href="docs/PRD.md">Product requirements</a>
     ·
@@ -242,6 +246,13 @@ Open the local surfaces:
 | MCP endpoint | <http://localhost:8787/mcp> |
 | Health check | <http://localhost:8787/healthz> |
 
+The verified public deployment is available at
+[visa-woven.vercel.app](https://visa-woven.vercel.app), with the buyer demo at
+[/demo](https://visa-woven.vercel.app/demo) and merchant desk at
+[/merchant](https://visa-woven.vercel.app/merchant). Its SQLite database lives
+in Vercel's temporary filesystem, so demo state may reset after a cold start or
+redeployment.
+
 ### Connect the ChatGPT app
 
 Follow the [ChatGPT connection guide](docs/INSTALLATION.md#3-connect-woven-to-chatgpt).
@@ -360,8 +371,9 @@ the full test and production-build gate on every push and pull request.
 - [x] Merchant inventory, scenario controls, CSV update, and audit trail
 - [x] Simulated authorization, decline, order failure, and reversal paths
 - [x] End-to-end tests and submission-ready gallery
+- [x] Public HTTPS landing page, browser demo, merchant desk, health check, and MCP endpoint
 - [ ] Simulated connector-style identity check, enforced before checkout
-- [ ] Public HTTPS deployment and shareable ChatGPT app connection
+- [ ] Shareable ChatGPT app connection against the deployed MCP endpoint
 - [ ] Real merchant inventory/fulfilment connectors
 - [ ] Exact Visa sandbox product adapter after credentials and product approval
 - [ ] Generalized missions beyond the Tokyo charging-kit vertical
