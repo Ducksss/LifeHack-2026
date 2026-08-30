@@ -144,6 +144,8 @@ marked “Simulated” on screen and is not a second product.
 
 The AI recommends. The user chooses. Woven binds the exact terms.
 
+![Under the hood: one request traced from the model's start_mission call through app-only tools, the hidden nonce, and the checkout guard to the receipt](docs/assets/devpost/woven-under-the-hood.png)
+
 ![Animated loop of the Woven demo: carts compare themselves, compatibility is shown, simulated identity succeeds, the host replies, and the demo resets without checkout](docs/assets/marketing/woven-demo-loop.gif)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
