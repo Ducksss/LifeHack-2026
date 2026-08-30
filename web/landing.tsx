@@ -22,7 +22,7 @@ const steps = [
   {
     icon: <MessageSquare className="size-5" />,
     title: "Ask once",
-    body: "One request in ChatGPT or Codex — devices, destination, budget, pickup — becomes a mission the model hands to Woven's MCP tools.",
+    body: "One request in ChatGPT or Codex — devices, destination, budget, pickup — handed straight to Woven's MCP tools.",
   },
   {
     icon: <ListChecks className="size-5" />,
