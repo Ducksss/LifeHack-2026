@@ -269,7 +269,7 @@ app.use("/assets", express.static(path.join(webRoot, "assets"), { immutable: tru
 
 app.get("/healthz", (_req, res) => res.json({ ok: true, service: "woven", version: VERSION, paymentMode: "simulated" }));
 app.get("/favicon.ico", (_req, res) => res.sendStatus(204));
-app.get("/", (_req, res) => res.redirect("/demo"));
+app.get("/", (_req, res) => res.sendFile("landing.html", { root: webRoot }));
 app.get("/demo", (_req, res) => res.sendFile("widget.html", { root: webRoot }));
 app.get("/merchant", (_req, res) => res.sendFile("merchant.html", { root: webRoot }));
 

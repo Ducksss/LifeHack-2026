@@ -153,6 +153,7 @@ and domain rules. Do not split it into services without a measured reason.
 | `src/payment.ts` | Simulated authorization adapter and the future real-payment replacement seam |
 | `src/server.ts` | MCP tools/transports, HTTP APIs, static UI, validation and process startup |
 | `web/widget.tsx` | Buyer MCP App plus the simulated chat-host rehearsal (`/demo`) |
+| `web/landing.tsx` | Marketing landing page served at `/` |
 | `web/merchant.tsx` | Merchant operations desk |
 | `web/woven-mark.tsx` | Shared Flightpath brand mark: one route from request to verified destination |
 | `web/components/ui/` | Vendored shadcn/ui primitives (button, card, badge, table, input, separator, skeleton) |
@@ -195,6 +196,7 @@ model-visible `structuredContent`.
 
 | Surface | Default URL |
 | --- | --- |
+| Landing page | `http://localhost:8787/` |
 | Buyer fallback | `http://localhost:8787/demo` |
 | Merchant desk | `http://localhost:8787/merchant` |
 | MCP endpoint | `http://localhost:8787/mcp` |

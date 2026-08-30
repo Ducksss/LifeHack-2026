@@ -87,5 +87,5 @@ focused automated coverage.
 - A changed price or stock invalidates the old preview.
 - Reusing an idempotency key returns the same order and decrements stock once.
 - Decline and reversal scenarios create no confirmed receipt.
-- `/demo`, `/merchant`, `/healthz`, and `/mcp` run from one process.
+- `/` (landing), `/demo`, `/merchant`, `/healthz`, and `/mcp` run from one process.
 - Plugin manifests pass Codex plugin validation.

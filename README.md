@@ -236,6 +236,7 @@ Open the local surfaces:
 
 | Surface | URL |
 | --- | --- |
+| Landing page | <http://localhost:8787/> |
 | Buyer fallback | <http://localhost:8787/demo> |
 | Merchant desk | <http://localhost:8787/merchant> |
 | MCP endpoint | <http://localhost:8787/mcp> |
