@@ -313,10 +313,7 @@ The verified public demo URL is <https://visa-woven.vercel.app/demo>.
 
 Before publishing Devpost, a human must provide or confirm:
 
-<<<<<<< HEAD
 - public HTTPS demo URL (<https://woven-pi.vercel.app> is live; confirm it is the final one);
-=======
->>>>>>> origin/main
 - demo video URL;
 - team member names and roles;
 - project-description PDF;
