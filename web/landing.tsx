@@ -145,7 +145,7 @@ function Landing() {
                 <a href="/demo">Run the live demo <ArrowRight className="size-4" /></a>
               </Button>
               <Button size="lg" className="border border-white/20 bg-white/5 text-white hover:bg-white/10" asChild>
-                <a href="#how">See how it works</a>
+                <a href="/install">Install for ChatGPT or Codex</a>
               </Button>
             </div>
             <p className="rise-in mt-6 font-mono text-[11px] uppercase tracking-[0.14em] text-white/55 [animation-delay:480ms]">
@@ -267,14 +267,17 @@ function Landing() {
         </span>
         <h2 className="mt-6 text-3xl font-semibold tracking-tight sm:text-4xl">See it weave.</h2>
         <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
-          The browser demo drives the same server and the same MCP tools as the ChatGPT
-          experience — simulated payments, no live charge.
+          Install the plugin in ChatGPT or Codex, or run the browser demo — both drive the
+          same server and the same MCP tools, with simulated payments and no live charge.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Button size="lg" asChild>
             <a href="/demo">Run the live demo <ArrowRight className="size-4" /></a>
           </Button>
           <Button variant="outline" size="lg" asChild>
+            <a href="/install">Install for ChatGPT or Codex</a>
+          </Button>
+          <Button variant="ghost" size="lg" asChild>
             <a href="https://github.com/Ducksss/LifeHack-2026" target="_blank" rel="noreferrer">
               GitHub <ArrowUpRight className="size-4" />
             </a>
@@ -286,8 +289,9 @@ function Landing() {
       <footer className="border-t bg-muted/40">
         <div className="microlabel mx-auto flex w-full max-w-6xl flex-col gap-2 px-4 py-6 text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <span>Woven / LifeHack 2026 prototype</span>
-          <span className="flex gap-4">
+          <span className="flex flex-wrap gap-4">
             <a className="transition-colors hover:text-foreground" href="/demo">Demo</a>
+            <a className="transition-colors hover:text-foreground" href="/install">Install</a>
             <a className="transition-colors hover:text-foreground" href="/architecture">Architecture</a>
             <a className="transition-colors hover:text-foreground" href="/merchant">Merchant desk</a>
             <a className="transition-colors hover:text-foreground" href="/healthz">Status</a>
