@@ -30,7 +30,7 @@ three-minute narration and truth boundaries.
 
 **Repository:** https://github.com/Ducksss/LifeHack-2026
 
-**Live demo:** `[ADD PUBLIC HTTPS DEMO URL]`
+**Live demo:** https://visa-woven.vercel.app/demo
 
 **Demo video:** `[ADD DEVPOST/YOUTUBE VIDEO URL]`
 
@@ -70,7 +70,9 @@ import inventory updates, or inspect the audit trail in real time.
 Woven is a TypeScript and React MCP App that runs in ChatGPT/Codex and also
 ships with an HTTP browser fallback for reliable on-stage demos. One Node.js and
 Express service hosts the MCP transports, domain logic, merchant APIs, compiled
-widget, and Node SQLite state.
+widget, and Node SQLite state. The same service is deployed through Vercel's
+Express preset at a public HTTPS origin; its seeded demo database uses temporary
+serverless storage and may reset after a cold start or redeployment.
 
 The commerce engine enumerates complete one-merchant carts, rejects options that
 violate wattage, connector, voltage, destination, stock, pickup, or budget rules,
@@ -105,6 +107,8 @@ when public networking or host configuration is unreliable.
 ### Accomplishments that we're proud of
 
 - A working MCP App widget, HTTP MCP endpoint, and stdio Codex transport
+- A verified public HTTPS landing page, buyer demo, merchant desk, health check,
+  and six-tool MCP endpoint
 - Complete carts with one merchant, hard budget, stock, pickup, and compatibility
 - Exact, expiring, one-time mandates with idempotent confirmation
 - Stale price/stock protection and atomic inventory/order writes
@@ -128,7 +132,8 @@ visible, structured, and explicitly human.
 
 1. Add a clearly labeled connector-style demo identity check that is enforced
    before checkout and remains separate from purchase confirmation.
-2. Deploy the service behind a stable public HTTPS origin and publish the app.
+2. Connect the deployed MCP endpoint in ChatGPT Developer Mode and publish the
+   app.
 3. Connect real merchant catalog, stock, pickup, and fulfilment APIs.
 4. Choose the precise Visa sandbox product and replace only the isolated payment
    adapter after credentials, product approval, and security review.
