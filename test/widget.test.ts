@@ -9,7 +9,7 @@ test("browser demo and hosted MCP App use explicit entry points", () => {
   assert.match(readFileSync("web/widget.html", "utf8"), /data-surface="hosted"/);
   assert.doesNotMatch(widget, /window\.self\s*===\s*window\.top/);
   assert.match(widget, /\.get\("loop"\) === "true"/);
-  assert.match(widget, /if \(!loop \|\| !epilogueDone\) return;/);
+  assert.match(widget, /if \(!loop \|\| !showWidget\) return;/);
 });
 
 test("hosted widget assets are self-contained", () => {

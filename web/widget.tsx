@@ -292,10 +292,10 @@ function StandaloneDemo() {
   }, [order?.status, instant]);
 
   useEffect(() => {
-    if (!loop || !epilogueDone) return;
+    if (!loop || !showWidget) return;
     const timeout = window.setTimeout(() => window.location.reload(), 5_000);
     return () => window.clearTimeout(timeout);
-  }, [epilogueDone, loop]);
+  }, [loop, showWidget]);
 
   const invoke: Invoke = async (name, arguments_) => {
     const payload = await track(name, () => post(`/api/tools/${name}`, arguments_));
