@@ -37,13 +37,13 @@
       <text y="315" fill="#c3d0cb" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="24">Nothing moves until the user confirms the exact terms.</text>
       <g transform="translate(0 395)">
         <text y="4" fill="#fff" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="18" font-weight="800" letter-spacing="3">RAIN</text>
-        <line x1="60" y1="-3" x2="232" y2="-3" stroke="#6d7974" stroke-width="2"/>
-        <circle cx="60" cy="-3" r="8" fill="#b7f522"/>
-        <circle cx="232" cy="-3" r="10" fill="#fcfaf5"/>
-        <circle cx="232" cy="-3" r="6" fill="#1545e8"/>
-        <text x="238" y="4" fill="#fff" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="18" font-weight="800" letter-spacing="3">READY</text>
-        <rect x="360" y="-27" width="244" height="46" rx="23" fill="#1545e8"/>
-        <text x="482" y="2" fill="#fff" text-anchor="middle" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="800" letter-spacing="2">VISA RAIL · SIMULATED</text>
+        <line x1="94" y1="-3" x2="248" y2="-3" stroke="#6d7974" stroke-width="2"/>
+        <circle cx="94" cy="-3" r="8" fill="#b7f522"/>
+        <circle cx="248" cy="-3" r="10" fill="#fcfaf5"/>
+        <circle cx="248" cy="-3" r="6" fill="#1545e8"/>
+        <text x="270" y="4" fill="#fff" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="18" font-weight="800" letter-spacing="3">READY</text>
+        <rect x="390" y="-27" width="244" height="46" rx="23" fill="#1545e8"/>
+        <text x="512" y="2" fill="#fff" text-anchor="middle" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="800" letter-spacing="2">VISA RAIL · SIMULATED</text>
       </g>
     </g>
     <text x="84" y="840" fill="#8fa39b" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="2">SEEDED MERCHANTS · NO CARD DATA · NO LIVE CHARGE</text>
