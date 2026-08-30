@@ -32,7 +32,8 @@ feature real.
 ## Current snapshot
 
 - The working product is one Node.js service with a React MCP App, HTTP/stdio MCP
-  transports, `/demo`, `/merchant`, SQLite state, and a simulated Visa adapter.
+  transports, `/demo`, `/merchant`, `/install`, SQLite state, and a simulated
+  Visa adapter.
 - The canonical Tokyo charging-kit request produces complete, compatible,
   one-merchant carts and an exact, expiring confirmation.
 - The connector-style demo identity check is **planned and not implemented**.

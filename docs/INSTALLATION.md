@@ -9,6 +9,10 @@ demo.
 | Use Woven inside a ChatGPT conversation | ChatGPT Developer Mode | Yes |
 | Rehearse without a plugin host | Browser fallback at `/demo` | No |
 
+While the server is running, this guide is also available in-product at
+`/install` — a Woven-branded page styled after the ChatGPT desktop Plugins tab,
+linked from the demo host header.
+
 > [!IMPORTANT]
 > Woven is a local hackathon prototype. Its catalog, inventory, merchants, and
 > Visa authorization are simulated. It never asks for payment credentials and
@@ -107,12 +111,24 @@ Codex CLI.
 
 ## 3. Connect Woven to ChatGPT
 
-ChatGPT cannot connect to `localhost`. This path needs Woven at a public HTTPS
-origin or behind the OpenAI Secure MCP Tunnel.
+ChatGPT cannot connect to `localhost`. The verified public deployment is:
+
+- landing page: <https://visa-woven.vercel.app>
+- buyer demo: <https://visa-woven.vercel.app/demo>
+- merchant desk: <https://visa-woven.vercel.app/merchant>
+- MCP endpoint: <https://visa-woven.vercel.app/mcp>
+- health check: <https://visa-woven.vercel.app/healthz>
+
+Vercel runs the repository as one Express function with
+`BASE_URL=https://visa-woven.vercel.app`, `PAYMENT_MODE=simulated`, and
+`WOVEN_DB=/tmp/woven.db`. The database is intentionally temporary demo state:
+it may reset after a cold start or redeployment and must not be described as
+durable inventory or order storage.
 
 ### Start and verify the server
 
-Set `BASE_URL` to the exact public origin that forwards to local port `8787`:
+For a separate self-hosted connection, set `BASE_URL` to the exact public origin
+that forwards to local port `8787`:
 
 ```bash
 BASE_URL=https://your-public-origin.example npm start
@@ -124,10 +140,10 @@ Expected startup line:
 Woven ready: https://your-public-origin.example/mcp · https://your-public-origin.example/demo · https://your-public-origin.example/merchant
 ```
 
-Verify the public health endpoint:
+Verify the deployed health endpoint:
 
 ```bash
-curl https://your-public-origin.example/healthz
+curl https://visa-woven.vercel.app/healthz
 ```
 
 Expected JSON:
@@ -144,7 +160,7 @@ Expected JSON:
 3. Create a plugin named **Woven** with this MCP endpoint:
 
    ```text
-   https://your-public-origin.example/mcp
+   https://visa-woven.vercel.app/mcp
    ```
 
 4. Review the discovered tools and create the connection.
@@ -176,6 +192,7 @@ Open:
 
 - buyer fallback: <http://localhost:8787/demo>
 - merchant desk: <http://localhost:8787/merchant>
+- install guide: <http://localhost:8787/install>
 - health check: <http://localhost:8787/healthz>
 
 The browser fallback uses the same store, domain rules, and payment simulator as
