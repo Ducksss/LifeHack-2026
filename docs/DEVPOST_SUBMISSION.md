@@ -30,7 +30,7 @@ three-minute narration and truth boundaries.
 
 **Repository:** https://github.com/Ducksss/LifeHack-2026
 
-**Live demo:** `[ADD PUBLIC HTTPS DEMO URL]`
+**Live demo:** https://visa-woven.vercel.app/demo
 
 **Demo video:** `[ADD DEVPOST/YOUTUBE VIDEO URL]`
 
@@ -70,7 +70,9 @@ import inventory updates, or inspect the audit trail in real time.
 Woven is a TypeScript and React MCP App that runs in ChatGPT/Codex and also
 ships with an HTTP browser fallback for reliable on-stage demos. One Node.js and
 Express service hosts the MCP transports, domain logic, merchant APIs, compiled
-widget, and Node SQLite state.
+widget, and Node SQLite state. The same service is deployed through Vercel's
+Express preset at a public HTTPS origin; its seeded demo database uses temporary
+serverless storage and may reset after a cold start or redeployment.
 
 The commerce engine enumerates complete one-merchant carts, rejects options that
 violate wattage, connector, voltage, destination, stock, pickup, or budget rules,
@@ -105,6 +107,8 @@ when public networking or host configuration is unreliable.
 ### Accomplishments that we're proud of
 
 - A working MCP App widget, HTTP MCP endpoint, and stdio Codex transport
+- A verified public HTTPS landing page, buyer demo, merchant desk, health check,
+  and six-tool MCP endpoint
 - Complete carts with one merchant, hard budget, stock, pickup, and compatibility
 - Exact, expiring, one-time mandates with idempotent confirmation
 - Stale price/stock protection and atomic inventory/order writes
@@ -128,7 +132,8 @@ visible, structured, and explicitly human.
 
 1. Add a clearly labeled connector-style demo identity check that is enforced
    before checkout and remains separate from purchase confirmation.
-2. Deploy the service behind a stable public HTTPS origin and publish the app.
+2. Connect the deployed MCP endpoint in ChatGPT Developer Mode and publish the
+   app.
 3. Connect real merchant catalog, stock, pickup, and fulfilment APIs.
 4. Choose the precise Visa sandbox product and replace only the isolated payment
    adapter after credentials, product approval, and security review.
@@ -154,12 +159,12 @@ All gallery assets are 1600 × 900 and live in the repository.
 | --- | --- | --- | --- |
 | 1 | `docs/assets/devpost/cover.png` | Everything works together | Woven turns every constraint in one urgent request into a complete cart and an exact confirmation. |
 | 2 | `docs/assets/screenshots/buyer-overview.png` | Born inside the chat | One message becomes a live MCP app: a visible `start_mission` call, then three complete one-merchant carts. |
-| 3 | `docs/assets/devpost/woven-user-flow.png` | One request to pickup | Six visible steps carry the mission from intent to complete cart, exact confirmation, and receipt. |
+| 3 | `docs/assets/devpost/woven-how-it-works.png` | One request to pickup | Six steps on one thread carry the request from intent to complete cart, exact confirmation, and receipt. |
 | 4 | `docs/assets/screenshots/checkout-confirmation.png` | The human stays in control | Merchant, pickup, cart version, and total are bound to one expiring confirmation. |
 | 5 | `docs/assets/devpost/woven-trust-boundary.png` | Recommendation is not permission | The model recommends, Woven binds the terms, and only a direct user click can confirm. |
 | 6 | `docs/assets/screenshots/order-success.png` | From mission to pickup receipt | A successful simulated Visa result reserves the kit and returns a pickup-ready receipt. |
 | 7 | `docs/assets/screenshots/merchant-dashboard.png` | Trust you can test live | Change inventory or trigger decline/reversal scenarios while the audit trail updates. |
-| 8 | `docs/assets/devpost/woven-architecture.png` | One service, one source of truth | Every surface shares the same commerce rules, SQLite transactions, and simulated payment boundary. |
+| 8 | `docs/assets/devpost/woven-system-architecture.png` | One service, one source of truth | Every surface shares the same commerce rules, SQLite transactions, and one payment adapter seam. |
 
 Use `cover.png` as the Devpost thumbnail. Keep the raw product screenshots
 uncropped so judges can inspect the visible prototype boundaries.

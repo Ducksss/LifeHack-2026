@@ -38,7 +38,7 @@ feature real.
   one-merchant carts and an exact, expiring confirmation.
 - The connector-style demo identity check is **planned and not implemented**.
   Use the working checkout block in `script.md`; never show identity as live.
-- The eleven-slide judge deck contains a seven-slide main story and four backup
+- The twelve-slide judge deck contains a seven-slide main story and five backup
   slides. Its identity slide is explicitly labeled planned.
 - Public HTTPS deployment, a shareable ChatGPT connection, real merchant/Visa
   integrations, the demo video, and final Devpost publication remain outstanding.
