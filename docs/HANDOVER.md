@@ -169,7 +169,7 @@ and domain rules. Do not split it into services without a measured reason.
 | `docs/architecture.md` | Detailed tool contract, state machine and trust boundaries |
 | `docs/DEVPOST_SUBMISSION.md` | Paste-ready Devpost story, captions, pitch and demo script |
 | `docs/BRAND_GUIDE.md` | Naming, visual tokens, asset inventory and campaign prompt |
-| `docs/Woven-Hackathon-Pitch.pptx` | Eleven-slide judge deck; the identity scene is explicitly labeled as planned, not live |
+| `docs/Woven-Hackathon-Pitch.pptx` | Twelve-slide judge deck (7 story + 5 backup); the identity scene is explicitly labeled as planned, not live |
 | `docs/Woven-Devpost-Visuals.pptx` | Editable three-slide source deck for user flow, architecture, and trust visuals |
 | `docs/assets/brand/woven-cover.{png,svg}` | Product-led repository/social cover using the working buyer UI |
 | `docs/assets/devpost/woven-{user-flow,architecture,trust-boundary}.png` | Verified 1600×900 submission visuals |
@@ -291,7 +291,7 @@ qualify.
 The README, product-led cover, Woven brand system, user-flow slide,
 authorization-boundary slide, architecture slide, product screenshots, numbered
 stage fallback sequence, Devpost story, captions, judge Q&A, three-minute script,
-and eleven-slide pitch deck are complete. The main deck story is: friction →
+and twelve-slide pitch deck are complete. The main deck story is: friction →
 complete cart → live request → human authorization → merchant control →
 takeaway. The pitch deck includes identity only as the next integration.
 Regenerate the identity and checkout evidence after identity is implemented

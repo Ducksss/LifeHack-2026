@@ -185,7 +185,7 @@ path, and the identity insert that becomes usable only after implementation.
 
 ## Architecture
 
-![Woven system architecture](docs/assets/devpost/woven-architecture.png)
+![Woven system architecture](docs/assets/devpost/woven-system-architecture.png)
 
 Woven is one deployable Node.js service. The MCP transports, browser
 fallback, and merchant desk all route through the same domain and persistence

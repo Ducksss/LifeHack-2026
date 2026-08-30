@@ -154,12 +154,12 @@ All gallery assets are 1600 × 900 and live in the repository.
 | --- | --- | --- | --- |
 | 1 | `docs/assets/devpost/cover.png` | Everything works together | Woven turns every constraint in one urgent request into a complete cart and an exact confirmation. |
 | 2 | `docs/assets/screenshots/buyer-overview.png` | Born inside the chat | One message becomes a live MCP app: a visible `start_mission` call, then three complete one-merchant carts. |
-| 3 | `docs/assets/devpost/woven-user-flow.png` | One request to pickup | Six visible steps carry the mission from intent to complete cart, exact confirmation, and receipt. |
+| 3 | `docs/assets/devpost/woven-how-it-works.png` | One request to pickup | Six steps on one thread carry the request from intent to complete cart, exact confirmation, and receipt. |
 | 4 | `docs/assets/screenshots/checkout-confirmation.png` | The human stays in control | Merchant, pickup, cart version, and total are bound to one expiring confirmation. |
 | 5 | `docs/assets/devpost/woven-trust-boundary.png` | Recommendation is not permission | The model recommends, Woven binds the terms, and only a direct user click can confirm. |
 | 6 | `docs/assets/screenshots/order-success.png` | From mission to pickup receipt | A successful simulated Visa result reserves the kit and returns a pickup-ready receipt. |
 | 7 | `docs/assets/screenshots/merchant-dashboard.png` | Trust you can test live | Change inventory or trigger decline/reversal scenarios while the audit trail updates. |
-| 8 | `docs/assets/devpost/woven-architecture.png` | One service, one source of truth | Every surface shares the same commerce rules, SQLite transactions, and simulated payment boundary. |
+| 8 | `docs/assets/devpost/woven-system-architecture.png` | One service, one source of truth | Every surface shares the same commerce rules, SQLite transactions, and one payment adapter seam. |
 
 Use `cover.png` as the Devpost thumbnail. Keep the raw product screenshots
 uncropped so judges can inspect the visible prototype boundaries.
