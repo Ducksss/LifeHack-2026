@@ -48,8 +48,10 @@ Before judges arrive:
 Use the real MCP App when the host and network are dependable. Use `/demo` as the
 stage fallback; it clearly labels itself **Simulated**, rehearses the same
 backend, and surfaces each tool call without presenting itself as real ChatGPT.
-For an unattended intro loop, `/demo?loop=true` reloads five seconds after the
-Choice Center opens; it stops before either user trust gate.
+For an unattended visual loop, `/demo?loop=true` compares and reranks carts,
+returns to the selected kit, shows the compatibility proof and approved swap,
+reveals the demo identity boundary, then replays. It never completes identity,
+creates exact checkout terms, or confirms a purchase.
 
 ## Visual system and screen choreography
 

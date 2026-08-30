@@ -130,7 +130,8 @@ first whenever the buyer or merchant UI changes, then re-render each SVG to PNG.
 The marketing cards embed a live portrait capture of `/demo` and the current
 gallery screenshots; regenerate them after any visible UI change. The animated
 loop is recorded from the real `/demo` sequence at 1280 × 800 and assembled with
-ffmpeg at 8 fps, 960px wide.
+ffmpeg at 8 fps, 960px wide. Use `/demo?loop=true` for unattended live display;
+it stops at the demo identity boundary and never depicts an automatic purchase.
 
 ## Campaign image brief
 

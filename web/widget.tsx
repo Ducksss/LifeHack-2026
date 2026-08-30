@@ -293,7 +293,7 @@ function StandaloneDemo() {
 
   useEffect(() => {
     if (!loop || !showWidget) return;
-    const timeout = window.setTimeout(() => window.location.reload(), 5_000);
+    const timeout = window.setTimeout(() => window.location.reload(), 25_000);
     return () => window.clearTimeout(timeout);
   }, [loop, showWidget]);
 
@@ -378,6 +378,7 @@ function StandaloneDemo() {
                         setView={setView}
                         nonce={nonce}
                         invoke={invoke}
+                        autoplay={loop}
                         openUrl={(url) => {
                           window.open(url, "_blank", "noopener,noreferrer");
                         }}
@@ -484,12 +485,14 @@ function Woven({
   nonce,
   invoke,
   openUrl,
+  autoplay = false,
 }: {
   view: MissionView;
   setView: (view: MissionView) => void;
   nonce: string | null;
   invoke: Invoke;
   openUrl: (url: string) => void | Promise<void>;
+  autoplay?: boolean;
 }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -499,14 +502,17 @@ function Woven({
     try { return JSON.parse(localStorage.getItem("woven-choice-preferences") || "null") as { priority: RankingPriority; area: PickupArea } | null; }
     catch { return null; }
   }, []);
-  const [priority, setPriority] = useState<RankingPriority>(savedPreferences?.priority || "balanced");
-  const [area, setArea] = useState<PickupArea>(savedPreferences?.area || "Any");
-  const [remember, setRemember] = useState(Boolean(savedPreferences));
+  const [priority, setPriority] = useState<RankingPriority>(autoplay ? "balanced" : savedPreferences?.priority || "balanced");
+  const [area, setArea] = useState<PickupArea>(autoplay ? "Any" : savedPreferences?.area || "Any");
+  const [remember, setRemember] = useState(!autoplay && Boolean(savedPreferences));
   const [choiceTab, setChoiceTab] = useState<"choices" | "compare">("choices");
   const [recovery, setRecovery] = useState<string | null>(null);
   const choiceDialog = useRef<HTMLDialogElement>(null);
   const swapDialog = useRef<HTMLDialogElement>(null);
+  const proofSection = useRef<HTMLElement>(null);
+  const identitySection = useRef<HTMLElement>(null);
   const openedMission = useRef<string | null>(null);
+  const autoplayStarted = useRef(false);
   const rankedCarts = useMemo(() => rankCarts(view.carts, priority, area), [view.carts, priority, area]);
   const activeCart = useMemo(
     () => view.carts.find((cart) => cart.id === view.selectedCartId) || view.carts[0] || null,
@@ -523,8 +529,8 @@ function Woven({
   }, [view.mission.id, view.order]);
 
   useEffect(() => {
-    if (remember) localStorage.setItem("woven-choice-preferences", JSON.stringify({ priority, area }));
-  }, [priority, area, remember]);
+    if (remember && !autoplay) localStorage.setItem("woven-choice-preferences", JSON.stringify({ priority, area }));
+  }, [priority, area, remember, autoplay]);
 
   const act = async (label: string, name: string, arguments_: Record<string, unknown>) => {
     setBusy(label);
@@ -612,6 +618,34 @@ function Woven({
     setRemember(checked);
     if (!checked) localStorage.removeItem("woven-choice-preferences");
   };
+
+  useEffect(() => {
+    if (!autoplay || autoplayStarted.current) return;
+    autoplayStarted.current = true;
+    let cancelled = false;
+    const focus = (element: HTMLElement | null) => element?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      block: "center",
+    });
+    const autoplaySteps: Array<[number, () => void]> = [
+      [2_500, () => setChoiceTab("compare")],
+      [3_000, () => setPriority("weather")],
+      [3_000, () => setChoiceTab("choices")],
+      [2_500, () => { choiceDialog.current?.close(); focus(proofSection.current); }],
+      [3_500, () => swapDialog.current?.showModal()],
+      [2_500, () => swapDialog.current?.close()],
+      [500, () => setCheckoutRequested(true)],
+      [500, () => focus(identitySection.current)],
+    ];
+    void (async () => {
+      for (const [delay, step] of autoplaySteps) {
+        await sleep(delay);
+        if (cancelled) return;
+        step();
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [autoplay, view.mission.id]);
 
   return (
     <main className="mx-auto w-full max-w-[1040px] overflow-hidden rounded-2xl border bg-background shadow-sm">
@@ -722,7 +756,7 @@ function Woven({
       </section>
 
       {activeCart && (
-        <section className="border-t px-6 py-8 sm:px-10">
+        <section ref={proofSection} className="border-t px-6 py-8 sm:px-10">
           <Kicker number="02" label="Every thread checked" />
           <div className="mt-3 grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
             <div>
@@ -790,7 +824,7 @@ function Woven({
       )}
 
       {activeCart && checkoutRequested && !preview && !view.order && (
-        <section className="border-t px-6 py-8 sm:px-10" aria-labelledby="identity-heading">
+        <section ref={identitySection} className="border-t px-6 py-8 sm:px-10" aria-labelledby="identity-heading">
           <Kicker number="03" label="Verify who is approving" />
           <div className="mt-5 grid overflow-hidden rounded-xl border border-blue-200 lg:grid-cols-[1.2fr_0.8fr]">
             <div className="p-6 sm:p-8">

@@ -117,6 +117,8 @@ and made every quantity and compatibility decision explainable in the UI.
 **Making an MCP demo stage-safe.** The production story lives inside ChatGPT or
 Codex, while the browser transport calls the same domain functions for rehearsals
 when public networking or host configuration is unreliable.
+Its opt-in `?loop=true` display mode auto-advances the non-purchasing visual
+story through comparison, proof, approved swaps, and the demo identity boundary.
 
 ### Accomplishments that we're proud of
 

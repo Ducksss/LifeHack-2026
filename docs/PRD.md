@@ -35,6 +35,8 @@ seeded; every price is in SGD.
 
 - Run as a current MCP App with a React widget in ChatGPT/Codex.
 - Offer a browser fallback that uses the same backend rules.
+- Let `/demo?loop=true` run an unattended, non-purchasing visual walkthrough of
+  comparison, reranking, compatibility proof, approved swaps, and the identity boundary.
 - Seed at least three merchants and two locations per merchant.
 - Return five complete location choices for the canonical mission and open them
   in an accessible native dialog.
@@ -125,3 +127,5 @@ satisfy this contract.
   modified signature.
 - `/` (landing), `/demo`, `/identity`, `/merchant`, `/healthz`, and `/mcp` run from one process.
 - Plugin manifests pass Codex plugin validation.
+- `/demo?loop=true` replays without verifying identity, creating a checkout
+  mandate, confirming a purchase, or mutating inventory.

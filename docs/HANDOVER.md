@@ -292,8 +292,9 @@ the currently working product flow.
 1. Run `npm run check`, then `npm start`.
 2. Open `/merchant` and click **Reset demo data**.
 3. Keep `/demo` and `/merchant` open in separate tabs (`/demo?instant` skips
-   the intro animation if time is short; `/demo?loop=true` replays five seconds
-   after the Choice Center opens).
+   the intro animation if time is short; `/demo?loop=true` auto-advances through
+   comparison, proof, approved swap, and the identity boundary before replaying,
+   without creating or confirming a purchase).
 4. Let `/demo` play: the canonical request types itself, the staged `start_mission`
    activity runs, and the Choice Center opens with five complete carts.
 5. Compare the carts, show a priority/area rerank, then choose TrailHaus.

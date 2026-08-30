@@ -291,8 +291,10 @@ The verified public deployment is available at
 in Vercel's temporary filesystem, so demo state may reset after a cold start or
 redeployment.
 
-Add `?loop=true` to `/demo` to replay the animated introduction five seconds
-after the Choice Center opens. The loop stops before identity or purchase flows.
+Add `?loop=true` to `/demo` for an unattended visual walkthrough. It compares
+and reranks carts, returns to the selected kit, shows the compatibility proof
+and approved swap, reveals the demo identity boundary, then replays. It never
+verifies identity, creates a checkout mandate, or confirms a purchase.
 
 ### Connect the ChatGPT app
 
