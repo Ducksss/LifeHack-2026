@@ -26,6 +26,9 @@ Woven is an agentic-commerce MCP App for ChatGPT and Codex. It turns a
 constrained shopping request into complete, compatible, in-stock carts from one
 pickup location, explains why each cart works, and requires the user to confirm
 the exact merchant, cart, and amount before a **simulated** Visa authorization.
+The deterministic camping flow remains the submission story. A separate
+credential-dormant open-world POC now demonstrates generic MissionSpec parsing,
+bounded connected-cart composition, cited web research, and fail-closed checkout.
 
 The repository name is `LifeHack-2026`; the user-facing product name is
 `Woven`. Do not rename the product to LifeHack.
@@ -95,24 +98,24 @@ Its identity step is implemented and must remain labeled simulated.
 | Area | Status | Notes |
 | --- | --- | --- |
 | Buyer MCP App | Complete | React widget using a self-contained hosted entry point, first-result snapshot fallback, and the MCP Apps bridge |
-| Local plugin packaging | Complete | v0.2.2 repo marketplace package with a fresh widget resource URI, in-place identity status refresh, branded install-page assets, cache-safe stdio launcher, real Codex CLI install, nine-tool smoke test, and verified guide |
+| Local plugin packaging | Complete | v0.3.0 repo marketplace package with a fresh widget resource URI, in-place identity status refresh, branded install-page assets, cache-safe stdio launcher, real Codex CLI install, nine-tool smoke test, and verified guide |
 | Browser fallback | Complete | `/demo`; simulated chat-host rehearsal, same domain behavior over HTTP (`?instant` skips animations) |
 | Demo identity page | Complete | `/identity`; working provider-style handoff with a prominent simulator boundary and no credential fields |
 | Install guide page | Complete | `/install`; Woven-branded guide styled after the ChatGPT Plugins tab (clearly labeled preview, three install paths, verification checklist); linked from the landing page and demo host headers |
 | Merchant desk | Complete | `/merchant`; inventory, approved alternatives, scenarios, orders, audit, reset |
-| Cart engine | Complete for canonical mission | Five gear categories, seven required units, five one-location choices, merchant-approved substitutions |
+| Cart engine | Canonical complete; open-world POC implemented | Deterministic five-cart camping plus generic requirements, typed connected offers, compatibility joins, bounded beam search, evidence, and research-only web leads |
 | Checkout safety | Complete for prototype | Identity-session binding, expiry, hash, private nonce, exact terms, idempotency, signed receipt verification |
 | Demo identity check | Complete for prototype | Server-enforced state + PKCE + allowlisted callback + one-time code + 15-minute session; never call it Visa OAuth, KYC, or a real Visa login |
 | Visa rail | Simulated only | Approval, decline, failure, and reversal semantics |
-| Automated verification | Green | Nineteen tests, TypeScript/build gate, GitHub CI |
-| README and gallery | Complete | Best-README structure and nine 1600×900 Devpost assets |
+| Automated verification | Green | 33 tests, TypeScript/build gate, GitHub CI; live agent evaluation remains opt-in and credential-dependent |
+| README and gallery | Complete | Best-README structure and ten 1600×900 Devpost gallery assets plus a separate 3:2 project thumbnail |
 | Stage fallback assets | Complete | Five numbered 1600×900 frames with editable SVG sources and explicit simulator boundaries |
 | Judge pitch deck | Complete | Ten-slide camping story; presenter notes and source blocks included |
-| Judge demo video | Complete locally | Three-minute Remotion master with ElevenLabs AI narration and sidecar captions; public upload URL remains outstanding |
+| Judge demo video | Complete and uploaded | Three-minute Remotion master with ElevenLabs AI narration and sidecar captions; public video: <https://youtu.be/FrppMZYmLeg> |
 | Agent context | Current | `AGENTS.md` is canonical; Claude and Copilot use thin pointers to it |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
 | Public HTTPS deployment | Complete for the demo | <https://visa-woven.vercel.app> (canonical — `BASE_URL` points here and the deployment is verified through `/mcp` widget assets). Vercel Express preset; SQLite uses temporary `/tmp` state and may reset on cold start or redeploy — reset the demo right before presenting |
-| Devpost submission | Text ready — media blocked | Draft story includes the working simulated-host and identity boundaries; 13 technology tags, repository, Visa prize and Digital Payments are saved; uploads and submission remain outstanding |
+| Devpost submission | Text and video ready — publication pending | Draft story includes the working simulated-host and identity boundaries; 13 technology tags, repository, Visa prize and Digital Payments are saved; gallery/PDF fields, logged-out checks, and submission remain outstanding |
 | Real merchant/Visa integrations | Credential-blocked | Visa Intelligent Commerce is the selected real path; VTS, VIC, Token Requestor, MLE, and Visa Payment Passkey credentials are required |
 
 ## Product vocabulary
@@ -158,6 +161,7 @@ and domain rules. Do not split it into services without a measured reason.
 | `CLAUDE.md` | Claude pointer to the canonical agent contract |
 | `.github/copilot-instructions.md` | GitHub Copilot pointer to the canonical agent contract |
 | `src/domain.ts` | Types, seed catalog, mission creation, compatibility, cart ranking, preview construction |
+| `src/open-world.ts` | Validated MissionSpec, connected adapter, bounded cart composer, fixed LangGraph workflow, and optional OpenAI Responses/web-search adapter |
 | `src/store.ts` | SQLite schema/state, transactions, confirmation, idempotency, scenarios, CSV and audit |
 | `src/payment.ts` | Simulated authorization adapter and the future real-payment replacement seam |
 | `src/server.ts` | MCP tools/transports, HTTP APIs, static UI, validation and process startup |
@@ -171,6 +175,7 @@ and domain rules. Do not split it into services without a measured reason.
 | `web/lib/utils.ts` | `cn` class-merge helper for shadcn components |
 | `web/styles.css` | Tailwind v4 entry: shadcn design tokens, Geist fonts, shared animations |
 | `test/domain.test.ts` | Mission, compatibility and ranking behavior |
+| `test/open-world.test.ts` | Generic validation/composition, workflow bounds/failures, provenance, persistence, and checkout revalidation |
 | `test/store.test.ts` | Confirmation, security, failures, inventory and CSV behavior |
 | `test/architecture.test.ts` | Architecture tracer autoplay, pause, and reduced-motion behavior |
 | `.codex-plugin/plugin.json` | Codex plugin metadata |
@@ -199,7 +204,7 @@ and domain rules. Do not split it into services without a measured reason.
 
 | Tool | Caller | Purpose |
 | --- | --- | --- |
-| `start_mission` | Model and app | Create the mission and initial carts |
+| `start_mission` | Model and app | Create deterministic camping carts or run the bounded non-camping POC |
 | `build_carts` | Model and app | Recompute carts from current stock/prices |
 | `select_cart` | App only | Persist the chosen cart |
 | `swap_cart_item` | App only | Apply an active merchant-approved compatible substitution |
@@ -271,7 +276,7 @@ Useful commands:
 ```bash
 npm run dev          # Vite UI development server
 npm run dev:server   # backend with restart-on-change
-npm test             # eight domain/store tests
+npm test             # 33 domain, workflow, store, transport, and UI contract tests
 npm run build        # Vite production bundle + tsc --noEmit
 npm run check        # test and build gate
 npm run mcp          # stdio MCP transport
@@ -327,10 +332,12 @@ verified with the project name, pitch, story, 13 technology tags, GitHub link,
 `Visa best submission award`, and `Digital Payments`. It is not submitted.
 The story was re-synced after the connector-style demo identity check became a
 working, server-enforced feature.
-Thumbnail/gallery uploads, the public demo video URL, and the required project
-PDF remain empty. A local three-minute Remotion master is complete at
-`output/Woven-Judge-Video.mp4`; generated `output/` artifacts remain ignored by
-Git.
+Thumbnail/gallery uploads and final publication remain outstanding. The public
+demo video is available at <https://youtu.be/FrppMZYmLeg>. The three-minute
+Remotion master is at `output/Woven-Judge-Video.mp4`, the current one-page brief
+is at `output/pdf/Woven-Project-Brief.pdf`, and the Devpost-only thumbnail is at
+`output/devpost/woven-thumbnail-3x2.png`; generated `output/` artifacts remain
+ignored by Git.
 
 The verified public demo URL is <https://visa-woven.vercel.app/demo>.
 
@@ -342,8 +349,7 @@ The confirmed team listing is:
 Before publishing Devpost, a human must provide or confirm:
 
 - public HTTPS demo URL (<https://visa-woven.vercel.app> is live; confirm it is the final one);
-- demo video URL;
-- project-description PDF;
+- whether the post-event form still exposes a project-description PDF field;
 - whether the event permits `visa` as a public technology tag;
 - required repository visibility; and
 - final logged-out link checks.
@@ -370,12 +376,11 @@ Unless the user changes direction, prioritize in this order:
    `/identity` through the public MCP app, and verify private metadata and CSP.
 2. **Real ChatGPT connection:** connect the deployed `/mcp` endpoint in Developer
    Mode and verify the widget, private metadata, CSP and tool calls.
-3. **Demo video upload:** review the local three-minute master, upload it, and add
-   the public URL to Devpost.
-4. **Devpost publication:** add human/team details, upload the eight gallery assets,
-   add links and publish only with explicit user authorization.
-5. **Post-hackathon validation:** interview merchants/users before generalizing the
-   mission engine or adding production integrations.
+3. **Devpost publication:** upload the ten gallery assets, add the project PDF if
+   the field still exists, complete logged-out link checks, and publish only with
+   explicit user authorization.
+4. **Post-hackathon validation:** interview merchants/users before treating the
+   open-world POC as a production engine or adding production integrations.
 
 ## Do not expand by default
 
@@ -384,13 +389,15 @@ These ideas are intentionally deferred, not forgotten:
 - Google search result injection or a Chrome extension;
 - scraping merchants or presenting seeded stock as live;
 - production user accounts, onboarding, refunds, disputes or fulfilment;
-- broad multi-category optimization or a solver;
+- production-scale multi-category optimization or a general solver beyond the
+  implemented bounded POC;
 - extra services, queues, caches or databases;
 - live Visa calls without the exact approved product and credentials.
 
-The existing five-category camping mission and direct cart enumeration are deliberate
-demo constraints. Generalize only when the user explicitly chooses broader scope
-or evidence shows the current ceiling matters.
+The five-category camping engine and exact `/demo` sequence remain deliberate
+stage constraints. The open-world path is an implemented architecture POC: it
+must stay bounded, web-research-only outside connected catalogs, credential
+dormant in CI, and fail closed until real connectors and validation exist.
 
 ## Definition of done for future changes
 

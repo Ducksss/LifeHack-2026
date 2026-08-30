@@ -19,9 +19,15 @@ import {
   type Scenario,
 } from "./domain.js";
 import { WovenStore } from "./store.js";
+import {
+  connectedOffersForSpec,
+  createOpenAIDependencies,
+  missionSpecSchema,
+  runOpenWorldMission,
+} from "./open-world.js";
 import { inlineWidgetAssets, WIDGET_REFRESH_META, WIDGET_URI } from "./widget.js";
 
-const VERSION = "0.2.2";
+const VERSION = "0.3.0";
 const port = Number(process.env.PORT || 8787);
 const baseUrl = (process.env.BASE_URL || `http://localhost:${port}`).replace(/\/$/, "");
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -79,6 +85,18 @@ function attempt(work: () => ToolResult): ToolResult {
   }
 }
 
+async function attemptAsync(work: () => Promise<ToolResult>): Promise<ToolResult> {
+  try {
+    return await work();
+  } catch (error) {
+    return errorResult(error);
+  }
+}
+
+function usesCampingEngine(input: { request: string; campers?: number }): boolean {
+  return input.campers !== undefined || /\b(?:camp(?:ing|ers?)?|tent|sleeping\s+(?:bag|mat))\b/i.test(input.request);
+}
+
 function createMcpServer(): McpServer {
   const server = new McpServer({ name: "woven", version: VERSION });
 
@@ -88,14 +106,14 @@ function createMcpServer(): McpServer {
     {
       title: "Build a complete Woven cart",
       description:
-        "Use when a user asks to shop for a complete camping kit under constraints such as group size, weather, packed volume, budget, availability, or pickup time. Returns ranked one-merchant carts in an interactive confirmation widget.",
+        "Use when a user asks Woven to compose a complete retail cart under hard requirements, compatibility, budget, availability, and Singapore pickup constraints. Camping uses the deterministic engine; other categories use the bounded open-world research workflow.",
       inputSchema: {
         request: z.string().min(1).max(1_000).describe("The user's complete shopping mission in natural language."),
-        budgetCents: z.number().int().min(1_000).max(100_000).optional(),
+        budgetCents: z.number().int().min(1_000).max(2_000_000).optional(),
         campers: z.number().int().min(1).max(6).optional(),
         pickupDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
       },
-      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
       _meta: {
         ui: { resourceUri: WIDGET_URI },
         "openai/outputTemplate": WIDGET_URI,
@@ -105,11 +123,37 @@ function createMcpServer(): McpServer {
       },
     },
     async (input) =>
-      attempt(() => {
-        const view = store.startMission(input);
+      attemptAsync(async () => {
+        const view = usesCampingEngine(input)
+          ? store.startMission(input)
+          : await (async () => {
+            const catalog = store.getCatalog();
+            const connectedCatalogFields = Object.fromEntries(
+              [...Map.groupBy(catalog.filter((item) => item.attributes), (item) => item.category).entries()]
+                .map(([category, items]) => [category, [...new Set(items.flatMap((item) => Object.keys(item.attributes || {})))]]),
+            );
+            const openai = createOpenAIDependencies(undefined, connectedCatalogFields);
+            const dependencies = {
+              ...openai,
+              interpret: async (request: string, signal: AbortSignal) => {
+                const interpreted = await openai.interpret(request, signal);
+                return missionSpecSchema.parse({
+                  ...interpreted,
+                  ...(input.budgetCents === undefined ? {} : { budgetCents: input.budgetCents }),
+                  ...(input.pickupDate === undefined ? {} : { pickupDate: input.pickupDate }),
+                });
+              },
+              discoverConnected: async (spec: Parameters<typeof connectedOffersForSpec>[0]) =>
+                connectedOffersForSpec(spec, catalog),
+            };
+            const result = await runOpenWorldMission({ request: input.request, connectedOffers: [], dependencies });
+            return store.startOpenWorldMission(input.request, result);
+          })();
         const summary = view.carts.length
           ? `Built ${view.carts.length} compatible carts under ${money(view.mission.budgetCents)}. The top match is ${view.carts[0]!.merchantName} at ${money(view.carts[0]!.totalCents)}.`
-          : "No complete cart currently satisfies every hard constraint.";
+          : view.researchLeads?.length
+            ? `No connected checkout cart is fully verified. Returned ${view.researchLeads.length} cited research lead${view.researchLeads.length === 1 ? "" : "s"}; checkout is disabled.`
+            : "No complete cart currently satisfies every hard constraint.";
         return viewResult(view, summary);
       }),
   );
@@ -121,7 +165,7 @@ function createMcpServer(): McpServer {
       title: "Refresh mission carts",
       description: "Refresh ranked carts for an existing Woven mission after price or inventory changes.",
       inputSchema: { missionId: z.string().min(5).max(80) },
-      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: true },
       _meta: WIDGET_REFRESH_META,
     },
     async ({ missionId }) =>

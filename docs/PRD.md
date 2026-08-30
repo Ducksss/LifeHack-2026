@@ -2,7 +2,7 @@
 
 ## Product statement
 
-Woven is a personal commerce plugin that builds a complete kit around a user’s mission instead of returning a list of product links. It recommends merchant carts inside an existing ChatGPT/Codex workflow and crosses the purchase boundary only after the user confirms an exact mandate.
+Woven is a personal commerce plugin that builds a complete kit around a user’s mission instead of returning a list of product links. It recommends merchant carts inside an existing ChatGPT/Codex workflow and crosses the purchase boundary only after the user confirms an exact mandate. The stage demo remains deterministic camping; an implemented open-world POC demonstrates how the same trust boundary generalizes to other retail categories.
 
 ## Demo objective
 
@@ -68,15 +68,29 @@ seeded; every price is in SGD.
 - Give the merchant console inventory CSV import/export, substitution controls,
   scenario controls, orders, audit, and reset.
 - Never accept or persist payment credentials.
+- Route non-camping missions through a fixed, two-pass LangGraph.js workflow:
+  interpret, connected and web discovery, normalize, compose, verify, optional
+  retry, then persist.
+- Validate a category-neutral `MissionSpec` with hard predicates, quantities,
+  compatibility links, assumptions, SGD budget, Singapore market, and pickup date.
+- Cap open-world work at two discovery passes, three web-search tool calls,
+  eight connected offers per requirement, five final carts, and 25 seconds.
+- Treat connected-catalog facts as the only checkout evidence. Web results are
+  cited research leads and never gain select, identity, preview, or purchase controls.
+- Rebuild every persisted connected cart from current SQLite price, stock,
+  attributes, merchant, and location before preview and confirmation.
+- Keep the canonical `/demo` sequence and exact five-cart result unchanged when
+  OpenAI is unavailable; non-camping missions fail with retryable
+  `AGENT_UNAVAILABLE` instead of fabricated results.
 
 ## Non-goals for this prototype
 
-- General web search or Google result-page injection.
+- Treating web search or a result-page injection as verified commerce data.
 - Scraping live merchants or claiming real inventory.
 - Real Visa authorization without an approved product, sandbox credentials, and compliance review.
 - Production identity verification, user accounts, merchant onboarding, fulfillment integrations,
   refunds, or disputes.
-- Broad catalog optimization beyond the five-part camping-gear mission.
+- Production-scale multi-category optimization, scraping, or live merchant connectors.
 
 ## Implemented demo identity extension
 
@@ -103,6 +117,12 @@ satisfy this contract.
 
 - `npm run check` passes.
 - `start_mission` returns five complete carts for the canonical request.
+- The home-office fixture produces a complete, compatible, checkout-eligible
+  connected cart; a web-only fixture produces cited research with checkout disabled.
+- Every hard open-world requirement and compatibility link is `verified` before
+  checkout eligibility becomes true; missing attributes and evidence fail closed.
+- Open-world graph tests cover one retry, timeout, malformed structured output,
+  rate limiting, untrusted web content, bounded ranking, and guaranteed termination.
 - Every returned cart is within S$300 and contains a tent, two sleeping bags,
   two sleeping mats, a rain-ready lantern, and a first-aid kit from one pickup
   location.

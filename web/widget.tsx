@@ -80,7 +80,7 @@ function HostedWidget() {
   };
 
   const { app, error } = useApp({
-    appInfo: { name: "Woven", version: "0.2.2" },
+    appInfo: { name: "Woven", version: "0.3.0" },
     capabilities: {},
     onAppCreated: (created: McpApp) => {
       created.ontoolresult = (result) => {
@@ -503,21 +503,142 @@ async function post(url: string, body: Record<string, unknown>): Promise<Payload
   return payload;
 }
 
-function Woven({
-  view,
-  setView,
-  nonce,
-  invoke,
-  openUrl,
-  autoplay = false,
-}: {
+interface WovenProps {
   view: MissionView;
   setView: (view: MissionView) => void;
   nonce: string | null;
   invoke: Invoke;
   openUrl: (url: string) => void | Promise<void>;
   autoplay?: boolean;
-}) {
+}
+
+function Woven(props: WovenProps) {
+  return props.view.mission.engine === "open-world"
+    ? <OpenWorldWoven {...props} />
+    : <CampingWoven {...props} />;
+}
+
+function OpenWorldWoven({ view, setView, nonce, invoke, openUrl }: WovenProps) {
+  const [busy, setBusy] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const activeCart = view.carts.find((cart) => cart.id === view.selectedCartId) || view.carts[0] || null;
+  const preview = view.preview?.status === "pending" && view.preview.mandate.cartId === activeCart?.id ? view.preview : undefined;
+  const sources = new Map((view.sources || []).map((source) => [source.id, source]));
+
+  const act = async (label: string, name: string, arguments_: Record<string, unknown>) => {
+    setBusy(label);
+    setError(null);
+    try {
+      const payload = await invoke(name, arguments_);
+      if (payload.view) setView(payload.view);
+      return payload;
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Something went wrong.");
+      return null;
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const beginIdentity = async () => {
+    const payload = await act("identity", "start_demo_identity", { missionId: view.mission.id });
+    const authorizationUrl = payload?._meta?.authorizationUrl;
+    if (typeof authorizationUrl === "string") await openUrl(authorizationUrl);
+    else if (payload) setError("The demo identity link is missing. Try again.");
+  };
+  const checkIdentity = async () => {
+    const payload = await act("refresh", "build_carts", { missionId: view.mission.id });
+    if (payload?.view?.identity.status !== "verified") await beginIdentity();
+  };
+  const review = () => {
+    if (!activeCart) return;
+    if (view.identity.status !== "verified") {
+      void beginIdentity();
+      return;
+    }
+    void act("preview", "create_checkout_preview", { missionId: view.mission.id, cartId: activeCart.id });
+  };
+  const confirm = () => {
+    if (!preview || !nonce) {
+      setError("Create a fresh checkout preview before confirming.");
+      return;
+    }
+    void act("confirm", "confirm_purchase", {
+      previewId: preview.id,
+      mandateHash: preview.mandateHash,
+      confirmationNonce: nonce,
+      idempotencyKey: crypto.randomUUID(),
+    });
+  };
+
+  return (
+    <main className="mx-auto w-full max-w-[1040px] overflow-hidden rounded-2xl border bg-background shadow-sm">
+      <header className="bg-zinc-950 px-6 py-8 text-white sm:px-10">
+        <div className="flex items-center gap-2.5"><WovenMark className="size-5" /><strong>Woven</strong><Badge variant="outline" className="border-white/25 font-mono text-[9px] uppercase text-white/70">Open-world POC</Badge></div>
+        <h1 className="mt-8 max-w-2xl text-3xl font-semibold tracking-tight">{view.mission.openWorld?.spec.goal || "Complete cart research"}</h1>
+        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/60">“{view.mission.request}”</p>
+        <div className="mt-7 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-4">
+          <Constraint label="Budget" value={formatMoney(view.mission.budgetCents)} />
+          <Constraint label="Market" value="Singapore" />
+          <Constraint label="Pickup" value={view.mission.pickupDate} />
+          <Constraint label="Discovery" value={`${view.agentEvents?.filter((event) => event.node === "verify").length || 1} pass${view.agentEvents?.filter((event) => event.node === "verify").length === 1 ? "" : "es"}`} />
+        </div>
+      </header>
+
+      <section className="px-6 py-8 sm:px-10" aria-labelledby="requirements-heading">
+        <Kicker number="01" label="Structured mission" />
+        <h2 id="requirements-heading" className="mt-3 text-xl font-semibold">Requirements and evidence</h2>
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {(view.requirements || []).map((requirement) => {
+            const evidence = activeCart?.evidence?.find((check) => check.id === `requirement:${requirement.id}`)
+              || view.evidenceChecks?.find((check) => check.id === `requirement:${requirement.id}`);
+            return <article key={requirement.id} className="rounded-xl border p-4"><div className="flex items-start justify-between gap-2"><strong className="text-sm">{requirement.quantity > 1 ? `${requirement.quantity} × ` : ""}{requirement.label}</strong><Badge variant={evidence?.status === "verified" ? "secondary" : "outline"} className="font-mono text-[9px] uppercase">{evidence?.status || "missing"}</Badge></div><p className="mt-2 text-xs leading-relaxed text-muted-foreground">{evidence?.detail || requirement.searchQuery}</p></article>;
+          })}
+        </div>
+      </section>
+
+      {view.carts.length > 0 && (
+        <section className="border-t px-6 py-8 sm:px-10" aria-labelledby="connected-heading">
+          <Kicker number="02" label="Connected catalog" />
+          <h2 id="connected-heading" className="mt-3 text-xl font-semibold">Verified one-location carts</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Only current connected-catalog facts can unlock checkout.</p>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {view.carts.map((cart) => <article key={cart.id} className={cn("rounded-xl border p-5", activeCart?.id === cart.id && "border-zinc-950 ring-1 ring-zinc-950")}><div className="flex items-center justify-between gap-2"><Badge className="font-mono text-[9px] uppercase">{cart.badge}</Badge><span className="text-xs text-emerald-700"><Check className="mr-1 inline size-3" />Checkout eligible</span></div><h3 className="mt-4 font-semibold">{cart.merchantName}</h3><p className="text-xs text-muted-foreground">{cart.locationName} · ready ~{cart.pickupMinutes} min</p><div className="mt-4 divide-y rounded-lg border">{cart.lines.map((line) => <div key={line.offerId} className="flex items-start justify-between gap-3 px-3 py-2.5 text-xs"><span>{line.quantity > 1 ? `${line.quantity} × ` : ""}{line.name}</span><strong>{formatMoney(line.priceCents * line.quantity)}</strong></div>)}</div><div className="mt-4 flex items-end justify-between"><span className="text-xs text-muted-foreground">Verified total</span><strong className="text-xl">{formatMoney(cart.totalCents)}</strong></div><Button className="mt-4 w-full" variant={activeCart?.id === cart.id ? "secondary" : "default"} disabled={busy !== null} onClick={() => void act("select", "select_cart", { missionId: view.mission.id, cartId: cart.id })}>{activeCart?.id === cart.id ? "Selected" : "Select cart"}</Button></article>)}
+          </div>
+        </section>
+      )}
+
+      {(view.researchLeads?.length || 0) > 0 && (
+        <section className="border-t bg-muted/30 px-6 py-8 sm:px-10" aria-labelledby="research-heading">
+          <Kicker number={view.carts.length ? "03" : "02"} label="Web research only" />
+          <h2 id="research-heading" className="mt-3 text-xl font-semibold">Cited leads—not checkout carts</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Price, stock, and compatibility are not verified. These results cannot be selected or purchased.</p>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">{view.researchLeads!.map((lead) => <article key={lead.id} className="rounded-xl border bg-background p-5"><Badge variant="outline" className="font-mono text-[9px] uppercase">Research only</Badge><h3 className="mt-3 font-semibold">{lead.title}</h3><p className="mt-1 text-xs text-muted-foreground">{lead.merchantName}</p><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{lead.summary}</p>{lead.estimatedTotalCents !== undefined && <p className="mt-3 text-xs"><strong>Unverified estimate:</strong> {formatMoney(lead.estimatedTotalCents)}</p>}<div className="mt-4 flex flex-wrap gap-2">{lead.sourceIds.flatMap((id) => { const source = sources.get(id); return source?.url ? [<Button key={id} asChild variant="outline" size="sm"><a href={source.url} rel="noreferrer" onClick={(event) => { event.preventDefault(); void openUrl(source.url!); }}>{source.title}<ArrowUpRight className="size-3" /></a></Button>] : []; })}</div></article>)}</div>
+        </section>
+      )}
+
+      {activeCart?.checkoutEligible === true && !view.order && (
+        <section className="border-t px-6 py-8 sm:px-10">
+          <Kicker number={view.researchLeads?.length ? "04" : "03"} label="Existing checkout boundary" />
+          <div className="mt-5 grid gap-5 rounded-xl border p-6 sm:grid-cols-[1fr_auto] sm:items-center"><div><h2 className="text-lg font-semibold">{preview ? "Review exact terms" : view.identity.status === "verified" ? "Ready for exact review" : "Verify demo identity first"}</h2><p className="mt-1 text-sm text-muted-foreground">Price and stock are rebuilt from SQLite before preview and confirmation. Payment remains simulated.</p>{preview && <dl className="mt-4"><MandateRow label="Merchant" value={preview.mandate.merchantName} /><MandateRow label="Pickup" value={preview.mandate.pickupLocation} /><MandateRow label="Authorized total" value={formatMoney(preview.mandate.amountCents)} /></dl>}</div>{preview ? <Button disabled={busy !== null || !nonce} onClick={confirm}>{busy === "confirm" ? "Authorizing…" : `Confirm ${formatMoney(preview.mandate.amountCents)}`}</Button> : view.identity.status === "pending" ? <Button disabled={busy !== null} onClick={() => void checkIdentity()}>{busy ? "Checking…" : "I verified · check status"}</Button> : <Button disabled={busy !== null} onClick={review}>{busy ? "Working…" : view.identity.status === "verified" ? "Review checkout" : "Verify demo identity"}</Button>}</div>
+        </section>
+      )}
+
+      {view.order && <OrderResult view={view} />}
+      {error && <div className="m-4 rounded-lg bg-destructive px-4 py-3 text-sm text-white" role="alert">{error}</div>}
+      <footer className="microlabel flex flex-col gap-1 border-t bg-muted/40 px-6 py-4 text-muted-foreground sm:flex-row sm:justify-between sm:px-10"><span>Woven / Open-world cart POC</span><span>Web is research-only · checkout stays fail-closed</span></footer>
+    </main>
+  );
+}
+
+function CampingWoven({
+  view,
+  setView,
+  nonce,
+  invoke,
+  openUrl,
+  autoplay = false,
+}: WovenProps) {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [assumptionsOpen, setAssumptionsOpen] = useState(false);
@@ -1314,11 +1435,12 @@ function categoryIcon(category: Category) {
   if (category === "sleeping_bag") return <BedSingle className="size-4" />;
   if (category === "sleeping_mat") return <Layers3 className="size-4" />;
   if (category === "lantern") return <Lamp className="size-4" />;
-  return <BriefcaseMedical className="size-4" />;
+  if (category === "first_aid") return <BriefcaseMedical className="size-4" />;
+  return <PackageSearch className="size-4" />;
 }
 
 function formatMoney(cents: number) {
-  return `S$${(cents / 100).toFixed(2)}`;
+  return `S$${(cents / 100).toLocaleString("en-SG", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 function formatTime(value: string) {

@@ -1,4 +1,4 @@
-export const WIDGET_URI = "ui://woven/mission-v3.html";
+export const WIDGET_URI = "ui://woven/mission-v4.html";
 export const WIDGET_REFRESH_META = { "openai/widgetAccessible": true } as const;
 
 const localAsset = (url: string) => {

@@ -95,7 +95,8 @@ confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 | `docs/assets/brand/woven-hero-flightpath.png` | Text-free campaign hero |
 | `docs/assets/brand/woven-cover.{png,svg}` | Product statement beside the working buyer UI |
 | `docs/assets/brand/concepts/*.png` | Archived identity explorations; not production marks |
-| `docs/assets/devpost/cover.png` | Devpost thumbnail and gallery cover (Flightpath lockup on Route Ink) |
+| `docs/assets/devpost/cover.png` | Devpost gallery cover and 16:9 campaign artwork |
+| `output/devpost/woven-thumbnail-3x2.png` | Devpost-only 3:2 thumbnail derived from the official cover without cropping its claims |
 | `docs/assets/devpost/cover.html` | Editable cover source; render at 1600 × 900 with Playwright |
 | `docs/assets/devpost/architecture.{png,svg}` | Concise system-story slide |
 | `docs/assets/devpost/woven-user-flow.png` | Superseded by `woven-how-it-works.png`; kept for the editorial deck variant |
@@ -122,7 +123,8 @@ confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 | `output/Woven-Judge-Video.mp4` | Generated local master; ignored by Git and uploaded only after final review |
 
 All Devpost gallery images are 1600 × 900. Upload them uncropped in the order
-listed in `docs/DEVPOST_SUBMISSION.md`.
+listed in `docs/DEVPOST_SUBMISSION.md`; the separate 1500 × 1000 thumbnail is
+only for Devpost's project-card field.
 
 The demo fallback PNGs are also 1600 × 900. Their editable SVG sources reference
 the canonical logo and raw product screenshots, so update the source screenshots

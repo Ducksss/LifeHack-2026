@@ -1,4 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
+import type { AgentEvent, EvidenceCheck, EvidenceSource, MissionSpec, ResearchLead } from "./open-world.js";
 
 export const CANONICAL_REQUEST =
   "I need a complete rainy-weekend camping kit for 2 first-time campers. Keep it under S$300, fit it in one car boot, and make it pickup-ready today.";
@@ -10,7 +11,7 @@ export type Scenario =
   | "auth-decline"
   | "order-fail";
 
-export type Category = "tent" | "sleeping_bag" | "sleeping_mat" | "lantern" | "first_aid";
+export type Category = string;
 
 export interface MissionInput {
   request: string;
@@ -31,6 +32,14 @@ export interface Mission {
   currency: "SGD";
   assumptions: string[];
   createdAt: string;
+  engine?: "camping" | "open-world";
+  openWorld?: {
+    spec: MissionSpec;
+    researchLeads: ResearchLead[];
+    sources: EvidenceSource[];
+    events: AgentEvent[];
+    evidenceChecks: EvidenceCheck[];
+  };
 }
 
 export interface CatalogItem {
@@ -59,6 +68,7 @@ export interface CatalogItem {
   peopleCovered?: number;
   waterResistant?: boolean;
   alternativeFor?: string;
+  attributes?: Record<string, string | number | boolean>;
 }
 
 export interface CartLine {
@@ -91,6 +101,10 @@ export interface RankedCart {
   checks: string[];
   alternatives: CartAlternative[];
   inventoryCheckedAt: string;
+  evidence?: EvidenceCheck[];
+  sources?: EvidenceSource[];
+  checkoutEligible?: boolean;
+  rankingBreakdown?: { evidence: number; pickup: number; budget: number };
 }
 
 export interface CartAlternative {
@@ -128,6 +142,12 @@ export interface MissionView {
   order?: Order;
   receiptVerification?: ReceiptVerification;
   scenario: Scenario;
+  requirements?: MissionSpec["requirements"];
+  researchLeads?: ResearchLead[];
+  sources?: EvidenceSource[];
+  agentEvents?: AgentEvent[];
+  evidenceChecks?: EvidenceCheck[];
+  checkoutEligible: boolean;
 }
 
 export interface DemoIdentityStatus {
@@ -274,6 +294,18 @@ const merchants: Array<{
       { sku: "OS-AID4", name: "Waterproof first-aid kit · covers 4", category: "first_aid", priceCents: 2_900, packedLiters: 4, peopleCovered: 4, waterResistant: true },
     ],
   },
+  {
+    id: "workhub",
+    name: "WorkHub",
+    locations: [
+      ["funan", "Funan · L4", "107 North Bridge Rd", 25, 18, "21:30", "Central"],
+    ],
+    products: [
+      { sku: "WH-DISPLAY27", name: "ViewPoint 27-inch USB-C monitor", category: "monitor", priceCents: 32_900, packedLiters: 0, attributes: { input: "usb-c", videoProtocol: "displayport", sizeInches: 27 } },
+      { sku: "WH-DOCK11", name: "LinkDock 11-in-1 · 65 W", category: "dock", priceCents: 29_900, packedLiters: 0, attributes: { powerW: 65, videoOutput: "displayport", hostInput: "usb-c" } },
+      { sku: "WH-CAM1080", name: "ClearCall 1080p webcam", category: "webcam", priceCents: 14_900, packedLiters: 0, attributes: { resolution: 1080, interface: "usb" } },
+    ],
+  },
 ];
 
 export const seedCatalog: CatalogItem[] = merchants.flatMap((merchant) =>
@@ -340,6 +372,7 @@ export function createMission(input: MissionInput, now = new Date()): Mission {
       "Prices include the complete demo gear cart; no delivery or hidden fees.",
     ],
     createdAt: now.toISOString(),
+    engine: "camping",
   };
 }
 
@@ -376,6 +409,8 @@ function compatibility(item: CatalogItem, mission: Mission): string | null {
     case "first_aid":
       if ((item.peopleCovered ?? 0) < mission.campers || !item.waterResistant) return null;
       return `Water-resistant first-aid supplies cover all ${mission.campers} campers.`;
+    default:
+      return null;
   }
 }
 
@@ -450,6 +485,7 @@ function createRankedCart(
     ],
     alternatives: [],
     inventoryCheckedAt: now.toISOString(),
+    checkoutEligible: true,
   };
 }
 

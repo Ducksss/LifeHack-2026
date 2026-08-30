@@ -11,17 +11,19 @@ publishing; the product claims below match the working repository.
 
 **Stage line:** Ask once. Review once. Confirm once.
 
-**One-line description:** Woven turns one shopping request in ChatGPT or Codex
-into a complete, compatible cart and waits for the user to approve the exact
-purchase before a simulated Visa authorization.
+**One-line description:** Woven turns one shopping request into a complete,
+compatible, pickup-ready cart—and keeps the final purchase behind the user's
+explicit confirmation.
 
-**Short description:** Planning a first camping trip for two in the rain?
-Woven works inside ChatGPT and Codex to rank complete carts by capacity, weather
-rating, packed volume, quantity, budget, stock, pickup time, and merchant—then binds the chosen
-merchant, cart, and total to one visible confirmation. The prototype includes a merchant
-operations desk, stale-cart protection, failure scenarios, an audit trail, and a
-simulated Visa payment boundary. No card data enters the system and no live
-charge occurs.
+**Short description:** Woven is an MCP App for mission-based shopping. Give it a
+brief—two first-time campers, a rainy weekend, one car boot, S$300, pickup
+today—and it returns five complete carts instead of loose product links. Every
+choice comes from one merchant and pickup point, covers all seven required
+units, and proves that weather, quantity, packed volume, stock, timing, and
+budget constraints work together. Woven rechecks the cart before checkout,
+shows the exact terms, and waits for one explicit confirmation. Inventory and
+the Visa authorization are clearly simulated; no card data enters the system
+and no live charge occurs.
 
 The pitch includes a working, server-enforced connector-style demo identity
 check. It is visibly simulated—not Visa login, KYC, or production identity
@@ -32,10 +34,13 @@ verification—and remains separate from final purchase confirmation. See
 
 **Live demo:** https://visa-woven.vercel.app/demo
 
-**Demo video:** `[ADD DEVPOST/YOUTUBE VIDEO URL]`
+**Demo video:** https://youtu.be/FrppMZYmLeg
 
 **Local master:** `output/Woven-Judge-Video.mp4` (3:00, 1600×900, H.264/AAC,
 ElevenLabs AI narration). Sidecar captions: `video/Woven-Judge-Video.srt`.
+
+**Project brief PDF:** `output/pdf/Woven-Project-Brief.pdf` (one-page A4,
+current camping mission and implemented demo identity boundary).
 
 **Team members:**
 
@@ -46,127 +51,148 @@ ElevenLabs AI narration). Sidecar captions: `video/Woven-Judge-Video.srt`.
 
 ### Inspiration
 
-Shopping agents are good at returning links, but even a familiar task can become
-a systems problem. Two first-time campers facing a rainy weekend do not need five
-independent recommendations. They need one complete gear kit with weatherproof
-shelter, two sleep systems, lighting, first aid, one-car fit, current stock,
-budget, and pickup all resolved together.
+We did not start by asking how AI could recommend more products. We started by
+asking why buying still falls apart after the recommendation.
 
-We asked a second question: if the user already starts that mission in ChatGPT or
-Codex, why force them into another destination app? Woven extends the
-workflow they already use, while drawing a bright line between AI recommendation
-and human authorization.
+Imagine planning a first camping trip for two on a rainy weekend. Finding a
+tent is easy. Making sure it protects two people, pairing it with two sleeping
+bags and two mats, adding weather-safe lighting and first aid, fitting everything
+into one car boot, staying under S$300, checking today's stock, and collecting it
+all from one place is not. That is no longer a search problem. It is a systems
+problem.
+
+The request already begins naturally in ChatGPT or Codex, so we built Woven as
+an MCP App instead of another destination the user has to learn. The name comes
+from the product itself: Woven brings intent, compatibility, budget, inventory,
+pickup, identity, and consent together—but leaves the final thread to the human.
 
 ### What it does
 
-The user describes a mission in natural language: two campers, rainy weather,
-one car boot, budget, and pickup deadline. Woven then:
+The user asks:
 
-1. filters incomplete, insufficient, and unavailable products;
-2. assembles complete carts from one pickup location;
-3. ranks the carts by mission fit, pickup speed, and budget headroom;
-4. explains why every component and quantity fits the same trip;
-5. opens five choices with full-cart comparison, preference reranking, pickup planning, and approved swaps;
-6. enforces a short-lived connector-style demo identity handoff;
-7. rechecks price and stock before checkout;
-8. binds the demo identity session into an exact, expiring mandate;
-9. requires one separate explicit confirmation; and
-10. returns a simulated Visa result and signed, server-verifiable receipt.
+> I need a complete rainy-weekend camping kit for 2 first-time campers. Keep it
+> under S$300, fit it in one car boot, and make it pickup-ready today.
 
-The merchant desk makes the trust story visible. Judges can change stock, raise a
-price, trigger an authorization decline, simulate an order failure and reversal,
-import inventory updates, or inspect the audit trail in real time.
+**Ask once.** Woven filters incomplete or unavailable combinations and opens a
+Choice Center with five complete carts. Each choice comes from one merchant and
+one pickup point. The user can compare full-cart totals, optimize for value,
+weather protection, pickup speed, or area, inspect the pickup plan, and use only
+merchant-approved compatible substitutions.
+
+**Review once.** Woven proves that the selected kit covers the tent, two sleeping
+bags, two sleeping mats, lantern, first-aid supplies, rain protection, packed
+volume, stock, pickup deadline, and budget. Before checkout it enforces a clearly
+labeled demo identity handoff and revalidates price and inventory.
+
+**Confirm once.** Woven presents one exact, ten-minute checkout mandate bound to
+the verified demo session, merchant, items, cart version, pickup point, and total.
+Only a direct user action can confirm it. A successful simulated Visa
+authorization returns a signed, server-verifiable pickup receipt.
+
+The Merchant Desk makes the safety model testable. Judges can change inventory,
+raise a price, approve or disable a substitution, trigger a decline, force a
+post-authorization merchant failure and reversal, import a CSV, or inspect every
+step in the audit trail without changing code.
 
 ### How we built it
 
-Woven is a TypeScript and React MCP App that runs in ChatGPT/Codex and also
-ships with an HTTP browser fallback for reliable on-stage demos. One Node.js and
-Express service hosts the MCP transports, domain logic, merchant APIs, compiled
-widget, and Node SQLite state. The same service is deployed through Vercel's
-Express preset at a public HTTPS origin; its seeded demo database uses temporary
-serverless storage and may reset after a cold start or redeployment.
+Woven is a TypeScript and React MCP App with nine tools over HTTP and stdio. The
+same repository includes a clearly labeled simulated chat host for stage-safe
+rehearsals. Both surfaces call the same domain logic; the browser demo is not a
+separate mock of the product.
+
+One Node.js and Express service hosts the MCP transports, React widget, merchant
+APIs, domain rules, and Node SQLite state. We kept it as one service so cart
+revalidation, inventory mutation, order creation, and audit writes can share one
+transaction boundary. The public HTTPS demo runs through Vercel's Express
+preset; its seeded SQLite state is temporary and may reset on a cold start or
+redeployment.
 
 The commerce engine enumerates complete one-merchant carts, rejects options that
 violate capacity, waterproofing, per-camper quantity, packed volume, lighting,
 first-aid, stock, pickup, or budget rules, then ranks the surviving carts.
-Checkout creates a ten-minute mandate hash bound
-to the exact cart version and total. A private nonce is delivered to the widget
-through MCP metadata, and confirmation is guarded by constant-time comparison,
-one-time consumption, and idempotency.
+Checkout creates a ten-minute mandate hash bound to the exact cart version and
+total. Its one-time nonce reaches the widget through private MCP metadata, never
+model-visible content. Confirmation uses constant-time comparison, atomic
+inventory and order writes, and an idempotency key so retries cannot create a
+second order.
 
 The demo identity handoff uses an allowlisted callback, random `state`, PKCE, a
 hashed single-use authorization code, and a 15-minute opaque server session.
 Checkout fails closed when that session is missing, expired, reused, or replaced;
 identity secrets never enter MCP arguments or model-visible content.
 
-Payment is deliberately isolated behind a simulated Visa adapter. This lets the
-prototype demonstrate authorization, decline, merchant failure, and reversal
-semantics without collecting credentials or suggesting that a live network
-integration exists.
+Payment is isolated behind one simulated Visa adapter. That seam lets the
+prototype demonstrate approval, decline, merchant failure, and reversal
+semantics without collecting payment credentials or implying a live Visa
+integration.
 
 ### Challenges we ran into
 
-**Keeping recommendation separate from authorization.** A conversational model
-can help assemble the cart, but it should not silently inherit permission to buy.
-We made confirmation a separate, exact, expiring UI state with private metadata.
+**Defining “complete” precisely.** A rainproof tent is still the wrong answer if
+one camper has no sleeping bag, the lantern cannot handle rain, or the kit does
+not fit the car. We modelled the mission as hard constraints over the complete
+cart and made every pass/fail decision visible in the interface.
 
 **Preventing a stale cart from becoming a charge.** Price and inventory may
-change between recommendation and checkout. Woven revalidates the cart and
-the mandate inside the same database transaction that creates the order.
+change after a recommendation. Woven revalidates before preview and again during
+the atomic confirmation transaction. If anything changed, the exact mandate is
+invalidated instead of silently updating the amount.
 
-**Proving completeness across the whole kit.** A rainproof tent is not a complete
-trip when one camper has no sleeping bag, the lantern cannot handle rain, or the
-gear does not fit the car. We modelled the mission as a complete constraint set
-and made every quantity and compatibility decision explainable in the UI.
+**Keeping recommendation separate from authorization.** A conversational model
+can assemble and rank the cart, but it must not inherit permission to buy. We
+kept the one-time confirmation nonce outside model-visible data and made the
+exact, expiring purchase a separate user-controlled state.
 
-**Making an MCP demo stage-safe.** The production story lives inside ChatGPT or
-Codex, while the browser transport calls the same domain functions for rehearsals
-when public networking or host configuration is unreliable.
-Its opt-in `?loop=true` display mode auto-advances the non-purchasing visual
-story through comparison, proof, approved swaps, simulated identity success,
-and a host acknowledgement before fading back to the start.
+**Being honest without weakening the demo.** Merchant inventory, identity, and
+Visa authorization are simulated, but the cart engine, server enforcement,
+transactions, failure paths, MCP calls, and receipt verification are real. The
+browser rehearsal labels itself **Simulated** on screen and uses the same backend
+instead of impersonating ChatGPT or hiding prototype boundaries.
 
 ### Accomplishments that we're proud of
 
-- A working MCP App widget, HTTP MCP endpoint, and stdio Codex transport
-- A verified public HTTPS landing page, buyer demo, merchant desk, health check,
-  and nine-tool MCP endpoint
-- A working `/identity` simulator enforced by the shared checkout boundary
-- A native Choice Center with five complete carts, comparison, opt-in local preferences, and pickup planning
-- Merchant-controlled compatible substitutions revalidated by the cart engine
-- Complete carts with one merchant, hard budget, stock, pickup, and compatibility
-- Exact, expiring, one-time mandates with idempotent confirmation
-- Signed simulated receipts with server-side verification
-- Stale price/stock protection and atomic inventory/order writes
-- Simulated approval, decline, merchant failure, and reversal paths
-- A live merchant operations desk with CSV updates and audit events
-- Automated coverage for domain, security, failure, idempotency, and CSV behavior
-- A polished desktop and mobile experience, including a clearly labeled
-  simulated chat host that rehearses the in-ChatGPT flow with live tool calls
+- One natural-language request reliably produces five complete, one-location
+  carts for the canonical seven-unit camping mission.
+- The selected TrailHaus kit proves every hard constraint at **89 L** and
+  **S$231.00**, comfortably inside the 120 L and S$300 limits.
+- The working MCP App includes nine tools, a React Choice Center, HTTP and stdio
+  transports, a public HTTPS demo, and local Codex plugin packaging.
+- Identity and purchase consent are separate server-enforced gates; neither
+  their secrets nor payment credentials enter model-visible content.
+- Price changes, stockouts, duplicate confirmation, authorization decline,
+  post-authorization failure, and reversal are all demonstrable paths—not slides.
+- Simulated receipts are signed on the server and independently verifiable
+  through an MCP tool.
+- The Merchant Desk controls inventory, substitutions, scenarios, CSV exchange,
+  orders, and audit history in real time.
+- Automated checks cover domain rules, security boundaries, transactions,
+  failures, idempotency, CSV behavior, builds, and types.
 
 ### What we learned
 
-Agentic commerce is less about letting an AI click faster and more about designing
-better boundaries. Users need to understand why a cart is complete, what exact
-terms are about to be authorized, and what changed if checkout must stop.
+The interesting unit in agentic commerce is not the recommendation. It is the
+mandate: which merchant, which items, which version, what total, until when, and
+who explicitly approved it. Making that state precise improved the product more
+than making the model sound more confident ever could.
 
-We also learned that MCP Apps are a strong fit for this interaction: the model can
-coordinate intent and tools, while the embedded interface keeps the final choice
-visible, structured, and explicitly human.
+We also learned that MCP Apps fit this interaction unusually well. The model can
+coordinate intent and tools, while the embedded interface keeps comparison,
+proof, identity status, exact terms, and the final confirmation visible and
+structured. The best agentic flow did not remove the human—it gave the human a
+better decision to make.
 
 ### What's next
 
-1. Deploy and verify the working demo identity handoff through the public MCP app.
-2. Connect the deployed MCP endpoint in ChatGPT Developer Mode and publish the
-   app.
-3. Connect real merchant catalog, stock, pickup, and fulfilment APIs.
-4. Onboard Visa Intelligent Commerce and replace only the isolated simulator
-   seams after receiving VTS, VIC, Token Requestor, MLE, and Visa Payment Passkey
-   credentials plus product approval and security review.
-5. Generalize the constraint model to meal kits, event equipment, gifts, repair
-   parts, and other mission-bound purchases.
-6. Measure cart completion, stale-checkout recovery, and user trust in the exact
-   confirmation step.
+The next milestone is a shareable ChatGPT connection, followed by real merchant
+catalog, stock, pickup, and fulfilment APIs. After product approval, sandbox
+credentials, and security review, Visa Intelligent Commerce can replace only the
+isolated identity and payment simulator seams.
+
+From there, the same complete-mission model can extend to meal kits, event
+equipment, gifts, repair parts, and other purchases where compatibility matters
+more than another page of links. We want to measure whether users complete carts
+faster, recover cleanly from stale terms, and trust the exact confirmation step.
 
 ## Built with
 
@@ -186,14 +212,16 @@ All gallery assets are 1600 × 900 and live in the repository.
 | 1 | `docs/assets/devpost/cover.png` | Everything works together | Woven turns every constraint in one urgent request into a complete cart and an exact confirmation. |
 | 2 | `docs/assets/screenshots/buyer-overview.png` | Born inside the chat | One message becomes a live MCP app: a visible `start_mission` call, then five complete choices. |
 | 3 | `docs/assets/devpost/woven-how-it-works.png` | One request to pickup | Six steps on one thread carry the request from intent to complete cart, exact confirmation, and receipt. |
-| 4 | `docs/assets/screenshots/checkout-confirmation.png` | The human stays in control | Merchant, pickup, cart version, and total are bound to one expiring confirmation. |
-| 5 | `docs/assets/devpost/woven-trust-boundary.png` | Recommendation is not permission | The model recommends, Woven binds the terms, and only a direct user click can confirm. |
-| 6 | `docs/assets/screenshots/order-success.png` | From mission to pickup receipt | A successful simulated Visa result reserves the kit and returns a pickup-ready receipt. |
-| 7 | `docs/assets/screenshots/merchant-dashboard.png` | Trust you can test live | Change inventory or trigger decline/reversal scenarios while the audit trail updates. |
-| 8 | `docs/assets/devpost/woven-system-architecture.png` | One service, one source of truth | Every surface shares the same commerce rules, SQLite transactions, and one payment adapter seam. |
-| 9 | `docs/assets/devpost/woven-under-the-hood.png` | What actually happens | The request traced from the model's `start_mission` call through app-only tools, the hidden nonce, and the checkout guard to the receipt. |
+| 4 | `docs/assets/screenshots/demo-identity.png` | Identity and authorization stay separate | The working simulator proves the person, returns one-time proof, and still cannot authorize the purchase. |
+| 5 | `docs/assets/screenshots/checkout-confirmation.png` | The human stays in control | Merchant, pickup, cart version, and total are bound to one expiring confirmation. |
+| 6 | `docs/assets/devpost/woven-trust-boundary.png` | Recommendation is not permission | The model recommends, Woven binds the terms, and only a direct user click can confirm. |
+| 7 | `docs/assets/screenshots/order-success.png` | From mission to pickup receipt | A successful simulated Visa result reserves the kit and returns a pickup-ready receipt. |
+| 8 | `docs/assets/screenshots/merchant-dashboard.png` | Trust you can test live | Change inventory or trigger decline/reversal scenarios while the audit trail updates. |
+| 9 | `docs/assets/devpost/woven-system-architecture.png` | One service, one source of truth | Every surface shares the same commerce rules, SQLite transactions, and one payment adapter seam. |
+| 10 | `docs/assets/devpost/woven-under-the-hood.png` | What actually happens | The request traced from the model's `start_mission` call through app-only tools, the hidden nonce, and the checkout guard to the receipt. |
 
-Use `cover.png` as the Devpost thumbnail. Keep the raw product screenshots
+Use `output/devpost/woven-thumbnail-3x2.png` for Devpost's 3:2 thumbnail field
+and keep `cover.png` as the first gallery image. Keep the raw product screenshots
 uncropped so judges can inspect the visible prototype boundaries.
 
 ## Three-minute judge demo
@@ -311,14 +339,15 @@ transactions safely.
 
 - [x] Save the project name, pitch, story, technology tags, and GitHub link
 - [x] Select `Visa best submission award` and `Digital Payments`
-- [ ] Add the public HTTPS demo URL
+- [x] Add the public HTTPS demo URL
 - [x] Render the three-minute local demo master
-- [ ] Upload the demo master and add its public URL
-- [ ] Upload the required project-description PDF
+- [x] Upload the demo master and add its public URL
+- [x] Render the current project-description PDF
+- [ ] Upload the project-description PDF if the post-event submission form still exposes that field
 - [x] Add team member names
 - [x] Add roles for Chai Pin Zheng and Ho Boon How
 - [ ] Confirm the event's rules for using “Visa” in tags and screenshots
 - [ ] Verify the repository visibility required by the hackathon
 - [ ] Test every public link in a logged-out browser
-- [ ] Upload the eight gallery files in the order above
+- [ ] Upload the ten gallery files in the order above
 - [ ] Reset the demo database to the normal scenario before judging

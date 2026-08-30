@@ -17,6 +17,9 @@ flowchart LR
 
   MCP --> Domain[Mission + ranking + mandate rules]
   API --> Domain
+  MCP -->|non-camping only| Graph[Bounded LangGraph.js workflow]
+  Graph -->|connected offers| Domain
+  Graph -->|cited web leads| Research[Research-only results]
   Domain --> DB[(SQLite)]
   Domain --> Rail[Simulated Visa boundary]
 
@@ -51,7 +54,7 @@ second prompt.
 
 | Tool | Visibility | Effect |
 | --- | --- | --- |
-| `start_mission` | Model + app UI | Parse a mission, persist it, and return ranked carts |
+| `start_mission` | Model + app UI | Use deterministic camping or the bounded open-world workflow, persist the mission, and return verified carts plus optional research leads |
 | `build_carts` | Model + app UI | Recompute current carts from persisted inventory |
 | `select_cart` | App only | Persist the user’s selected candidate |
 | `swap_cart_item` | App only | Rebuild the selected cart with an active merchant-approved alternative |
@@ -89,6 +92,57 @@ bags, sleeping mats, a lantern, and first-aid supplies.
     into a complete, compatible, in-stock, under-budget cart at the same location.
 
 The seeded catalog is intentionally small, so direct enumeration is clearer and safer than a solver. If the catalog becomes large or missions gain optional/substitutable components, replace only `buildRankedCarts` with a constrained search implementation.
+
+## Open-world cart POC
+
+Non-camping requests use an implemented TypeScript POC in the existing service.
+It adds `@langchain/langgraph`, `@langchain/core`, and `openai`; there is no
+Python process, queue, second database, or tracing service.
+
+```mermaid
+flowchart LR
+  I[Interpret MissionSpec] --> C[Connected discovery]
+  I --> W[OpenAI web search]
+  C --> N[Normalize]
+  W --> N
+  N --> B[Bounded beam compose]
+  B --> V[Server verification]
+  V -->|complete| P[Rank + persist]
+  V -->|missing and pass 1| C
+  V -->|missing and pass 1| W
+```
+
+Routing and termination are code-selected, never model-selected. Each run is
+limited to two discovery passes, three web-search tool calls, eight offers per
+requirement, five final carts, 200 beam states, and 25 seconds. OpenAI requests
+use the Responses API with `gpt-5.6-terra`, schema-constrained output,
+`reasoning.effort: medium`, and `store: false`.
+
+The validated `MissionSpec` contains quantities, hard attribute predicates,
+cross-item compatibility links, preferences, assumptions, Singapore location,
+SGD budget, and pickup date. Connected catalog records normalize into typed
+offers with current price, stock, merchant/location, attributes, and provenance.
+Composition groups by one merchant location, prunes missing attributes, stock,
+budget, and incompatibility, then ranks the surviving carts. The server assigns
+`checkoutEligible`; the model cannot set it.
+
+Web search is a separate evidence class. Only cited HTTPS sources survive
+normalization, and their products remain `researchLeads` with
+`checkoutEligible: false`. They are never combined with connected offers and
+never described as having verified current price, stock, or compatibility.
+
+SQLite persists the sanitized spec, selected offer/requirement IDs, evidence
+sources, research leads, and graph audit events. It does not persist model
+reasoning, prompts, API keys, identity secrets, confirmation nonces in public
+views, or payment data. Reads rebuild stored connected candidates from current
+catalog rows, so the existing preview and confirmation checks remain
+authoritative.
+
+The workflow is credential-dormant by design. Without `OPENAI_API_KEY`, the
+canonical camping engine and `/demo` continue normally while other missions
+return retryable `AGENT_UNAVAILABLE`; no fallback invents results. The optional
+`npm run eval:agent` command is excluded from CI and is the only live evaluation
+path.
 
 ## Confirmation state machine
 
@@ -134,8 +188,9 @@ server cart ID and current server price. Browser preference storage is disabled
 until the user checks the explicit remember box.
 
 `merchant_alternatives` stores the merchant's active source/replacement pairs.
-`mission_carts` stores only the offer IDs for a selected custom composition.
-Every read rebuilds that composition through the same domain validator, so a
+`mission_carts` stores offer IDs for a selected custom camping composition or
+offer/requirement ID pairs for open-world connected candidates. Every read
+rebuilds that composition through the applicable domain validator, so a
 withdrawn, stale, incompatible, cross-location, out-of-stock, or over-budget
 replacement disappears before preview or confirmation.
 

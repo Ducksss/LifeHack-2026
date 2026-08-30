@@ -144,6 +144,29 @@ marked “Simulated” on screen and is not a second product.
 
 The AI recommends. The user chooses. Woven binds the exact terms.
 
+### Open-world cart engine POC
+
+The canonical camping demo above is still deterministic and unchanged. Woven
+also includes a credential-dormant TypeScript POC for non-camping missions:
+
+- a fixed LangGraph.js flow interprets a validated `MissionSpec`, discovers
+  connected and web offers in parallel, normalizes, composes, verifies, retries
+  at most once, ranks, and persists;
+- connected catalog offers can form checkout carts only after the server verifies
+  every hard requirement, compatibility link, quantity, stock, budget, merchant,
+  and pickup location;
+- web results remain cited research leads with checkout disabled; and
+- preview and confirmation rebuild connected carts from current SQLite catalog
+  rows, preserving the existing identity, nonce, mandate, idempotency, and atomic
+  inventory protections.
+
+The POC uses the OpenAI Responses API with schema-constrained output,
+`gpt-5.6-terra`, medium reasoning, built-in web search, and `store: false`. No API
+credential is required for the camping demo or CI. Without `OPENAI_API_KEY`, a
+non-camping mission returns retryable `AGENT_UNAVAILABLE` rather than fabricated
+results. Developers who already have a key can run the opt-in live matrix with
+`npm run eval:agent`.
+
 ![Under the hood: one request traced from the model's start_mission call through app-only tools, the hidden nonce, and the checkout guard to the receipt](docs/assets/devpost/woven-under-the-hood.png)
 
 ![Animated loop of the Woven demo: carts compare themselves, compatibility is shown, simulated identity succeeds, the host replies, and the demo resets without checkout](docs/assets/marketing/woven-demo-loop.gif)
@@ -234,6 +257,11 @@ functions. The real payment integration boundary is isolated in
 `src/payment.ts`; the current adapter intentionally fails closed unless
 `PAYMENT_MODE=simulated`.
 
+The open-world POC stays inside that service: LangGraph.js provides bounded
+orchestration, OpenAI supplies structured interpretation and cited web research,
+and the existing TypeScript domain and SQLite store remain the authority for
+cart composition and checkout eligibility.
+
 Detailed tool contracts, state transitions, cart rules, and trust boundaries
 are documented in [the architecture guide](docs/architecture.md). The live
 [target-architecture explainer](https://visa-woven.vercel.app/architecture)
@@ -251,6 +279,8 @@ visualizes those boundaries without implying a current Visa integration.
 - [Express](https://expressjs.com/)
 - Node's built-in [SQLite](https://nodejs.org/api/sqlite.html)
 - [Zod](https://zod.dev/)
+- [LangGraph.js](https://docs.langchain.com/oss/javascript/langgraph/) for the bounded open-world workflow
+- [OpenAI Responses API](https://platform.openai.com/docs/api-reference/responses) for optional structured interpretation and cited web research
 - [Remotion](https://www.remotion.dev/) for the three-minute judge video
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -440,7 +470,8 @@ the full test and production-build gate on every push and pull request.
 - [ ] Shareable ChatGPT app connection against the deployed MCP endpoint
 - [ ] Real merchant inventory/fulfilment connectors
 - [ ] Exact Visa sandbox product adapter after credentials and product approval
-- [ ] Generalized missions beyond the rainy-weekend camping vertical
+- [x] Open-world architecture POC with generic requirements, evidence, bounded composition, and research-only web leads
+- [ ] Live merchant connectors and production validation for generalized missions
 
 See the [open issues](https://github.com/Ducksss/LifeHack-2026/issues) for scoped
 work.

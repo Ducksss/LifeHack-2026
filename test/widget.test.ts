@@ -57,6 +57,6 @@ test("hosted widget hydrates from ChatGPT's initial tool snapshot", () => {
 });
 
 test("cart refresh updates the current widget without remount metadata", () => {
-  assert.equal(WIDGET_URI, "ui://woven/mission-v3.html");
+  assert.equal(WIDGET_URI, "ui://woven/mission-v4.html");
   assert.deepEqual(WIDGET_REFRESH_META, { "openai/widgetAccessible": true });
 });

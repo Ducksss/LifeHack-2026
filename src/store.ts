@@ -9,6 +9,7 @@ import {
   createMission,
   createPreview,
   DomainError,
+  effectiveCatalog,
   publicPreview,
   seedCatalog,
   type CatalogItem,
@@ -24,6 +25,12 @@ import {
   type ReceiptVerification,
   type Scenario,
 } from "./domain.js";
+import {
+  buildGenericCarts,
+  connectedOffersForSpec,
+  missionSpecSchema,
+  type OpenWorldResult,
+} from "./open-world.js";
 import { authorizePayment } from "./payment.js";
 
 interface AuditEvent {
@@ -213,6 +220,24 @@ export class WovenStore {
   private cartsForMission(mission: Mission): RankedCart[] {
     const catalog = this.getCatalog();
     const scenario = this.getScenario();
+    if (mission.engine === "open-world" && mission.openWorld) {
+      return this.db
+        .prepare("SELECT offer_ids FROM mission_carts WHERE mission_id = ? ORDER BY rowid")
+        .all(mission.id)
+        .flatMap((row) => {
+          const saved = JSON.parse(String(row.offer_ids)) as Array<string | { offerId: string; requirementId: string }>;
+          const requirements = new Map(saved.map((entry) => typeof entry === "string"
+            ? [entry, undefined]
+            : [entry.offerId, entry.requirementId]));
+          const current = effectiveCatalog(catalog, scenario).filter((item) => requirements.has(item.offerId));
+          const offers = connectedOffersForSpec(mission.openWorld!.spec, current)
+            .filter((offer) => requirements.get(offer.offerId) === undefined || requirements.get(offer.offerId) === offer.requirementId);
+          const expected = new Set(requirements.keys());
+          const cart = buildGenericCarts(mission.openWorld!.spec, offers)
+            .find((candidate) => candidate.lines.length === expected.size && candidate.lines.every((line) => expected.has(line.offerId)));
+          return cart ? [{ ...cart, alternatives: [] }] : [];
+        });
+    }
     const approved = this.approvedAlternatives();
     const base = buildRankedCarts(mission, catalog, scenario);
     const custom = this.db
@@ -256,6 +281,50 @@ export class WovenStore {
       .run(mission.id, JSON.stringify(mission));
     this.audit("mission.started", { missionId: mission.id, request: mission.request });
     return this.view(mission.id);
+  }
+
+  startOpenWorldMission(request: string, result: OpenWorldResult, now = new Date()): MissionView {
+    const spec = missionSpecSchema.parse(result.spec);
+    const mission: Mission = {
+      id: `mis_${randomBytes(6).toString("hex")}`,
+      request: request.trim(),
+      budgetCents: spec.budgetCents,
+      campers: 0,
+      weather: "Fair",
+      maxPackedLiters: 0,
+      minTentWaterproofMm: 0,
+      pickupDate: spec.pickupDate,
+      currency: "SGD",
+      assumptions: spec.assumptions,
+      createdAt: now.toISOString(),
+      engine: "open-world",
+      openWorld: {
+        spec,
+        researchLeads: result.researchLeads,
+        sources: result.sources,
+        events: result.events,
+        evidenceChecks: result.evidenceChecks,
+      },
+    };
+    this.db.exec("BEGIN IMMEDIATE");
+    try {
+      this.db.prepare("INSERT INTO missions(id, data) VALUES (?, ?)").run(mission.id, JSON.stringify(mission));
+      const insertCart = this.db.prepare("INSERT INTO mission_carts(id, mission_id, offer_ids) VALUES (?, ?, ?)");
+      for (const cart of result.carts) {
+        insertCart.run(
+          `${mission.id}:${cart.id}`,
+          mission.id,
+          JSON.stringify(cart.lines.map((line) => ({ offerId: line.offerId, requirementId: line.requirementId }))),
+        );
+      }
+      this.audit("mission.started", { missionId: mission.id, request: mission.request, engine: mission.engine });
+      for (const event of result.events) this.audit(`agent.${event.node}`, { missionId: mission.id, pass: event.pass, status: event.status });
+      this.db.exec("COMMIT");
+    } catch (error) {
+      this.db.exec("ROLLBACK");
+      throw error;
+    }
+    return this.view(mission.id, now);
   }
 
   private getMission(missionId: string): Mission {
@@ -467,14 +536,29 @@ export class WovenStore {
       ...(order ? { order } : {}),
       ...(order?.receipt ? { receiptVerification: this.verifyReceipt(order.receipt.receiptNumber, order.receipt.signature) } : {}),
       scenario: this.getScenario(),
+      ...(mission.openWorld ? {
+        requirements: mission.openWorld.spec.requirements,
+        researchLeads: mission.openWorld.researchLeads,
+        sources: [
+          ...new Map([
+            ...mission.openWorld.sources,
+            ...carts.flatMap((cart) => cart.sources || []),
+          ].map((source) => [source.id, source])).values(),
+        ],
+        agentEvents: mission.openWorld.events,
+        evidenceChecks: mission.openWorld.evidenceChecks,
+      } : {}),
+      checkoutEligible: carts.some((cart) => cart.checkoutEligible === true),
     };
   }
 
   selectCart(missionId: string, cartId: string): MissionView {
     const view = this.view(missionId);
-    if (!view.carts.some((cart) => cart.id === cartId)) {
+    const cart = view.carts.find((candidate) => candidate.id === cartId);
+    if (!cart) {
       throw new DomainError("CART_NOT_FOUND", "That cart is no longer available. Refresh the mission.", true);
     }
+    if (cart.checkoutEligible !== true) throw new DomainError("CHECKOUT_INELIGIBLE", "That result is research-only and cannot be selected for checkout.");
     this.db.prepare("UPDATE missions SET selected_cart_id = ? WHERE id = ?").run(cartId, missionId);
     this.audit("cart.selected", { missionId, cartId });
     return this.view(missionId);
@@ -512,6 +596,7 @@ export class WovenStore {
     if (!cart) {
       throw new DomainError("CART_STALE", "Inventory or price changed. Review the refreshed carts.", true);
     }
+    if (cart.checkoutEligible !== true) throw new DomainError("CHECKOUT_INELIGIBLE", "This cart is not fully verified for checkout.");
     const preview = createPreview(mission, cart, identity.id, identity.subject, now);
     this.db.exec("BEGIN IMMEDIATE");
     try {
@@ -607,7 +692,7 @@ export class WovenStore {
       const currentCart = this.cartsForMission(mission).find(
         (cart) => cart.id === preview.cart.id,
       );
-      if (!currentCart || currentCart.version !== preview.mandate.cartVersion || currentCart.totalCents !== preview.mandate.amountCents) {
+      if (!currentCart || currentCart.checkoutEligible !== true || currentCart.version !== preview.mandate.cartVersion || currentCart.totalCents !== preview.mandate.amountCents) {
         throw new DomainError("CART_STALE", "Price or inventory changed. Review a new checkout preview.", true);
       }
 
