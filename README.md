@@ -40,7 +40,7 @@
     ·
     <a href="script.md">3-minute pitch</a>
     ·
-    <a href="https://woven-pi.vercel.app">Live demo</a>
+    <a href="https://visa-woven.vercel.app">Live demo</a>
     ·
     <a href="https://github.com/Ducksss/LifeHack-2026/issues">Report an issue</a>
   </p>

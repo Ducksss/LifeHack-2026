@@ -111,7 +111,7 @@ Its identity step is implemented and must remain labeled simulated.
 | Judge demo video | Complete locally | Three-minute Remotion master with ElevenLabs AI narration and sidecar captions; public upload URL remains outstanding |
 | Agent context | Current | `AGENTS.md` is canonical; Claude and Copilot use thin pointers to it |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
-| Public HTTPS deployment | Complete for the demo | <https://woven-pi.vercel.app> (canonical — `BASE_URL` points here, verified through `/mcp` widget assets; <https://visa-woven.vercel.app> serves the same deployment). Vercel Express preset; SQLite uses temporary `/tmp` state and may reset on cold start or redeploy — reset the demo right before presenting |
+| Public HTTPS deployment | Complete for the demo | <https://visa-woven.vercel.app> (canonical — `BASE_URL` points here and the deployment is verified through `/mcp` widget assets). Vercel Express preset; SQLite uses temporary `/tmp` state and may reset on cold start or redeploy — reset the demo right before presenting |
 | Devpost submission | Text ready — media blocked | Draft story includes the working simulated-host and identity boundaries; 13 technology tags, repository, Visa prize and Digital Payments are saved; uploads and submission remain outstanding |
 | Real merchant/Visa integrations | Credential-blocked | Visa Intelligent Commerce is the selected real path; VTS, VIC, Token Requestor, MLE, and Visa Payment Passkey credentials are required |
 
@@ -340,7 +340,7 @@ The confirmed team listing is:
 
 Before publishing Devpost, a human must provide or confirm:
 
-- public HTTPS demo URL (<https://woven-pi.vercel.app> is live; confirm it is the final one);
+- public HTTPS demo URL (<https://visa-woven.vercel.app> is live; confirm it is the final one);
 - demo video URL;
 - project-description PDF;
 - whether the event permits `visa` as a public technology tag;
