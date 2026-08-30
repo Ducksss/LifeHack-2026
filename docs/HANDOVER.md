@@ -6,8 +6,8 @@
 
 **Product:** Woven
 
-**Current phase:** Working, submission-ready prototype; public deployment and
-Devpost publishing are still outstanding.
+**Current phase:** Working, submission-ready prototype with a verified public
+browser deployment; ChatGPT connection and Devpost publishing remain outstanding.
 
 **Repository synchronization:** The primary checkout should be clean and aligned
 with `origin/main` after handoff. Worktree paths and counts are ephemeral; always
@@ -94,6 +94,7 @@ live demo through the implemented review-and-confirm flow only.
 | Buyer MCP App | Complete | React widget using an explicit hosted entry point and the MCP Apps bridge |
 | Local plugin packaging | Complete | Repo marketplace, cache-safe stdio launcher, real Codex CLI install, fresh-host six-tool smoke test, and verified guide |
 | Browser fallback | Complete | `/demo`; simulated chat-host rehearsal, same domain behavior over HTTP (`?instant` skips animations) |
+| Install guide page | Complete | `/install`; Woven-branded guide styled after the ChatGPT Plugins tab (clearly labeled preview, three install paths, verification checklist); linked from the demo host header |
 | Merchant desk | Complete | `/merchant`; inventory, scenarios, orders, audit, reset |
 | Cart engine | Complete for canonical mission | Four required categories; one location per cart |
 | Checkout safety | Complete for prototype | Expiry, hash, private nonce, exact terms, idempotency |
@@ -105,7 +106,7 @@ live demo through the implemented review-and-confirm flow only.
 | Judge pitch deck | Complete | Seven-slide story plus four backups; presenter notes and source blocks included |
 | Agent context | Current | `AGENTS.md` is canonical; Claude and Copilot use thin pointers to it |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
-| Public HTTPS deployment | Done | <https://woven-pi.vercel.app> on Vercel; `BASE_URL` set and verified through `/mcp`; state is per-instance and reseeds on cold start — reset the demo right before presenting |
+| Public HTTPS deployment | Complete for the demo | <https://woven-pi.vercel.app> (canonical — `BASE_URL` points here, verified through `/mcp` widget assets; <https://visa-woven.vercel.app> serves the same deployment). Vercel Express preset; SQLite uses temporary `/tmp` state and may reset on cold start or redeploy — reset the demo right before presenting |
 | Devpost submission | Text ready — media blocked | Draft story includes the current simulated-host UI and planned identity boundary; 13 technology tags, repository, Visa prize and Digital Payments are saved; uploads and submission remain outstanding |
 | Real merchant/Visa integrations | Not started | Explicitly outside current prototype scope |
 
@@ -155,6 +156,7 @@ and domain rules. Do not split it into services without a measured reason.
 | `web/widget.tsx` | Buyer MCP App plus the simulated chat-host rehearsal (`/demo`) |
 | `web/landing.tsx` | Marketing landing page served at `/` |
 | `web/merchant.tsx` | Merchant operations desk |
+| `web/install.tsx` | In-product install guide (`/install`) styled after the ChatGPT Plugins tab |
 | `web/woven-mark.tsx` | Shared Flightpath brand mark: one route from request to verified destination |
 | `web/components/ui/` | Vendored shadcn/ui primitives (button, card, badge, table, input, separator, skeleton) |
 | `web/lib/utils.ts` | `cn` class-merge helper for shadcn components |
@@ -199,6 +201,7 @@ model-visible `structuredContent`.
 | Landing page | `http://localhost:8787/` |
 | Buyer fallback | `http://localhost:8787/demo` |
 | Merchant desk | `http://localhost:8787/merchant` |
+| Install guide | `http://localhost:8787/install` |
 | MCP endpoint | `http://localhost:8787/mcp` |
 | Health check | `http://localhost:8787/healthz` |
 
@@ -306,9 +309,14 @@ connector-style identity check appears only as planned roadmap work.
 Thumbnail/gallery uploads, the demo video URL, and the required project PDF were
 left empty at the user's request.
 
+The verified public demo URL is <https://visa-woven.vercel.app/demo>.
+
 Before publishing Devpost, a human must provide or confirm:
 
+<<<<<<< HEAD
 - public HTTPS demo URL (<https://woven-pi.vercel.app> is live; confirm it is the final one);
+=======
+>>>>>>> origin/main
 - demo video URL;
 - team member names and roles;
 - project-description PDF;
@@ -337,16 +345,13 @@ Unless the user changes direction, prioritize in this order:
 1. **Simulated identity check:** add the connector-style demo authorization flow,
    bind its opaque subject to checkout, reject missing/expired/mismatched
    sessions, and keep final purchase confirmation separate.
-2. **Public deployment:** deploy the single service behind HTTPS, set `BASE_URL`,
-   preserve SQLite expectations or deliberately choose persistent storage, and
-   verify `/healthz`, `/demo`, `/merchant`, and `/mcp`.
-3. **Real ChatGPT connection:** connect the deployed `/mcp` endpoint in Developer
+2. **Real ChatGPT connection:** connect the deployed `/mcp` endpoint in Developer
    Mode and verify the widget, private metadata, CSP and tool calls.
-4. **Demo recording:** capture the three-minute happy path plus one stale-cart
+3. **Demo recording:** capture the three-minute happy path plus one stale-cart
    failure.
-5. **Devpost publication:** add human/team details, upload the eight gallery assets,
+4. **Devpost publication:** add human/team details, upload the eight gallery assets,
    add links and publish only with explicit user authorization.
-6. **Post-hackathon validation:** interview merchants/users before generalizing the
+5. **Post-hackathon validation:** interview merchants/users before generalizing the
    mission engine or adding production integrations.
 
 ## Do not expand by default
