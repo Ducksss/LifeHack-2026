@@ -1,5 +1,6 @@
 import {
   AlertTriangle,
+  ArrowRight,
   ArrowUpRight,
   CheckCircle2,
   Download,
@@ -14,7 +15,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
-import type { CatalogItem, Order, Scenario } from "../src/domain";
+import type { CatalogItem, MerchantAlternative, Order, Scenario } from "../src/domain";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -27,6 +28,7 @@ import "./styles.css";
 interface Dashboard {
   scenario: Scenario;
   catalog: CatalogItem[];
+  alternatives: MerchantAlternative[];
   orders: Order[];
   audit: Array<{ id: number; event: string; detail: Record<string, unknown>; createdAt: string }>;
 }
@@ -100,6 +102,7 @@ function MerchantDesk() {
   const available = data.catalog.filter((item) => item.stock > 0).length;
   const merchants = new Set(data.catalog.map((item) => item.merchantId)).size;
   const locations = new Set(data.catalog.map((item) => `${item.merchantId}:${item.locationId}`)).size;
+  const activeAlternatives = data.alternatives.filter((alternative) => alternative.active).length;
 
   return (
     <main className="mx-auto w-full max-w-[1220px] px-4 pb-16 sm:px-6">
@@ -150,7 +153,7 @@ function MerchantDesk() {
         <Stat label="Merchants" value={String(merchants)} note={`${locations} pickup locations`} />
         <Stat label="Catalog offers" value={String(data.catalog.length)} note={`${available} currently available`} />
         <Stat label="Orders" value={String(data.orders.length)} note="latest 20 retained" />
-        <Stat label="Payment rail" value="Visa" note="simulated authorization" accent />
+        <Stat label="Approved swaps" value={String(activeAlternatives)} note={`${data.alternatives.length} merchant rules`} accent />
       </section>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-[0.8fr_1.2fr]">
@@ -225,6 +228,44 @@ function MerchantDesk() {
           </CardContent>
         </Card>
       </div>
+
+      <Card className="mt-4 gap-4">
+        <PanelHeading title="Approved alternatives" note="Publish or withdraw compatible substitutions used inside complete Woven carts." />
+        <CardContent>
+          <div className="grid gap-2 lg:grid-cols-2">
+            {data.alternatives.map((alternative) => (
+              <article key={`${alternative.fromOfferId}:${alternative.toOfferId}`} className="flex items-center gap-3 rounded-lg border p-3.5">
+                <span className={cn("grid size-8 flex-none place-items-center rounded-full", alternative.active ? "bg-emerald-50 text-emerald-600" : "bg-muted text-muted-foreground")}>
+                  <ArrowRight className="size-4" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <strong className="block truncate text-sm font-medium">{alternative.fromName}</strong>
+                  <small className="block truncate text-xs text-muted-foreground">to {alternative.toName}</small>
+                  <small className="mt-1 block font-mono text-[10px] text-muted-foreground">{alternative.merchantName} · {alternative.locationName}</small>
+                </div>
+                <button
+                  className={cn(
+                    "relative h-6 w-11 flex-none cursor-pointer rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+                    alternative.active ? "bg-zinc-950" : "bg-zinc-300",
+                  )}
+                  role="switch"
+                  aria-checked={alternative.active}
+                  aria-label={`${alternative.active ? "Withdraw" : "Publish"} ${alternative.toName}`}
+                  disabled={busy !== null}
+                  onClick={() => void mutate("alternative", "/api/merchant/alternative", {
+                    fromOfferId: alternative.fromOfferId,
+                    toOfferId: alternative.toOfferId,
+                    active: !alternative.active,
+                  })}
+                >
+                  <span className={cn("absolute top-0.5 size-5 rounded-full bg-white shadow-sm transition-transform", alternative.active ? "translate-x-5" : "translate-x-0.5")} />
+                </button>
+              </article>
+            ))}
+          </div>
+          <p className="mt-3 text-xs text-muted-foreground">Withdrawing a rule removes that swap from fresh buyer choices and invalidates any unconfirmed custom cart that depends on it.</p>
+        </CardContent>
+      </Card>
 
       <Card className="mt-4 gap-4">
         <PanelHeading title="Inventory & price feed" note="Seeded offers across every merchant pickup location." />

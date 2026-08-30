@@ -20,7 +20,7 @@ import {
 } from "./domain.js";
 import { WovenStore } from "./store.js";
 
-const VERSION = "0.1.2";
+const VERSION = "0.2.0";
 const WIDGET_URI = "ui://woven/mission-v1.html";
 const port = Number(process.env.PORT || 8787);
 const baseUrl = (process.env.BASE_URL || `http://localhost:${port}`).replace(/\/$/, "");
@@ -145,6 +145,24 @@ function createMcpServer(): McpServer {
 
   registerAppTool(
     server,
+    "swap_cart_item",
+    {
+      title: "Swap a compatible cart item",
+      description: "Replace one item with an active merchant-approved alternative while preserving compatibility, pickup location, and budget. App-only.",
+      inputSchema: {
+        missionId: z.string().min(5).max(80),
+        cartId: z.string().min(5).max(80),
+        offerId: z.string().min(5).max(120),
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
+      _meta: { ui: { visibility: ["app"] } },
+    },
+    async ({ missionId, cartId, offerId }) =>
+      attempt(() => viewResult(store.swapCartItem(missionId, cartId, offerId), "Compatible item swapped.")),
+  );
+
+  registerAppTool(
+    server,
     "create_checkout_preview",
     {
       title: "Review checkout",
@@ -208,6 +226,34 @@ function createMcpServer(): McpServer {
       }),
   );
 
+  registerAppTool(
+    server,
+    "verify_receipt",
+    {
+      title: "Verify a Woven receipt",
+      description: "Verify the server signature on a simulated Woven receipt and return its exact recorded mission, cart, merchant, pickup, and amount.",
+      inputSchema: {
+        receiptNumber: z.string().min(5).max(80),
+        signature: z.string().length(64),
+      },
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
+      _meta: { ui: { visibility: ["model", "app"] } },
+    },
+    async ({ receiptNumber, signature }) =>
+      attempt(() => {
+        const verification = store.verifyReceipt(receiptNumber, signature);
+        return {
+          content: [{
+            type: "text" as const,
+            text: verification.valid
+              ? `Receipt ${receiptNumber} has a valid Woven server signature. Payment mode: simulated.`
+              : `Receipt ${receiptNumber} could not be verified.`,
+          }],
+          structuredContent: { verification },
+        };
+      }),
+  );
+
   registerAppResource(
     server,
     "Woven checkout widget",
@@ -250,6 +296,12 @@ const cartActionSchema = z.object({
   missionId: z.string().min(5).max(80),
   cartId: z.string().min(5).max(80),
 });
+const swapActionSchema = cartActionSchema.extend({ offerId: z.string().min(5).max(120) });
+const alternativeActionSchema = z.object({
+  fromOfferId: z.string().min(5).max(120),
+  toOfferId: z.string().min(5).max(120),
+  active: z.boolean(),
+});
 const confirmSchema = z.object({
   previewId: z.string().min(5).max(80),
   mandateHash: z.string().length(64),
@@ -279,9 +331,17 @@ app.post("/api/demo/start", (req, res) => api(res, () => {
   return { view: store.startMission({ ...input, request: input.request || CANONICAL_REQUEST }) };
 }));
 app.get("/api/missions/:missionId", (req, res) => api(res, () => ({ view: store.view(req.params.missionId) })));
+app.post("/api/tools/build_carts", (req, res) => api(res, () => {
+  const missionId = z.string().min(5).max(80).parse(req.body.missionId);
+  return { view: store.view(missionId) };
+}));
 app.post("/api/tools/select_cart", (req, res) => api(res, () => {
   const input = cartActionSchema.parse(req.body);
   return { view: store.selectCart(input.missionId, input.cartId) };
+}));
+app.post("/api/tools/swap_cart_item", (req, res) => api(res, () => {
+  const input = swapActionSchema.parse(req.body);
+  return { view: store.swapCartItem(input.missionId, input.cartId, input.offerId) };
 }));
 app.post("/api/tools/create_checkout_preview", (req, res) =>
   api(res, () => {
@@ -292,6 +352,11 @@ app.post("/api/tools/create_checkout_preview", (req, res) =>
 );
 app.post("/api/tools/confirm_purchase", (req, res) => api(res, () => store.confirmPurchase(confirmSchema.parse(req.body))));
 app.get("/api/merchant/dashboard", (_req, res) => api(res, () => store.dashboard()));
+app.post("/api/merchant/alternative", (req, res) => api(res, () => {
+  const input = alternativeActionSchema.parse(req.body);
+  store.setAlternative(input.fromOfferId, input.toOfferId, input.active);
+  return store.dashboard();
+}));
 app.post("/api/merchant/scenario", (req, res) =>
   api(res, () => {
     const scenario = z.enum(["normal", "stockout", "price-change", "auth-decline", "order-fail"]).parse(req.body.scenario) as Scenario;
@@ -307,6 +372,10 @@ app.post("/api/merchant/reset", (_req, res) => api(res, () => {
   store.reset();
   return store.dashboard();
 }));
+app.get("/api/receipts/:receiptNumber/verify", (req, res) => api(res, () => store.verifyReceipt(
+  z.string().min(5).max(80).parse(req.params.receiptNumber),
+  z.string().length(64).parse(req.query.signature),
+)));
 
 app.all("/mcp", async (req, res) => {
   const server = createMcpServer();

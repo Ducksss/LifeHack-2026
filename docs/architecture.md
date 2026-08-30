@@ -36,9 +36,11 @@ guest.
 | `start_mission` | Model + app UI | Parse a mission, persist it, and return ranked carts |
 | `build_carts` | Model + app UI | Recompute current carts from persisted inventory |
 | `select_cart` | App only | Persist the user’s selected candidate |
+| `swap_cart_item` | App only | Replace one line with an active merchant-approved compatible alternative |
 | `create_checkout_preview` | App only | Revalidate and create an expiring exact mandate |
 | `confirm_purchase` | App only | Verify explicit confirmation and execute simulator outcome |
 | `get_order_status` | Model | Read the latest mission/order state |
+| `verify_receipt` | Model + app UI | Verify the server signature on a simulated receipt |
 
 The confirmation nonce is returned in MCP result `_meta`, not `structuredContent`, so it is private to the widget rather than visible to the model. Browser fallback receives it over same-origin HTTP because there is no model in that path.
 
@@ -53,7 +55,28 @@ The canonical mission has four required categories: a USB-C PD charger, MacBook 
 5. Build only complete carts from one merchant pickup location.
 6. Reject carts over the hard budget.
 7. Rank by power headroom, pickup time, then budget headroom.
-8. Keep the best cart per merchant and label the top match and best value.
+8. Keep each merchant leader, then add the best Airport and East choices for five location-diverse carts.
+9. Label the top match and best value; the widget can rerank the same safe carts by value, speed, power, or consented pickup-area preference.
+
+The Choice Center changes presentation order only; it cannot relax compatibility,
+stock, pickup, single-location, or budget constraints. Preference persistence is
+browser/app-local and starts only after the user selects **Remember these
+preferences**. No profile or account is created.
+
+## Compatible substitutions and recovery
+
+Alternative catalog offers declare their base SKU, while
+`merchant_alternatives` stores whether each location-specific mapping is
+published. `swap_cart_item` accepts only a mapping that is active, in stock,
+same category, same merchant/location, compatible, and still under budget. The
+resulting four-offer composition is persisted in `mission_carts`; checkout
+rebuilds that composition from current catalog data before creating or consuming
+a mandate.
+
+When price, stock, expiry, or an alternative rule invalidates a selected cart,
+the stale composition is not silently repaired. The widget calls `build_carts`,
+clears the unavailable selection, opens the Choice Center, and explains that
+fresh complete alternatives are ready.
 
 The seeded catalog is intentionally small, so direct enumeration is clearer and safer than a solver. If the catalog becomes large or missions gain optional/substitutable components, replace only `buildRankedCarts` with a constrained search implementation.
 
@@ -80,6 +103,13 @@ Checkout validates all of the following inside one SQLite write transaction:
 - cart ID, version, exact amount, stock, and price still match;
 - idempotency key is unique, or returns the already-created order;
 - inventory decrements and order creation commit atomically.
+
+Confirmed orders include an exact receipt snapshot containing the mission,
+merchant, pickup location, four lines, total, timestamp, and an explicit
+`simulated` payment mode. A random receipt-signing key is generated once and
+stored in SQLite settings; HMAC-SHA-256 verification is available through
+`verify_receipt` and the HTTP verification endpoint. This proves local record
+integrity, not a Visa-issued receipt or live payment.
 
 ## Trust boundaries
 
