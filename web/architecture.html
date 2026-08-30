@@ -6,9 +6,70 @@
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Woven Target Architecture</title>
-<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+<style>
+  :root { color-scheme: light; background: #fff; color: #18181b; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { display: flex; min-height: 100vh; min-height: 100dvh; flex-direction: column; overflow: hidden; background: #fff; }
+  .site-header { flex: 0 0 56px; border-bottom: 1px solid #e4e4e7; background: rgb(255 255 255 / 92%); }
+  .site-nav { display: flex; width: 100%; max-width: 72rem; height: 56px; align-items: center; justify-content: space-between; gap: 20px; margin: 0 auto; padding: 0 24px; }
+  .brand, .primary, .actions { display: flex; align-items: center; }
+  .brand { min-width: max-content; gap: 10px; color: #18181b; font-size: 14px; font-weight: 600; text-decoration: none; }
+  .mark { display: grid; width: 32px; height: 32px; place-items: center; border-radius: 8px; background: #09090b; }
+  .mark svg { width: 20px; height: 20px; }
+  .prototype { padding: 3px 8px; border: 1px solid #e4e4e7; border-radius: 999px; color: #71717a; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; }
+  .primary { gap: 24px; }
+  .primary a { color: #71717a; font-size: 14px; text-decoration: none; transition: color 150ms ease; }
+  .primary a:hover, .primary a:focus-visible, .primary a[aria-current="page"] { color: #18181b; }
+  .primary a[aria-current="page"] { font-weight: 600; }
+  .actions { gap: 8px; }
+  .action { display: inline-flex; min-height: 32px; align-items: center; justify-content: center; gap: 6px; padding: 0 12px; border-radius: 8px; color: #18181b; font-size: 14px; font-weight: 500; text-decoration: none; white-space: nowrap; }
+  .action:hover, .action:focus-visible { background: #f4f4f5; }
+  .action-primary { color: #fff; background: #09090b; }
+  .action-primary:hover, .action-primary:focus-visible { background: #27272a; }
+  a:focus-visible { outline: 2px solid #18181b; outline-offset: 2px; }
+  main { display: flex; min-height: 0; flex: 1; padding: 16px; }
+  iframe { display: block; width: 100%; height: 100%; min-height: 0; margin: 0 auto; border: 0; }
+  @media (max-width: 1023px) { .merchant-link { display: none; } }
+  @media (max-width: 767px) {
+    .site-nav { gap: 8px; padding: 0 16px; }
+    .primary, .prototype { display: none; }
+    .brand { gap: 8px; }
+    .actions { gap: 4px; }
+    .action { padding: 0 10px; }
+    main { padding: 12px; }
+  }
+</style>
 </head>
 <body>
+<header class="site-header">
+  <div class="site-nav">
+    <a class="brand" href="/" aria-label="Woven home">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48">
+          <path d="M7 13c5 0 5 22 11 22 5 0 5-14 8-14s3 14 8 14c6 0 6-22 8-22" fill="none" stroke="#fcfaf5" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"></path>
+          <circle cx="7" cy="13" r="4" fill="#b7f522"></circle>
+          <circle cx="42" cy="13" r="4.5" fill="#fcfaf5"></circle>
+          <circle cx="42" cy="13" r="2.75" fill="#1545e8"></circle>
+        </svg>
+      </span>
+      <span>Woven</span>
+      <span class="prototype">Prototype</span>
+    </a>
+    <nav class="primary" aria-label="Primary navigation">
+      <a href="/#how">How it works</a>
+      <a href="/#product">Product</a>
+      <a href="/#trust">Trust</a>
+      <a href="/architecture" aria-current="page">Architecture</a>
+    </nav>
+    <div class="actions">
+      <a class="action" href="/install">Install</a>
+      <a class="action merchant-link" href="/merchant">Merchant desk</a>
+      <a class="action action-primary" href="/demo">Run the demo <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</header>
+<main>
 <iframe sandbox="allow-scripts" referrerpolicy="no-referrer" title="Woven Target Architecture" srcdoc="&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
@@ -2112,5 +2173,6 @@ success → one stock decrement + one receipt`,
 &lt;/body&gt;
 &lt;/html&gt;
 "></iframe>
+</main>
 </body>
 </html>

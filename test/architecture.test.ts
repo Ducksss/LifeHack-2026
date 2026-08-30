@@ -14,3 +14,11 @@ test("judges can reach the architecture explainer from the landing page", () => 
   const landing = readFileSync("web/landing.tsx", "utf8");
   assert.equal(landing.match(/href="\/architecture"/g)?.length, 2);
 });
+
+test("architecture keeps the global judge navigation", () => {
+  const page = readFileSync("web/architecture.html", "utf8");
+  assert.match(page, /<nav class="primary" aria-label="Primary navigation">/);
+  assert.match(page, /href="\/architecture" aria-current="page"/);
+  assert.match(page, /href="\/demo">Run the demo/);
+  assert.match(page, /@media \(max-width: 767px\)/);
+});
