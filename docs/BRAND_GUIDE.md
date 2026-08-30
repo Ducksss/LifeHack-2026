@@ -96,7 +96,8 @@ confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 | `docs/assets/devpost/woven-architecture.png` | Superseded by `woven-system-architecture.png`; kept for the editorial deck variant |
 | `docs/assets/devpost/woven-how-it-works.png` | Six-step ask→confirm→collect flow drawn in the shipped product UI style |
 | `docs/assets/devpost/woven-system-architecture.png` | Surfaces → one service → trust boundary diagram in the shipped product UI style |
-| `docs/assets/devpost/src/*.html` | Editable sources for the two product-style explainers; render at 1600 × 900 (see file comments) |
+| `docs/assets/devpost/woven-under-the-hood.png` | Deep-dive sequence: the model's tool call to receipt, with real payloads and gates |
+| `docs/assets/devpost/src/*.html` | Editable sources for the three product-style explainers; render at 1600 × 900 (see file comments) |
 | `docs/Woven-Devpost-Visuals.pptx` | Presentation-ready source deck for the three slides |
 | `docs/assets/screenshots/*.png` | Verified product gallery |
 | `docs/assets/slides/*.png` | Text-free editorial backgrounds for friction, the complete kit, and explicit human confirmation |
@@ -105,7 +106,7 @@ confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 | `docs/assets/marketing/woven-how-it-works-square.png` | 1080 × 1080 four-step how-it-works card for feeds |
 | `docs/assets/marketing/woven-how-it-works-story.png` | 1080 × 1920 four-step how-it-works card for stories |
 | `script.md` | Authoritative three-minute narration and language guardrails |
-| `docs/Woven-Hackathon-Pitch.pptx` | Twelve-slide judge deck; the identity slide is explicitly labeled as planned |
+| `docs/Woven-Hackathon-Pitch.pptx` | Thirteen-slide judge deck; the identity slide is explicitly labeled as planned |
 
 All Devpost gallery images are 1600 × 900. Upload them uncropped in the order
 listed in `docs/DEVPOST_SUBMISSION.md`.

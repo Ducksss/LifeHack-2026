@@ -165,6 +165,7 @@ All gallery assets are 1600 × 900 and live in the repository.
 | 6 | `docs/assets/screenshots/order-success.png` | From mission to pickup receipt | A successful simulated Visa result reserves the kit and returns a pickup-ready receipt. |
 | 7 | `docs/assets/screenshots/merchant-dashboard.png` | Trust you can test live | Change inventory or trigger decline/reversal scenarios while the audit trail updates. |
 | 8 | `docs/assets/devpost/woven-system-architecture.png` | One service, one source of truth | Every surface shares the same commerce rules, SQLite transactions, and one payment adapter seam. |
+| 9 | `docs/assets/devpost/woven-under-the-hood.png` | What actually happens | The request traced from the model's `start_mission` call through app-only tools, the hidden nonce, and the checkout guard to the receipt. |
 
 Use `cover.png` as the Devpost thumbnail. Keep the raw product screenshots
 uncropped so judges can inspect the visible prototype boundaries.
