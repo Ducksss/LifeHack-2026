@@ -37,6 +37,11 @@ verification—and remains separate from final purchase confirmation. See
 **Local master:** `output/Woven-Judge-Video.mp4` (3:00, 1600×900, H.264/AAC,
 ElevenLabs AI narration). Sidecar captions: `video/Woven-Judge-Video.srt`.
 
+**Team members:**
+
+- Chai Pin Zheng — Product Engineer
+- Ho Boon How — Product Engineer
+
 ## Submission story
 
 ### Inspiration
@@ -309,7 +314,8 @@ transactions safely.
 - [x] Render the three-minute local demo master
 - [ ] Upload the demo master and add its public URL
 - [ ] Upload the required project-description PDF
-- [ ] Add team member names and roles without inventing missing details
+- [x] Add team member names
+- [x] Add roles for Chai Pin Zheng and Ho Boon How
 - [ ] Confirm the event's rules for using “Visa” in tags and screenshots
 - [ ] Verify the repository visibility required by the hackathon
 - [ ] Test every public link in a logged-out browser

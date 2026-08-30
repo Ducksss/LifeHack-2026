@@ -330,11 +330,15 @@ Git.
 
 The verified public demo URL is <https://visa-woven.vercel.app/demo>.
 
+The confirmed team listing is:
+
+- Chai Pin Zheng — Product Engineer
+- Ho Boon How — Product Engineer
+
 Before publishing Devpost, a human must provide or confirm:
 
 - public HTTPS demo URL (<https://woven-pi.vercel.app> is live; confirm it is the final one);
 - demo video URL;
-- team member names and roles;
 - project-description PDF;
 - whether the event permits `visa` as a public technology tag;
 - required repository visibility; and
