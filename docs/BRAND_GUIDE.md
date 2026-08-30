@@ -94,6 +94,9 @@ confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 | `docs/assets/devpost/woven-user-flow.png` | Six-step product flow with real product screens |
 | `docs/assets/devpost/woven-trust-boundary.png` | Human authorization and simulator boundary |
 | `docs/assets/devpost/woven-architecture.png` | Detailed technical architecture |
+| `docs/assets/devpost/woven-how-it-works.png` | Six-step ask→confirm→collect flow drawn in the shipped product UI style |
+| `docs/assets/devpost/woven-system-architecture.png` | Surfaces → one service → trust boundary diagram in the shipped product UI style |
+| `docs/assets/devpost/src/*.html` | Editable sources for the two product-style explainers; render at 1600 × 900 (see file comments) |
 | `docs/Woven-Devpost-Visuals.pptx` | Presentation-ready source deck for the three slides |
 | `docs/assets/screenshots/*.png` | Verified product gallery |
 | `docs/assets/slides/*.png` | Text-free editorial backgrounds for friction, the complete kit, and explicit human confirmation |
