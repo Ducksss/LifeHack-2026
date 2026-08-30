@@ -34,6 +34,7 @@ export default defineConfig(({ mode }) => {
               merchant: path.resolve("web/merchant.html"),
               install: path.resolve("web/install.html"),
               identity: path.resolve("web/identity.html"),
+              architecture: path.resolve("web/architecture.html"),
               landing: path.resolve("web/landing.html"),
             },
           },

@@ -352,6 +352,7 @@ app.get("/demo", (_req, res) => res.sendFile("demo.html", { root: webRoot }));
 app.get("/merchant", (_req, res) => res.sendFile("merchant.html", { root: webRoot }));
 app.get("/install", (_req, res) => res.sendFile("install.html", { root: webRoot }));
 app.get("/identity", (_req, res) => res.sendFile("identity.html", { root: webRoot }));
+app.get("/architecture", (_req, res) => res.sendFile("architecture.html", { root: webRoot }));
 
 app.post("/api/demo/start", (req, res) => api(res, () => {
   const input = missionInputSchema.parse(req.body);

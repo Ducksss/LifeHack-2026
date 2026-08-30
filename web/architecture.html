@@ -1,0 +1,2088 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Woven Target Architecture</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+</head>
+<body>
+<iframe sandbox="allow-scripts" referrerpolicy="no-referrer" title="Woven Target Architecture" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;Woven Target Architecture&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(
+    --background,
+    var(--color-background-primary, light-dark(rgb(255 255 255), rgb(24 24 24)))
+  ) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --color-background-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --card: color-mix(in oklab, var(--foreground) 5%, var(--background));
+  --card-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --popover: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255), rgb(45 45 45))
+  );
+  --popover-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --primary: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --primary-foreground: var(
+    --color-text-inverse,
+    light-dark(rgb(255 255 255), rgb(13 13 13))
+  );
+  --secondary: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%))
+  );
+  --secondary-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: var(
+    --color-text-secondary,
+    light-dark(rgb(26 28 31 / 49.4%), rgb(255 255 255 / 49.8%))
+  );
+  --accent: var(
+    --color-background-info,
+    light-dark(rgb(229 242 255), rgb(13 39 63))
+  );
+  --accent-foreground: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --destructive: var(
+    --color-text-warning,
+    light-dark(rgb(226 85 7), rgb(255 133 73))
+  );
+  --border: var(
+    --color-border-secondary,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+  --input: var(
+    --color-border-primary,
+    light-dark(
+      rgb(26 28 31 / 11.8%),
+      color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+    )
+  );
+  --ring: var(
+    --color-ring-primary,
+    light-dark(rgb(51 156 255), rgb(131 195 255 / 76%))
+  );
+  --font-size-base: var(--font-text-md-size, 14px);
+  --blue: light-dark(rgb(51 156 255), rgb(51 156 255));
+  --orange: light-dark(rgb(226 85 7), rgb(251 106 34));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+  --red: light-dark(rgb(224 46 42), rgb(255 103 100));
+  --purple: light-dark(rgb(146 79 247), rgb(173 123 249));
+  --yellow: light-dark(rgb(255 195 0), rgb(255 210 64));
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: var(--border-radius-lg, 12.5px);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  /* Preserve MCP aliases for older inline renderers without creating :root cycles. */
+  --color-background-primary: var(
+    --background,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --color-text-primary: var(
+    --foreground,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --color-border-secondary: var(
+    --border,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans) !important;
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--font-weight-medium, 500);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive &gt; .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align=&quot;right&quot;]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align=&quot;center&quot;]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: superellipse(1.5);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget &gt; :not(.card, .progress) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.progress {
+  display: flex;
+  height: 6px;
+  margin-block: calc((var(--line-height-normal, 1.5em) - 6px) / 2);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+}
+
+.progress-bar {
+  height: 100%;
+  flex-shrink: 0;
+  border: 0;
+  background: var(--viz-series-1);
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: superellipse(1.5);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+  [aria-pressed=&quot;true&quot;],
+  [aria-selected=&quot;true&quot;],
+  .is-selected
+) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  .btn,
+  .form-control,
+  .form-select {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .form-control,
+  .form-select {
+    font-size: max(16px, var(--font-size-normal));
+  }
+
+  .form-control[type=&quot;file&quot;]::file-selector-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .form-control-color[type=&quot;color&quot;] {
+    width: 44px;
+    height: 44px;
+  }
+
+  .form-control:is(
+    [type=&quot;date&quot;],
+    [type=&quot;datetime-local&quot;],
+    [type=&quot;month&quot;],
+    [type=&quot;time&quot;],
+    [type=&quot;week&quot;]
+  ) {
+    min-width: 0;
+    max-width: 100%;
+    padding-block: 8px;
+  }
+
+  .form-check {
+    min-height: 44px;
+    padding-inline: 15px;
+  }
+
+  .form-check-input {
+    position: relative;
+  }
+
+  .form-check-input::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    content: &quot;&quot;;
+    transform: translate(-50%, -50%);
+  }
+
+  .form-check-label {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .form-range {
+    height: 44px;
+    touch-action: pan-y;
+  }
+
+  .form-range::-webkit-slider-runnable-track {
+    height: 44px;
+  }
+
+  .form-range::-moz-range-track {
+    height: 44px;
+  }
+
+  .form-range::-webkit-slider-thumb {
+    margin-top: 12px;
+  }
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+/* Model-authored chart rules can otherwise stretch icons after these styles load. */
+svg.lucide {
+  display: block;
+  width: 16px !important;
+  height: 16px !important;
+  flex: none;
+  margin: 0 !important;
+  stroke-width: 1.6;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;woven-target-architecture&quot;&gt;
+  &lt;style&gt;
+    #woven-target-architecture {
+      width: 100%;
+      color: var(--foreground);
+    }
+
+    #woven-target-architecture * {
+      box-sizing: border-box;
+    }
+
+    #woven-target-architecture .wa-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    #woven-target-architecture .wa-title {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    #woven-target-architecture .wa-mark {
+      width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--foreground);
+      color: var(--background);
+    }
+
+    #woven-target-architecture .wa-mark svg {
+      width: 26px;
+      height: 26px;
+    }
+
+    #woven-target-architecture h1,
+    #woven-target-architecture h2,
+    #woven-target-architecture h3,
+    #woven-target-architecture p {
+      margin: 0;
+    }
+
+    #woven-target-architecture .wa-kicker {
+      margin-bottom: 3px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    #woven-target-architecture .wa-subtitle {
+      margin-top: 6px;
+      color: var(--muted-foreground);
+      max-width: 68ch;
+    }
+
+    #woven-target-architecture .wa-status {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 6px;
+      flex: 0 0 auto;
+    }
+
+    #woven-target-architecture .wa-status .viz-badge:first-child {
+      background: color-mix(in srgb, var(--green) 14%, var(--background));
+      color: var(--foreground);
+    }
+
+    #woven-target-architecture .wa-status .viz-badge:last-child {
+      background: color-mix(in srgb, var(--blue) 14%, var(--background));
+      color: var(--foreground);
+    }
+
+    #woven-target-architecture .wa-correction {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      margin-bottom: 22px;
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    #woven-target-architecture .wa-correction strong {
+      color: var(--foreground);
+    }
+
+    #woven-target-architecture .wa-correction p {
+      color: var(--muted-foreground);
+    }
+
+    #woven-target-architecture .wa-system {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) 28px minmax(0, 1.15fr) 28px minmax(0, 1fr);
+      gap: 10px;
+      align-items: stretch;
+      margin-bottom: 22px;
+    }
+
+    #woven-target-architecture .wa-lane {
+      min-width: 0;
+      padding-top: 10px;
+      border-top: 2px solid var(--border);
+    }
+
+    #woven-target-architecture .wa-lane[data-lane=&quot;woven&quot;] {
+      border-top-color: var(--green);
+    }
+
+    #woven-target-architecture .wa-lane[data-lane=&quot;external&quot;] {
+      border-top-color: var(--blue);
+    }
+
+    #woven-target-architecture .wa-lane-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    #woven-target-architecture .wa-lane-head span {
+      color: var(--muted-foreground);
+    }
+
+    #woven-target-architecture .wa-node {
+      position: relative;
+      padding: 9px 0 9px 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    #woven-target-architecture .wa-node:first-of-type {
+      border-top: 0;
+    }
+
+    #woven-target-architecture .wa-node::before {
+      content: &quot;&quot;;
+      position: absolute;
+      left: 0;
+      top: 16px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--muted-foreground);
+    }
+
+    #woven-target-architecture .wa-lane[data-lane=&quot;woven&quot;] .wa-node::before {
+      background: var(--green);
+    }
+
+    #woven-target-architecture .wa-lane[data-lane=&quot;external&quot;] .wa-node::before {
+      background: var(--blue);
+    }
+
+    #woven-target-architecture .wa-node strong,
+    #woven-target-architecture .wa-node span {
+      display: block;
+    }
+
+    #woven-target-architecture .wa-node span {
+      margin-top: 2px;
+      color: var(--muted-foreground);
+    }
+
+    #woven-target-architecture .wa-link {
+      display: grid;
+      place-items: center;
+      color: var(--muted-foreground);
+    }
+
+    #woven-target-architecture .wa-link span {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    #woven-target-architecture .wa-link span::before,
+    #woven-target-architecture .wa-link span::after {
+      content: &quot;&quot;;
+      height: 1px;
+      flex: 1;
+      background: var(--border);
+    }
+
+    #woven-target-architecture .wa-section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    #woven-target-architecture .wa-section-head p {
+      color: var(--muted-foreground);
+    }
+
+    #woven-target-architecture .wa-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    #woven-target-architecture .wa-flow {
+      display: grid;
+      grid-template-columns: minmax(230px, 0.85fr) minmax(0, 1.45fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    #woven-target-architecture .wa-steps {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      position: relative;
+    }
+
+    #woven-target-architecture .wa-steps::before {
+      content: &quot;&quot;;
+      position: absolute;
+      left: 13px;
+      top: 16px;
+      bottom: 16px;
+      width: 1px;
+      background: var(--border);
+    }
+
+    #woven-target-architecture .wa-step {
+      position: relative;
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 10px;
+      padding: 0 0 13px;
+    }
+
+    #woven-target-architecture .wa-step:last-child {
+      padding-bottom: 0;
+    }
+
+    #woven-target-architecture .wa-step-number {
+      position: relative;
+      z-index: 1;
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--background);
+      border: 1px solid var(--border);
+      color: var(--foreground);
+    }
+
+    #woven-target-architecture .wa-step:nth-child(1) .wa-step-number,
+    #woven-target-architecture .wa-step:last-child .wa-step-number {
+      border-color: var(--green);
+    }
+
+    #woven-target-architecture .wa-step-actor {
+      display: block;
+      margin-bottom: 2px;
+      color: var(--muted-foreground);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    #woven-target-architecture .wa-step p {
+      margin-top: 3px;
+      color: var(--muted-foreground);
+    }
+
+    #woven-target-architecture .wa-payload {
+      min-width: 0;
+    }
+
+    #woven-target-architecture .wa-payload-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    #woven-target-architecture .wa-payload-block {
+      min-width: 0;
+    }
+
+    #woven-target-architecture .wa-payload-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    #woven-target-architecture .wa-payload-label span {
+      color: var(--muted-foreground);
+    }
+
+    #woven-target-architecture pre {
+      margin: 0;
+      min-height: 210px;
+      padding: 14px;
+      overflow: hidden;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--muted) 72%, transparent);
+      color: var(--foreground);
+    }
+
+    #woven-target-architecture .wa-guardrail {
+      margin-top: 12px;
+      padding: 10px 0 0 14px;
+      border-top: 1px solid var(--border);
+      border-left: 3px solid var(--green);
+    }
+
+    #woven-target-architecture .wa-guardrail p {
+      margin-top: 3px;
+      color: var(--muted-foreground);
+    }
+
+    #woven-target-architecture .wa-footnote {
+      margin-top: 18px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      color: var(--muted-foreground);
+    }
+
+    @media (max-width: 620px) {
+      #woven-target-architecture .wa-header,
+      #woven-target-architecture .wa-section-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      #woven-target-architecture .wa-header,
+      #woven-target-architecture .wa-title,
+      #woven-target-architecture .wa-status,
+      #woven-target-architecture .wa-section-head,
+      #woven-target-architecture .wa-system,
+      #woven-target-architecture .wa-flow,
+      #woven-target-architecture .wa-controls {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      #woven-target-architecture .wa-status {
+        justify-content: flex-start;
+      }
+
+      #woven-target-architecture .wa-status .viz-badge,
+      #woven-target-architecture .wa-controls .btn {
+        max-width: 100%;
+        white-space: normal;
+      }
+
+      #woven-target-architecture .wa-system {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      #woven-target-architecture .wa-link span {
+        width: auto;
+        flex-direction: column;
+      }
+
+      #woven-target-architecture .wa-link span::before,
+      #woven-target-architecture .wa-link span::after {
+        width: 1px;
+        height: 8px;
+        flex: 0 0 8px;
+      }
+
+      #woven-target-architecture .wa-flow {
+        grid-template-columns: 1fr;
+      }
+
+      #woven-target-architecture .wa-payload-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #woven-target-architecture pre {
+        min-height: 0;
+      }
+
+      #woven-target-architecture .wa-node,
+      #woven-target-architecture .wa-step &gt; div,
+      #woven-target-architecture .wa-step p,
+      #woven-target-architecture .wa-step strong {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+    }
+
+    @media (max-width: 420px) {
+      #woven-target-architecture .wa-correction {
+        grid-template-columns: 1fr;
+      }
+
+      #woven-target-architecture .wa-mark {
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
+      }
+
+      #woven-target-architecture .wa-controls .btn {
+        flex: 1 1 100%;
+      }
+    }
+  &lt;/style&gt;
+
+  &lt;header class=&quot;wa-header&quot;&gt;
+    &lt;div class=&quot;wa-title&quot;&gt;
+      &lt;span class=&quot;wa-mark&quot; aria-hidden=&quot;true&quot;&gt;
+        &lt;svg viewBox=&quot;0 0 48 48&quot; role=&quot;img&quot;&gt;
+          &lt;path d=&quot;M7 13c5 0 5 22 11 22 5 0 5-14 8-14s3 14 8 14c6 0 6-22 8-22&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; stroke-width=&quot;5&quot;&gt;&lt;/path&gt;
+          &lt;circle cx=&quot;7&quot; cy=&quot;13&quot; r=&quot;4&quot; fill=&quot;var(--green)&quot;&gt;&lt;/circle&gt;
+          &lt;circle cx=&quot;42&quot; cy=&quot;13&quot; r=&quot;3.5&quot; fill=&quot;var(--blue)&quot;&gt;&lt;/circle&gt;
+        &lt;/svg&gt;
+      &lt;/span&gt;
+      &lt;div&gt;
+        &lt;div class=&quot;wa-kicker text-small&quot;&gt;Woven · target integration&lt;/div&gt;
+        &lt;h1&gt;From one request to a result inside Codex.&lt;/h1&gt;
+        &lt;p class=&quot;wa-subtitle&quot;&gt;The production path keeps discovery, recommendation, consent, Visa controls, merchant checkout, and the in-chat result as separate trust boundaries.&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;wa-status&quot; aria-label=&quot;Implementation status&quot;&gt;
+      &lt;span class=&quot;viz-badge&quot;&gt;Woven core · working&lt;/span&gt;
+      &lt;span class=&quot;viz-badge&quot;&gt;Visa path · future / credential-gated&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/header&gt;
+
+  &lt;section class=&quot;wa-correction&quot; aria-label=&quot;Architecture correction&quot;&gt;
+    &lt;strong&gt;Recommendation does not go to Visa.&lt;/strong&gt;
+    &lt;p&gt;Codex sends the mission JSON to Woven. Woven queries merchant catalog or merchant MCP services and builds the recommendation. Visa enters later for authenticated payment instructions, agent-specific credentials, network controls, and commerce signals.&lt;/p&gt;
+  &lt;/section&gt;
+
+  &lt;section aria-labelledby=&quot;wa-system-title&quot;&gt;
+    &lt;div class=&quot;wa-section-head&quot;&gt;
+      &lt;div&gt;
+        &lt;h2 id=&quot;wa-system-title&quot;&gt;System boundaries&lt;/h2&gt;
+        &lt;p class=&quot;text-small&quot;&gt;One Woven service between the host and external commerce systems.&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;wa-system&quot; role=&quot;img&quot; aria-label=&quot;Codex or ChatGPT connects to one Woven MCP service. Woven connects separately to merchant catalog and order systems and to Visa payment services.&quot;&gt;
+      &lt;div class=&quot;wa-lane&quot; data-lane=&quot;host&quot;&gt;
+        &lt;div class=&quot;wa-lane-head&quot;&gt;
+          &lt;h3&gt;Codex / ChatGPT&lt;/h3&gt;
+          &lt;span class=&quot;text-small&quot;&gt;host boundary&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;wa-node&quot;&gt;
+          &lt;strong&gt;User intent&lt;/strong&gt;
+          &lt;span class=&quot;text-small&quot;&gt;Natural-language mission and constraints&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;wa-node&quot;&gt;
+          &lt;strong&gt;Model + MCP client&lt;/strong&gt;
+          &lt;span class=&quot;text-small&quot;&gt;Chooses &lt;code&gt;start_mission&lt;/code&gt; and sends JSON&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;wa-node&quot;&gt;
+          &lt;strong&gt;React MCP App&lt;/strong&gt;
+          &lt;span class=&quot;text-small&quot;&gt;Renders carts; app-only buttons protect checkout&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;wa-link&quot; aria-hidden=&quot;true&quot;&gt;&lt;span&gt;↔&lt;/span&gt;&lt;/div&gt;
+
+      &lt;div class=&quot;wa-lane&quot; data-lane=&quot;woven&quot;&gt;
+        &lt;div class=&quot;wa-lane-head&quot;&gt;
+          &lt;h3&gt;Woven service&lt;/h3&gt;
+          &lt;span class=&quot;text-small&quot;&gt;one deployable service&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;wa-node&quot;&gt;
+          &lt;strong&gt;HTTP + stdio MCP gateway&lt;/strong&gt;
+          &lt;span class=&quot;text-small&quot;&gt;Tool schemas, validation, visibility, safe errors&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;wa-node&quot;&gt;
+          &lt;strong&gt;Mission + compatibility engine&lt;/strong&gt;
+          &lt;span class=&quot;text-small&quot;&gt;Normalizes constraints, assembles complete carts, ranks&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;wa-node&quot;&gt;
+          &lt;strong&gt;Checkout guard&lt;/strong&gt;
+          &lt;span class=&quot;text-small&quot;&gt;Revalidation, exact mandate, nonce, hash, idempotency&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;wa-node&quot;&gt;
+          &lt;strong&gt;Transaction store + audit&lt;/strong&gt;
+          &lt;span class=&quot;text-small&quot;&gt;Mission, cart versions, identity, orders, receipt state&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;wa-node&quot;&gt;
+          &lt;strong&gt;&lt;code&gt;authorizePayment&lt;/code&gt; adapter&lt;/strong&gt;
+          &lt;span class=&quot;text-small&quot;&gt;Simulator today; only Visa replacement seam later&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;wa-link&quot; aria-hidden=&quot;true&quot;&gt;&lt;span&gt;↔&lt;/span&gt;&lt;/div&gt;
+
+      &lt;div class=&quot;wa-lane&quot; data-lane=&quot;external&quot;&gt;
+        &lt;div class=&quot;wa-lane-head&quot;&gt;
+          &lt;h3&gt;External commerce&lt;/h3&gt;
+          &lt;span class=&quot;text-small&quot;&gt;target boundary&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;wa-node&quot;&gt;
+          &lt;strong&gt;Merchant MCP / catalog APIs&lt;/strong&gt;
+          &lt;span class=&quot;text-small&quot;&gt;Products, price, stock, pickup, approved substitutions&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;wa-node&quot;&gt;
+          &lt;strong&gt;Visa Remote MCP + VIC&lt;/strong&gt;
+          &lt;span class=&quot;text-small&quot;&gt;Payment instruction and commerce signals&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;wa-node&quot;&gt;
+          &lt;strong&gt;VTS + Visa Payment Passkey&lt;/strong&gt;
+          &lt;span class=&quot;text-small&quot;&gt;Agent-specific tokens and instruction authentication&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;wa-node&quot;&gt;
+          &lt;strong&gt;Merchant checkout / PSP / VisaNet&lt;/strong&gt;
+          &lt;span class=&quot;text-small&quot;&gt;Order creation, authorization, merchant/amount controls&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;section aria-labelledby=&quot;wa-flow-title&quot;&gt;
+    &lt;div class=&quot;wa-section-head&quot;&gt;
+      &lt;div&gt;
+        &lt;h2 id=&quot;wa-flow-title&quot;&gt;End-to-end exchange&lt;/h2&gt;
+        &lt;p class=&quot;text-small&quot;&gt;Choose a phase to trace the calls and inspect the JSON at that seam.&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;wa-controls&quot; role=&quot;group&quot; aria-label=&quot;Architecture phase&quot;&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; data-flow=&quot;recommendation&quot; aria-pressed=&quot;true&quot;&gt;1 · Recommendation&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-flow=&quot;consent&quot; aria-pressed=&quot;false&quot;&gt;2 · Consent + Visa&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-flow=&quot;completion&quot; aria-pressed=&quot;false&quot;&gt;3 · Order → Codex&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-flow=&quot;failure&quot; aria-pressed=&quot;false&quot;&gt;4 · Failure safety&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;wa-flow&quot; aria-live=&quot;polite&quot;&gt;
+      &lt;ol class=&quot;wa-steps&quot; id=&quot;wa-steps&quot;&gt;
+        &lt;li class=&quot;wa-step&quot;&gt;
+          &lt;span class=&quot;wa-step-number text-small&quot;&gt;1&lt;/span&gt;
+          &lt;div&gt;&lt;span class=&quot;wa-step-actor text-small&quot;&gt;User → Codex&lt;/span&gt;&lt;strong&gt;Ask once.&lt;/strong&gt;&lt;p class=&quot;text-small&quot;&gt;The host keeps the original request and chooses Woven&#x27;s model-visible entry tool.&lt;/p&gt;&lt;/div&gt;
+        &lt;/li&gt;
+        &lt;li class=&quot;wa-step&quot;&gt;
+          &lt;span class=&quot;wa-step-number text-small&quot;&gt;2&lt;/span&gt;
+          &lt;div&gt;&lt;span class=&quot;wa-step-actor text-small&quot;&gt;Codex → Woven MCP&lt;/span&gt;&lt;strong&gt;Call &lt;code&gt;start_mission&lt;/code&gt;.&lt;/strong&gt;&lt;p class=&quot;text-small&quot;&gt;Streamable HTTP or stdio carries a validated MCP &lt;code&gt;tools/call&lt;/code&gt; JSON envelope.&lt;/p&gt;&lt;/div&gt;
+        &lt;/li&gt;
+        &lt;li class=&quot;wa-step&quot;&gt;
+          &lt;span class=&quot;wa-step-number text-small&quot;&gt;3&lt;/span&gt;
+          &lt;div&gt;&lt;span class=&quot;wa-step-actor text-small&quot;&gt;Woven → merchant services&lt;/span&gt;&lt;strong&gt;Fetch candidate offers.&lt;/strong&gt;&lt;p class=&quot;text-small&quot;&gt;Merchant MCP/catalog APIs supply current products, price, stock, pickup, and substitutions.&lt;/p&gt;&lt;/div&gt;
+        &lt;/li&gt;
+        &lt;li class=&quot;wa-step&quot;&gt;
+          &lt;span class=&quot;wa-step-number text-small&quot;&gt;4&lt;/span&gt;
+          &lt;div&gt;&lt;span class=&quot;wa-step-actor text-small&quot;&gt;Woven domain&lt;/span&gt;&lt;strong&gt;Build complete carts.&lt;/strong&gt;&lt;p class=&quot;text-small&quot;&gt;Hard constraints run before ranking: compatibility, quantity, one location, budget, volume, stock, pickup.&lt;/p&gt;&lt;/div&gt;
+        &lt;/li&gt;
+        &lt;li class=&quot;wa-step&quot;&gt;
+          &lt;span class=&quot;wa-step-number text-small&quot;&gt;5&lt;/span&gt;
+          &lt;div&gt;&lt;span class=&quot;wa-step-actor text-small&quot;&gt;Woven → Codex&lt;/span&gt;&lt;strong&gt;Return text + &lt;code&gt;structuredContent&lt;/code&gt;.&lt;/strong&gt;&lt;p class=&quot;text-small&quot;&gt;Codex shows the summary and opens the full Choice Center inside the MCP App.&lt;/p&gt;&lt;/div&gt;
+        &lt;/li&gt;
+      &lt;/ol&gt;
+
+      &lt;div class=&quot;wa-payload&quot;&gt;
+        &lt;div class=&quot;wa-payload-grid&quot;&gt;
+          &lt;div class=&quot;wa-payload-block&quot;&gt;
+            &lt;div class=&quot;wa-payload-label&quot;&gt;&lt;strong id=&quot;wa-request-label&quot;&gt;Codex → Woven&lt;/strong&gt;&lt;span class=&quot;text-small&quot;&gt;actual tool contract&lt;/span&gt;&lt;/div&gt;
+            &lt;pre&gt;&lt;code id=&quot;wa-request-code&quot;&gt;{
+  &quot;name&quot;: &quot;start_mission&quot;,
+  &quot;arguments&quot;: {
+    &quot;request&quot;: &quot;Complete rainy-weekend camping kit for 2&quot;,
+    &quot;budgetCents&quot;: 30000,
+    &quot;campers&quot;: 2,
+    &quot;pickupDate&quot;: &quot;2026-08-30&quot;
+  }
+}&lt;/code&gt;&lt;/pre&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;wa-payload-block&quot;&gt;
+            &lt;div class=&quot;wa-payload-label&quot;&gt;&lt;strong id=&quot;wa-response-label&quot;&gt;Woven → Codex&lt;/strong&gt;&lt;span class=&quot;text-small&quot;&gt;model + app result&lt;/span&gt;&lt;/div&gt;
+            &lt;pre&gt;&lt;code id=&quot;wa-response-code&quot;&gt;{
+  &quot;content&quot;: [{
+    &quot;type&quot;: &quot;text&quot;,
+    &quot;text&quot;: &quot;Built 5 compatible carts under S$300.&quot;
+  }],
+  &quot;structuredContent&quot;: {
+    &quot;view&quot;: {
+      &quot;mission&quot;: { &quot;currency&quot;: &quot;SGD&quot; },
+      &quot;carts&quot;: [{ &quot;merchantName&quot;: &quot;TrailHaus&quot;, &quot;totalCents&quot;: 23100 }]
+    }
+  }
+}&lt;/code&gt;&lt;/pre&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;wa-guardrail&quot;&gt;
+          &lt;strong id=&quot;wa-guard-title&quot;&gt;Boundary&lt;/strong&gt;
+          &lt;p id=&quot;wa-guard-copy&quot; class=&quot;text-small&quot;&gt;Visa is intentionally absent from product discovery. Recommendations come from merchant data plus Woven&#x27;s compatibility rules.&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;p class=&quot;wa-footnote text-small&quot;&gt;Current Woven tool names and result shape are exact. Merchant and Visa payloads shown in later phases are adapter-level examples, not claims of unrestricted or publicly documented Visa API schemas. The real path remains disabled until product approval, sandbox credentials, MLE, and security review exist.&lt;/p&gt;
+
+  &lt;script&gt;
+    (() =&gt; {
+      const root = document.getElementById(&quot;woven-target-architecture&quot;);
+      if (!root) return;
+
+      const flows = {
+        recommendation: {
+          steps: [
+            [&quot;User → Codex&quot;, &quot;Ask once.&quot;, &quot;The host keeps the original request and chooses Woven&#x27;s model-visible entry tool.&quot;],
+            [&quot;Codex → Woven MCP&quot;, &quot;Call start_mission.&quot;, &quot;Streamable HTTP or stdio carries a validated MCP tools/call JSON envelope.&quot;],
+            [&quot;Woven → merchant services&quot;, &quot;Fetch candidate offers.&quot;, &quot;Merchant MCP/catalog APIs supply current products, price, stock, pickup, and substitutions.&quot;],
+            [&quot;Woven domain&quot;, &quot;Build complete carts.&quot;, &quot;Hard constraints run before ranking: compatibility, quantity, one location, budget, volume, stock, pickup.&quot;],
+            [&quot;Woven → Codex&quot;, &quot;Return text + structuredContent.&quot;, &quot;Codex shows the summary and opens the full Choice Center inside the MCP App.&quot;]
+          ],
+          requestLabel: &quot;Codex → Woven&quot;,
+          requestMeta: &quot;actual tool contract&quot;,
+          request: `{
+  &quot;name&quot;: &quot;start_mission&quot;,
+  &quot;arguments&quot;: {
+    &quot;request&quot;: &quot;Complete rainy-weekend camping kit for 2&quot;,
+    &quot;budgetCents&quot;: 30000,
+    &quot;campers&quot;: 2,
+    &quot;pickupDate&quot;: &quot;2026-08-30&quot;
+  }
+}`,
+          responseLabel: &quot;Woven → Codex&quot;,
+          responseMeta: &quot;model + app result&quot;,
+          response: `{
+  &quot;content&quot;: [{
+    &quot;type&quot;: &quot;text&quot;,
+    &quot;text&quot;: &quot;Built 5 compatible carts under S$300.&quot;
+  }],
+  &quot;structuredContent&quot;: {
+    &quot;view&quot;: {
+      &quot;mission&quot;: { &quot;currency&quot;: &quot;SGD&quot; },
+      &quot;carts&quot;: [{
+        &quot;merchantName&quot;: &quot;TrailHaus&quot;,
+        &quot;totalCents&quot;: 23100
+      }]
+    }
+  }
+}`,
+          guardTitle: &quot;Boundary&quot;,
+          guard: &quot;Visa is intentionally absent from product discovery. Recommendations come from merchant data plus Woven&#x27;s compatibility rules.&quot;
+        },
+        consent: {
+          steps: [
+            [&quot;User → MCP App&quot;, &quot;Choose one server cart.&quot;, &quot;App-only select_cart persists the chosen cart; the model cannot silently choose or buy.&quot;],
+            [&quot;Woven → merchant&quot;, &quot;Revalidate exact terms.&quot;, &quot;Fresh price, stock, cart version, merchant, location, and amount must still match.&quot;],
+            [&quot;Woven checkout guard&quot;, &quot;Mint an expiring mandate.&quot;, &quot;The exact terms are hashed; a one-time nonce travels only in private _meta to the widget.&quot;],
+            [&quot;User → Visa Passkey&quot;, &quot;Authenticate the instruction.&quot;, &quot;A direct action launches device-bound authentication for the exact merchant and amount.&quot;],
+            [&quot;Woven adapter → Visa VIC&quot;, &quot;Submit the authenticated instruction.&quot;, &quot;Visa can validate later credential requests and network authorization against that instruction.&quot;]
+          ],
+          requestLabel: &quot;Widget → Woven&quot;,
+          requestMeta: &quot;actual app-only contract&quot;,
+          request: `{
+  &quot;name&quot;: &quot;confirm_purchase&quot;,
+  &quot;arguments&quot;: {
+    &quot;previewId&quot;: &quot;prv_…&quot;,
+    &quot;mandateHash&quot;: &quot;sha256:…&quot;,
+    &quot;confirmationNonce&quot;: &quot;private-widget-only&quot;,
+    &quot;idempotencyKey&quot;: &quot;checkout_…&quot;
+  }
+}`,
+          responseLabel: &quot;Woven adapter → Visa&quot;,
+          responseMeta: &quot;illustrative target contract&quot;,
+          response: `{
+  &quot;paymentInstruction&quot;: {
+    &quot;merchantRef&quot;: &quot;merchant_…&quot;,
+    &quot;amount&quot;: { &quot;value&quot;: &quot;231.00&quot;, &quot;currency&quot;: &quot;SGD&quot; },
+    &quot;cartHash&quot;: &quot;sha256:…&quot;,
+    &quot;expiresAt&quot;: &quot;2026-08-30T05:10:00Z&quot;
+  },
+  &quot;authentication&quot;: {
+    &quot;method&quot;: &quot;visa-payment-passkey&quot;,
+    &quot;resultRef&quot;: &quot;server-only&quot;
+  }
+}`,
+          guardTitle: &quot;Secrets&quot;,
+          guard: &quot;Passkey results, token references, identity sessions, and payment credentials stay server-side. The model sees none of them.&quot;
+        },
+        completion: {
+          steps: [
+            [&quot;Woven → Visa VIC/VTS&quot;, &quot;Retrieve instruction-bound credentials.&quot;, &quot;Visa checks that merchant and amount align with the authenticated payment instruction.&quot;],
+            [&quot;Woven → merchant checkout&quot;, &quot;Place the exact order.&quot;, &quot;The server supplies the permitted credential to the merchant or PSP without exposing it to Codex or the widget.&quot;],
+            [&quot;Merchant / PSP → VisaNet&quot;, &quot;Authorize under network controls.&quot;, &quot;Merchant identity and amount must match the instruction-bound constraints.&quot;],
+            [&quot;Merchant → Woven&quot;, &quot;Return order outcome.&quot;, &quot;Order success, decline, or merchant failure flows back to the same idempotent transaction boundary.&quot;],
+            [&quot;Woven → Visa VIC&quot;, &quot;Publish commerce signal.&quot;, &quot;The outcome is associated with the original instruction for traceability and dispute support.&quot;],
+            [&quot;Woven → Codex&quot;, &quot;Render status and receipt.&quot;, &quot;The MCP result updates structuredContent; the Choice Center shows the order and receipt in-chat.&quot;]
+          ],
+          requestLabel: &quot;Server-side checkout&quot;,
+          requestMeta: &quot;credential never enters MCP&quot;,
+          request: `{
+  &quot;merchantCheckout&quot;: {
+    &quot;cartId&quot;: &quot;cart_…&quot;,
+    &quot;amountCents&quot;: 23100,
+    &quot;currency&quot;: &quot;SGD&quot;,
+    &quot;idempotencyKey&quot;: &quot;checkout_…&quot;,
+    &quot;paymentCredentialRef&quot;: &quot;server-only&quot;
+  }
+}`,
+          responseLabel: &quot;Woven → Codex&quot;,
+          responseMeta: &quot;safe result&quot;,
+          response: `{
+  &quot;content&quot;: [{
+    &quot;type&quot;: &quot;text&quot;,
+    &quot;text&quot;: &quot;Order ord_… confirmed for S$231.00.&quot;
+  }],
+  &quot;structuredContent&quot;: {
+    &quot;view&quot;: {
+      &quot;order&quot;: {
+        &quot;status&quot;: &quot;confirmed&quot;,
+        &quot;receiptNumber&quot;: &quot;WV-…&quot;
+      }
+    }
+  }
+}`,
+          guardTitle: &quot;Output&quot;,
+          guard: &quot;Codex receives only user-safe status. Card data, tokens, passkey assertions, and the private confirmation nonce never appear in model-visible content.&quot;
+        },
+        failure: {
+          steps: [
+            [&quot;Woven ↔ merchant&quot;, &quot;Revalidate twice.&quot;, &quot;A price, stock, or cart-version change invalidates the preview before any payment attempt.&quot;],
+            [&quot;Checkout guard&quot;, &quot;Reject bad consent.&quot;, &quot;Missing identity, expired mandate, wrong nonce, or a changed hash fails closed.&quot;],
+            [&quot;Visa / PSP → Woven&quot;, &quot;Decline without an order.&quot;, &quot;An authorization decline creates no confirmed merchant order and decrements no inventory.&quot;],
+            [&quot;Merchant → Woven&quot;, &quot;Reverse post-authorization failure.&quot;, &quot;If authorization succeeds but merchant order creation fails, the state enters reversal.&quot;],
+            [&quot;Woven store&quot;, &quot;Make retries idempotent.&quot;, &quot;The same idempotency key returns the original result and cannot decrement stock twice.&quot;],
+            [&quot;Woven → Codex&quot;, &quot;Return a safe, actionable error.&quot;, &quot;The user sees whether to refresh, retry, or choose another cart; secrets and raw processor errors remain hidden.&quot;]
+          ],
+          requestLabel: &quot;Stale checkout&quot;,
+          requestMeta: &quot;example safe error&quot;,
+          request: `{
+  &quot;error&quot;: {
+    &quot;code&quot;: &quot;CART_STALE&quot;,
+    &quot;message&quot;: &quot;Price or inventory changed. Review a new checkout preview.&quot;,
+    &quot;retryable&quot;: true
+  }
+}`,
+          responseLabel: &quot;State outcomes&quot;,
+          responseMeta: &quot;atomic + idempotent&quot;,
+          response: `price / stock changed → no payment
+
+Visa decline → no confirmed order
+
+merchant failed after auth → reversal
+
+duplicate idempotency key → original order
+
+success → one stock decrement + one receipt`,
+          guardTitle: &quot;Fail closed&quot;,
+          guard: &quot;No payment path bypasses exact-term confirmation. Recovery always creates a new preview rather than mutating an already-authorized mandate.&quot;
+        }
+      };
+
+      const steps = root.querySelector(&quot;#wa-steps&quot;);
+      const requestLabel = root.querySelector(&quot;#wa-request-label&quot;);
+      const responseLabel = root.querySelector(&quot;#wa-response-label&quot;);
+      const requestCode = root.querySelector(&quot;#wa-request-code&quot;);
+      const responseCode = root.querySelector(&quot;#wa-response-code&quot;);
+      const guardTitle = root.querySelector(&quot;#wa-guard-title&quot;);
+      const guardCopy = root.querySelector(&quot;#wa-guard-copy&quot;);
+
+      const render = (key) =&gt; {
+        const flow = flows[key];
+        if (!flow || !steps || !requestLabel || !responseLabel || !requestCode || !responseCode || !guardTitle || !guardCopy) return;
+
+        steps.innerHTML = flow.steps.map((step, index) =&gt; `
+          &lt;li class=&quot;wa-step&quot;&gt;
+            &lt;span class=&quot;wa-step-number text-small&quot;&gt;${index + 1}&lt;/span&gt;
+            &lt;div&gt;
+              &lt;span class=&quot;wa-step-actor text-small&quot;&gt;${step[0]}&lt;/span&gt;
+              &lt;strong&gt;${step[1]}&lt;/strong&gt;
+              &lt;p class=&quot;text-small&quot;&gt;${step[2]}&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/li&gt;`).join(&quot;&quot;);
+
+        requestLabel.textContent = flow.requestLabel;
+        requestLabel.nextElementSibling.textContent = flow.requestMeta;
+        responseLabel.textContent = flow.responseLabel;
+        responseLabel.nextElementSibling.textContent = flow.responseMeta;
+        requestCode.textContent = flow.request;
+        responseCode.textContent = flow.response;
+        guardTitle.textContent = flow.guardTitle;
+        guardCopy.textContent = flow.guard;
+
+        root.querySelectorAll(&quot;[data-flow]&quot;).forEach((button) =&gt; {
+          const selected = button.getAttribute(&quot;data-flow&quot;) === key;
+          button.setAttribute(&quot;aria-pressed&quot;, String(selected));
+          button.classList.toggle(&quot;btn-primary&quot;, selected);
+        });
+      };
+
+      root.querySelectorAll(&quot;[data-flow]&quot;).forEach((button) =&gt; {
+        button.addEventListener(&quot;click&quot;, () =&gt; render(button.getAttribute(&quot;data-flow&quot;)));
+      });
+    })();
+  &lt;/script&gt;
+&lt;/div&gt;
+
+&lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+  let lastPointerWasTouch = false;
+  let pinnedByTouch = false;
+
+  const getTrigger = (target) =&gt;
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest(&quot;[data-tooltip]&quot;)
+      : null;
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    pinnedByTouch = false;
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handlePointer = (event) =&gt; {
+    lastPointerWasTouch =
+      event.type === &quot;pointerdown&quot; &amp;&amp; event.pointerType === &quot;touch&quot;;
+  };
+  const handleTouchClick = (event) =&gt; {
+    const isTouch = event.pointerType === &quot;touch&quot; || lastPointerWasTouch;
+    lastPointerWasTouch = false;
+    if (!isTouch || event.detail === 0) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (
+      trigger == null ||
+      !trigger.isConnected ||
+      getContent(trigger).length === 0 ||
+      (pinnedByTouch &amp;&amp; activeTrigger === trigger)
+    ) {
+      if (pinnedByTouch) {
+        closeTooltip();
+      }
+      return;
+    }
+    openTooltip(trigger);
+    pinnedByTouch = activeTrigger === trigger;
+    window.setTimeout(() =&gt; {
+      if (activeTrigger === trigger &amp;&amp; !trigger.isConnected) {
+        closeTooltip(false);
+      }
+    }, 0);
+  };
+  const handleLeave = (event) =&gt; {
+    if (pinnedByTouch) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    lastPointerWasTouch = false;
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    lastPointerWasTouch = false;
+    document.removeEventListener(&quot;pointerover&quot;, handlePointerOpen);
+    document.removeEventListener(&quot;pointerdown&quot;, handlePointer);
+    document.removeEventListener(&quot;pointercancel&quot;, handlePointer);
+    document.removeEventListener(&quot;click&quot;, handleTouchClick);
+    document.removeEventListener(&quot;pointerout&quot;, handleLeave);
+    document.removeEventListener(&quot;focusin&quot;, handleFocusIn);
+    document.removeEventListener(&quot;focusout&quot;, handleLeave);
+    document.removeEventListener(&quot;keydown&quot;, handleKeyDown);
+    document.removeEventListener(&quot;contextmenu&quot;, handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener(&quot;pointerover&quot;, handlePointerOpen);
+  document.addEventListener(&quot;pointerdown&quot;, handlePointer);
+  document.addEventListener(&quot;pointercancel&quot;, handlePointer);
+  document.addEventListener(&quot;click&quot;, handleTouchClick);
+  document.addEventListener(&quot;pointerout&quot;, handleLeave);
+  document.addEventListener(&quot;focusin&quot;, handleFocusIn);
+  document.addEventListener(&quot;focusout&quot;, handleLeave);
+  document.addEventListener(&quot;keydown&quot;, handleKeyDown);
+  document.addEventListener(&quot;contextmenu&quot;, handleContextMenu);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+</body>
+</html>
