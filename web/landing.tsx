@@ -74,6 +74,9 @@ function Landing() {
             <a className="transition-colors hover:text-foreground" href="#trust">Trust</a>
           </nav>
           <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" asChild>
+              <a href="/install">Install</a>
+            </Button>
             <Button variant="ghost" size="sm" className="hidden sm:inline-flex" asChild>
               <a href="/merchant">Merchant desk</a>
             </Button>

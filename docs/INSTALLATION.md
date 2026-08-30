@@ -11,7 +11,7 @@ demo.
 
 While the server is running, this guide is also available in-product at
 `/install` — a Woven-branded page styled after the ChatGPT desktop Plugins tab,
-linked from the demo host header.
+linked from the landing page and demo host headers.
 
 > [!IMPORTANT]
 > Woven is a local hackathon prototype. Its catalog, inventory, merchants, and
