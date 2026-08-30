@@ -1,0 +1,109 @@
+<!--
+  Editable Devpost cover source. Render at exactly 1600x900:
+    npx playwright screenshot --viewport-size=1600,900 docs/assets/devpost/cover.html docs/assets/devpost/cover.png
+  The product shot is docs/assets/screenshots/buyer-overview.png, referenced
+  relatively — re-shoot that first whenever the buyer UI changes, then re-render.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  :root {
+    --ink: #0e4b3b;
+    --lime: #b7f522;
+    --mist: #dcece5;
+    --paper: #fcfaf5;
+    --blue: #1545e8;
+    --serif: "Iowan Old Style", Baskerville, Georgia, serif;
+    --sans: "Avenir Next", "Helvetica Neue", system-ui, sans-serif;
+  }
+  * { margin: 0; box-sizing: border-box; }
+  body {
+    width: 1600px; height: 900px; overflow: hidden;
+    background: var(--ink);
+    font-family: var(--sans);
+    position: relative;
+  }
+  /* faint woven weft lines across the canvas */
+  .weave {
+    position: absolute; inset: 0;
+    background: radial-gradient(1000px 650px at 85% 8%, rgba(183,245,34,.09), transparent 65%);
+  }
+  .left {
+    position: absolute; top: 0; bottom: 0; left: 0; width: 690px;
+    padding: 72px 0 70px 84px;
+    display: flex; flex-direction: column;
+    z-index: 3;
+  }
+  .lockup { display: flex; align-items: center; gap: 20px; }
+  .lockup svg { width: 76px; height: 76px; border-radius: 17px; box-shadow: 0 10px 30px rgba(0,0,0,.28); }
+  .lockup .word { color: var(--paper); font-weight: 700; font-size: 34px; letter-spacing: .32em; }
+  .lockup .sub { color: var(--mist); opacity: .75; font-size: 14px; letter-spacing: .22em; font-weight: 600; margin-top: 7px; }
+
+  .kicker {
+    margin-top: 78px;
+    display: inline-flex; align-self: flex-start; align-items: center;
+    background: var(--lime); color: #123227;
+    font-size: 15px; font-weight: 700; letter-spacing: .14em;
+    padding: 10px 18px; border-radius: 999px;
+  }
+  h1 { margin-top: 28px; font-family: var(--serif); font-weight: 600; color: var(--paper); font-size: 57px; line-height: 1.16; letter-spacing: -0.01em; white-space: nowrap; }
+  h1 em { display: block; color: var(--lime); font-style: italic; font-weight: 500; }
+  .sub-line { margin-top: 26px; color: var(--mist); font-size: 23px; line-height: 1.5; max-width: 540px; }
+  .badges { margin-top: 34px; display: flex; align-items: center; gap: 18px; }
+  .route { display: flex; align-items: center; gap: 10px; color: var(--paper); font-weight: 700; font-size: 16px; letter-spacing: .18em; }
+  .route .line { width: 130px; height: 3px; background: rgba(252,250,245,.35); border-radius: 2px; position: relative; }
+  .route .o { width: 14px; height: 14px; border-radius: 50%; background: var(--lime); }
+  .route .d { width: 14px; height: 14px; border-radius: 50%; background: var(--paper); box-shadow: inset 0 0 0 4px var(--blue); }
+  .visa { background: var(--blue); color: #fff; font-size: 14px; font-weight: 700; letter-spacing: .14em; padding: 10px 16px; border-radius: 8px; }
+  .foot { margin-top: auto; color: var(--mist); opacity: .6; font-size: 13px; font-weight: 600; letter-spacing: .16em; white-space: nowrap; }
+
+  /* product shot */
+  .shot-wrap { position: absolute; top: 92px; right: -150px; width: 1040px; z-index: 2; }
+  .shot {
+    border-radius: 18px; overflow: hidden;
+    box-shadow: 0 40px 90px rgba(0, 20, 14, .55), 0 0 0 1px rgba(252,250,245,.14);
+    background: #fff;
+  }
+  .shot img { display: block; width: 100%; height: 496px; object-fit: cover; object-position: top center; }
+  /* flightpath thread stitched over the composition */
+  .thread { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+</style>
+</head>
+<body>
+  <div class="weave"></div>
+
+  <div class="shot-wrap">
+    <div class="shot"><img src="../screenshots/buyer-overview.png" alt=""></div>
+  </div>
+
+  <div class="left">
+    <div class="lockup">
+      <svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+        <rect width="128" height="128" rx="28" fill="#0e4b3b" stroke="rgba(252,250,245,.25)" stroke-width="2"/>
+        <path d="M20 36c14 0 13 56 30 56 13 0 13-36 21-36s8 36 21 36c16 0 15-56 18-56" fill="none" stroke="#fcfaf5" stroke-linecap="round" stroke-linejoin="round" stroke-width="13"/>
+        <circle cx="20" cy="36" r="10" fill="#b7f522"/>
+        <circle cx="110" cy="36" r="12" fill="#fcfaf5"/>
+        <circle cx="110" cy="36" r="7" fill="#1545e8"/>
+      </svg>
+      <div>
+        <div class="word">WOVEN</div>
+        <div class="sub">LIFEHACK 2026 · AGENTIC COMMERCE</div>
+      </div>
+    </div>
+
+    <div class="kicker">ONE REQUEST → ONE COMPLETE CART</div>
+    <h1>Everything you need.<em>Woven into one choice.</em></h1>
+    <p class="sub-line">A live MCP app for ChatGPT &amp; Codex. Nothing moves until the user confirms the exact terms.</p>
+
+    <div class="badges">
+      <div class="route"><span>SIN</span><span class="o"></span><span class="line"></span><span class="d"></span><span>TYO</span></div>
+      <div class="visa">VISA RAIL · SIMULATED</div>
+    </div>
+
+    <div class="foot">REAL TOOL CALLS · SEEDED MERCHANTS · NO LIVE CHARGE</div>
+  </div>
+
+</body>
+</html>
