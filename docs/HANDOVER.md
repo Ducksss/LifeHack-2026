@@ -105,7 +105,7 @@ live demo through the implemented review-and-confirm flow only.
 | Judge pitch deck | Complete | Seven-slide story plus four backups; presenter notes and source blocks included |
 | Agent context | Current | `AGENTS.md` is canonical; Claude and Copilot use thin pointers to it |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
-| Public HTTPS deployment | Not done | Required for a shareable ChatGPT connection |
+| Public HTTPS deployment | Done | <https://woven-pi.vercel.app> on Vercel; `BASE_URL` set and verified through `/mcp`; state is per-instance and reseeds on cold start — reset the demo right before presenting |
 | Devpost submission | Text ready — media blocked | Draft story includes the current simulated-host UI and planned identity boundary; 13 technology tags, repository, Visa prize and Digital Payments are saved; uploads and submission remain outstanding |
 | Real merchant/Visa integrations | Not started | Explicitly outside current prototype scope |
 
@@ -308,7 +308,7 @@ left empty at the user's request.
 
 Before publishing Devpost, a human must provide or confirm:
 
-- public HTTPS demo URL;
+- public HTTPS demo URL (<https://woven-pi.vercel.app> is live; confirm it is the final one);
 - demo video URL;
 - team member names and roles;
 - project-description PDF;
