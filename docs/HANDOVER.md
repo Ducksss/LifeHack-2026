@@ -104,7 +104,7 @@ Its identity step is implemented and must remain labeled simulated.
 | Checkout safety | Complete for prototype | Identity-session binding, expiry, hash, private nonce, exact terms, idempotency, signed receipt verification |
 | Demo identity check | Complete for prototype | Server-enforced state + PKCE + allowlisted callback + one-time code + 15-minute session; never call it Visa OAuth, KYC, or a real Visa login |
 | Visa rail | Simulated only | Approval, decline, failure, and reversal semantics |
-| Automated verification | Green | Seventeen tests, TypeScript/build gate, GitHub CI |
+| Automated verification | Green | Nineteen tests, TypeScript/build gate, GitHub CI |
 | README and gallery | Complete | Best-README structure and nine 1600×900 Devpost assets |
 | Stage fallback assets | Complete | Five numbered 1600×900 frames with editable SVG sources and explicit simulator boundaries |
 | Judge pitch deck | Complete | Ten-slide camping story; presenter notes and source blocks included |
@@ -296,8 +296,9 @@ the currently working product flow.
 2. Open `/merchant` and click **Reset demo data**.
 3. Keep `/demo` and `/merchant` open in separate tabs (`/demo?instant` skips
    the intro animation if time is short; `/demo?loop=true` auto-advances through
-   comparison, proof, approved swap, and the identity boundary before replaying,
-   without creating or confirming a purchase).
+   comparison, proof, approved swap, simulated identity success, and a host
+   acknowledgement before fading and replaying, without creating checkout terms
+   or confirming a purchase).
 4. Let `/demo` play: the canonical request types itself, the staged `start_mission`
    activity runs, and the Choice Center opens with five complete carts.
 5. Compare the carts, show a priority/area rerank, then choose TrailHaus.

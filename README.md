@@ -144,7 +144,7 @@ marked “Simulated” on screen and is not a second product.
 
 The AI recommends. The user chooses. Woven binds the exact terms.
 
-![Animated loop of the Woven demo: the request types itself, tool calls run, the widget renders, and one confirmation produces a simulated receipt](docs/assets/marketing/woven-demo-loop.gif)
+![Animated loop of the Woven demo: carts compare themselves, compatibility is shown, simulated identity succeeds, the host replies, and the demo resets without checkout](docs/assets/marketing/woven-demo-loop.gif)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -295,8 +295,9 @@ redeployment.
 
 Add `?loop=true` to `/demo` for an unattended visual walkthrough. It compares
 and reranks carts, returns to the selected kit, shows the compatibility proof
-and approved swap, reveals the demo identity boundary, then replays. It never
-verifies identity, creates a checkout mandate, or confirms a purchase.
+and approved swap, completes the server-enforced simulated identity handoff,
+shows the verified state and host reply, then fades back to the start. It never
+creates a checkout mandate or confirms a purchase.
 
 ### Connect the ChatGPT app
 

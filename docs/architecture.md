@@ -30,9 +30,11 @@ and the credential-gated target Visa boundary. Its tracer can autoplay or be
 paused, and reduced-motion preferences disable autoplay by default.
 
 With `?loop=true`, the browser auto-advances the existing Choice Center controls,
-compatibility proof, approved-swap dialog, and demo identity boundary, then
-reloads. The loop is presentation-only: it never completes identity, creates a
-checkout preview, receives a confirmation nonce, or calls `confirm_purchase`.
+compatibility proof, and approved-swap dialog, then completes the same simulated
+identity state, PKCE, single-use-code, and callback flow used by the interactive
+demo. It shows the verified state and host acknowledgement before fading and
+reloading. The loop never creates a checkout preview, receives a confirmation
+nonce, or calls `confirm_purchase`.
 
 The hosted MCP resource and `/demo` use explicit HTML entry points. The hosted
 entry is bundled into one self-contained HTML resource so sandboxed hosts do

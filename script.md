@@ -50,8 +50,9 @@ stage fallback; it clearly labels itself **Simulated**, rehearses the same
 backend, and surfaces each tool call without presenting itself as real ChatGPT.
 For an unattended visual loop, `/demo?loop=true` compares and reranks carts,
 returns to the selected kit, shows the compatibility proof and approved swap,
-reveals the demo identity boundary, then replays. It never completes identity,
-creates exact checkout terms, or confirms a purchase.
+completes the server-enforced simulated identity handoff, shows the verified
+state and host reply, then fades back to the start. It never creates exact
+checkout terms or confirms a purchase.
 
 ## Visual system and screen choreography
 

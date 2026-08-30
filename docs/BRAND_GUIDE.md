@@ -111,7 +111,7 @@ confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 | `docs/assets/screenshots/demo-identity.png` | Verified `/identity` simulator evidence |
 | `docs/assets/slides/*.png` | Text-free editorial backgrounds for friction, the complete kit, and explicit human confirmation |
 | `docs/assets/demo/*.{png,svg}` | Numbered 16:9 stage fallback sequence and closing card built from verified product screens |
-| `docs/assets/marketing/woven-demo-loop.gif` | Animated ~17s loop of the real `/demo` flow for README, Devpost, and social posts |
+| `docs/assets/marketing/woven-demo-loop.gif` | Animated ~33s loop of the real `/demo` flow for README, Devpost, and social posts |
 | `docs/assets/marketing/woven-how-it-works-square.png` | 1080 × 1080 four-step how-it-works card for feeds |
 | `docs/assets/marketing/woven-how-it-works-story.png` | 1080 × 1920 four-step how-it-works card for stories |
 | `script.md` | Authoritative three-minute narration and language guardrails |
@@ -131,7 +131,8 @@ The marketing cards embed a live portrait capture of `/demo` and the current
 gallery screenshots; regenerate them after any visible UI change. The animated
 loop is recorded from the real `/demo` sequence at 1280 × 800 and assembled with
 ffmpeg at 8 fps, 960px wide. Use `/demo?loop=true` for unattended live display;
-it stops at the demo identity boundary and never depicts an automatic purchase.
+it shows the server-enforced simulated identity success and host acknowledgement,
+then fades back to the start without depicting an automatic purchase.
 
 ## Campaign image brief
 

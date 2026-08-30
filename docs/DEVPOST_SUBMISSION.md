@@ -123,7 +123,8 @@ and made every quantity and compatibility decision explainable in the UI.
 Codex, while the browser transport calls the same domain functions for rehearsals
 when public networking or host configuration is unreliable.
 Its opt-in `?loop=true` display mode auto-advances the non-purchasing visual
-story through comparison, proof, approved swaps, and the demo identity boundary.
+story through comparison, proof, approved swaps, simulated identity success,
+and a host acknowledgement before fading back to the start.
 
 ### Accomplishments that we're proud of
 

@@ -131,6 +131,9 @@ const activityStages = [
 const narrationText =
   "Five complete camping kits fit your request — one pickup location each, rain-ready for 2 campers, compact enough for one car boot, and under budget. Compare the choices below; nothing is charged without your explicit confirmation.";
 
+const identityReplyText =
+  "Demo identity verified — Chai is connected for this mission. Woven is ready to recheck price and stock; checkout still waits for your review and explicit confirmation.";
+
 const thanksMessage = "Perfect — that’s exactly what I needed. Thanks!";
 
 function StandaloneDemo() {
@@ -143,13 +146,16 @@ function StandaloneDemo() {
   const [showWidget, setShowWidget] = useState(false);
   const [thanks, setThanks] = useState(false);
   const [farewell, setFarewell] = useState("");
+  const [identityReply, setIdentityReply] = useState("");
   const [epilogueDone, setEpilogueDone] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const [view, setView] = useState<MissionView | null>(null);
   const [nonce, setNonce] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [calls, setCalls] = useState<ToolCall[]>([]);
   const callId = useRef(0);
   const skipTyping = useRef(false);
+  const identityReplyStarted = useRef(false);
   const epilogueStarted = useRef(false);
   const threadRef = useRef<HTMLDivElement>(null);
 
@@ -292,9 +298,26 @@ function StandaloneDemo() {
   }, [order?.status, instant]);
 
   useEffect(() => {
+    if (view?.identity.status !== "verified" || identityReplyStarted.current) return;
+    identityReplyStarted.current = true;
+    let cancelled = false;
+    const run = async () => {
+      await sleep(650);
+      await streamText(identityReplyText, setIdentityReply, () => cancelled);
+      if (!cancelled) scrollToEnd();
+    };
+    void run();
+    return () => { cancelled = true; };
+  }, [view?.identity.status]);
+
+  useEffect(() => {
     if (!loop || !showWidget) return;
-    const timeout = window.setTimeout(() => window.location.reload(), 25_000);
-    return () => window.clearTimeout(timeout);
+    const fade = window.setTimeout(() => setResetting(true), 32_000);
+    const replay = window.setTimeout(() => window.location.reload(), 32_700);
+    return () => {
+      window.clearTimeout(fade);
+      window.clearTimeout(replay);
+    };
   }, [loop, showWidget]);
 
   const invoke: Invoke = async (name, arguments_) => {
@@ -308,7 +331,7 @@ function StandaloneDemo() {
   const laterCalls = calls.slice(1).slice(-8);
 
   return (
-    <div className="flex h-dvh flex-col bg-background">
+    <div className={cn("flex h-dvh flex-col bg-background transition-opacity duration-700 motion-reduce:transition-none", resetting && "opacity-0")}>
       <header className="flex h-12 flex-none items-center justify-between border-b px-4">
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold tracking-tight">Woven Demo Host</span>
@@ -391,6 +414,7 @@ function StandaloneDemo() {
                       {laterCalls.map((call) => <ToolChip key={call.id} call={call} />)}
                     </div>
                   )}
+                  {identityReply && <p className="rise-in mt-5 text-[15px] leading-7">{identityReply}</p>}
                   {thanks && (
                     <div className="rise-in mt-8 flex justify-end">
                       <div className="max-w-[85%] rounded-3xl bg-muted px-4 py-2.5 text-[15px] leading-6">
@@ -590,6 +614,43 @@ function Woven({
     }
   };
 
+  const completeAutoplayIdentity = async () => {
+    setBusy("identity");
+    setError(null);
+    try {
+      const started = await invoke("start_demo_identity", { missionId: view.mission.id });
+      if (started.view) setView(started.view);
+      const authorizationUrl = new URL(String(started._meta?.authorizationUrl || ""), window.location.origin);
+      const requestId = authorizationUrl.searchParams.get("request_id");
+      const state = authorizationUrl.searchParams.get("state");
+      if (authorizationUrl.pathname !== "/identity" || !requestId || !state) {
+        throw new Error("The demo identity request is invalid.");
+      }
+      const response = await fetch("/api/demo-identity/authorize", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ requestId, state }),
+      });
+      const authorized = await response.json() as { redirectUrl?: string; error?: { message?: string } };
+      if (!response.ok || !authorized.redirectUrl) {
+        throw new Error(authorized.error?.message || "Demo identity verification failed.");
+      }
+      const callback = new URL(authorized.redirectUrl, window.location.origin);
+      if (callback.pathname !== "/auth/demo/callback") throw new Error("The demo identity callback is invalid.");
+      const completed = await fetch(`${callback.pathname}${callback.search}`, { redirect: "follow" });
+      if (!completed.ok || new URL(completed.url).searchParams.get("complete") !== "1") {
+        throw new Error("Demo identity verification did not complete.");
+      }
+      const refreshed = await invoke("build_carts", { missionId: view.mission.id });
+      if (refreshed.view) setView(refreshed.view);
+      if (refreshed.view?.identity.status !== "verified") throw new Error("Demo identity verification did not complete.");
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not verify the demo identity.");
+    } finally {
+      setBusy(null);
+    }
+  };
+
   const checkIdentity = async () => {
     const payload = await act("identity-check", "build_carts", { missionId: view.mission.id });
     if (payload && payload.view?.identity.status !== "verified") await beginIdentity();
@@ -636,6 +697,7 @@ function Woven({
       [2_500, () => swapDialog.current?.close()],
       [500, () => setCheckoutRequested(true)],
       [500, () => focus(identitySection.current)],
+      [1_500, () => void completeAutoplayIdentity()],
     ];
     void (async () => {
       for (const [delay, step] of autoplaySteps) {
@@ -866,11 +928,11 @@ function Woven({
                   disabled={busy !== null}
                   onClick={() => void checkIdentity()}
                 >
-                  {busy === "identity-check" ? "Checking…" : "I’ve verified · check status"}
+                  {busy ? "Verifying…" : "I’ve verified · check status"}
                 </Button>
               ) : (
                 <Button className="mt-4 w-full" disabled={busy !== null} onClick={() => void beginIdentity()}>
-                  {busy === "identity" ? "Opening…" : "Verify demo identity"}
+                  {busy === "identity" ? "Verifying…" : "Verify demo identity"}
                 </Button>
               )}
               <small className="mt-3 text-center text-[11px] text-muted-foreground">
