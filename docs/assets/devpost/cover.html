@@ -1,0 +1,61 @@
+<!--
+  Editable Devpost cover source. Render at exactly 1600x900:
+    npx playwright screenshot --viewport-size=1600,900 docs/assets/devpost/cover.html docs/assets/devpost/cover.png
+  Pure brand cover: the Flightpath route (verbatim path data from
+  docs/assets/brand/woven-mark.svg) drawn Warm White on Route Ink, with the
+  wordmark and the promise line.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  :root {
+    --ink: #0e4b3b;
+    --lime: #b7f522;
+    --mist: #dcece5;
+    --paper: #fcfaf5;
+    --blue: #1545e8;
+    --serif: "Iowan Old Style", Baskerville, Georgia, serif;
+    --sans: "Avenir Next", "Helvetica Neue", system-ui, sans-serif;
+  }
+  * { margin: 0; box-sizing: border-box; }
+  body {
+    width: 1600px; height: 900px; overflow: hidden;
+    background:
+      radial-gradient(1100px 700px at 50% 38%, rgba(252,250,245,.055), transparent 68%),
+      radial-gradient(700px 460px at 50% 30%, rgba(183,245,34,.06), transparent 70%),
+      var(--ink);
+    font-family: var(--sans);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .stage { display: flex; flex-direction: column; align-items: center; transform: translateY(-14px); }
+  .mark { width: 330px; filter: drop-shadow(0 22px 44px rgba(0, 18, 12, .4)); }
+  .word {
+    margin-top: 64px;
+    color: var(--paper);
+    font-weight: 700; font-size: 74px;
+    letter-spacing: .36em; padding-left: .36em; /* recenters tracked caps */
+  }
+  .promise {
+    margin-top: 26px;
+    font-family: var(--serif); font-size: 33px; letter-spacing: .005em;
+    color: var(--mist);
+  }
+  .promise em { color: var(--lime); font-style: italic; }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <svg class="mark" viewBox="4 18 124 84" xmlns="http://www.w3.org/2000/svg" aria-label="Woven Flightpath mark">
+      <path d="M20 36c14 0 13 56 30 56 13 0 13-36 21-36s8 36 21 36c16 0 15-56 18-56"
+            fill="none" stroke="#fcfaf5" stroke-linecap="round" stroke-linejoin="round" stroke-width="11"/>
+      <circle cx="20" cy="36" r="12" fill="#b7f522"/>
+      <circle cx="110" cy="36" r="13" fill="#fcfaf5"/>
+      <circle cx="110" cy="36" r="8" fill="#1545e8"/>
+    </svg>
+    <div class="word">WOVEN</div>
+    <p class="promise">Everything you need, <em>woven into one choice.</em></p>
+  </div>
+</body>
+</html>

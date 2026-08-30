@@ -50,6 +50,36 @@ Use the real MCP App when the host and network are dependable. Use `/demo` as th
 stage fallback; it clearly labels itself **Simulated**, rehearses the same
 backend, and surfaces each tool call without presenting itself as real ChatGPT.
 
+## Visual system and screen choreography
+
+The seven main slides are signposts, not teleprompters. Keep the deck full-screen
+and use hard cuts between slides and product screens; do not add decorative
+animations. Judges should always be looking at one of three things: the problem,
+working product evidence, or the conclusion.
+
+| Beat | Primary screen | What the judge must notice |
+| --- | --- | --- |
+| Slides 1–3 | Full-screen deck | The problem, complete-cart promise, and concrete S$133 proof |
+| Slide 4 → buyer demo | Prompt slide, then MCP App or `/demo` | One natural-language request becomes three complete carts |
+| Slide 5 → checkout demo | Trust-boundary slide, then buyer checkout | The exact terms are visible and only the user can confirm |
+| Slide 6 → Merchant Desk | Merchant-control slide, then `/merchant` if time permits | Stock, scenarios, orders, and audit are controllable |
+| Slide 7 | Full-screen deck | Why the product belongs inside ChatGPT/Codex |
+
+Deck rules:
+
+- Use 16:9 throughout. Keep the Woven wordmark and slide number quiet at the
+  edges; the main claim should dominate.
+- Alternate Route Ink (`#0E4B3B`) statement slides with Runway Paper
+  (`#F4EEE4`) evidence slides. Signal Lime highlights progress; Waypoint Blue is
+  reserved for the simulated payment boundary.
+- Use one large claim, one supporting composition, and no paragraphs on screen.
+- Use verified product screenshots for product claims. Editorial charging-kit
+  imagery may introduce the story but must not substitute for product evidence.
+- In the live browser, use a readable zoom level, close unrelated tabs and
+  notifications, and keep the visible **Simulated** label when using `/demo`.
+- Keep the cursor still while speaking. Move it only to point or perform the next
+  action.
+
 ## Three-minute run of show
 
 ### 0:00–0:12 — Slide 1: Shopping should start and finish with one request
@@ -59,6 +89,19 @@ backend, and surfaces each tool call without presenting itself as real ChatGPT.
 > Shopping should start and finish with one request.  
 > **Woven**  
 > Everything works together.
+
+**Layout and what to show**
+
+- Route Ink full-bleed background.
+- Left 55%: the headline in two or three large lines, with the stage line
+  **Ask once. Review once. Confirm once.** small at the bottom.
+- Right 35%: the complete charging-kit hero image, showing the charger, cables,
+  adapter, phone, and laptop connected by the Signal Lime route.
+- Show no interface yet. This slide establishes the human problem and the Woven
+  name before demonstrating the product.
+
+**Presenter cue:** Start with hands off the laptop. Advance only after “finish
+that process.”
 
 **Say**
 
@@ -71,6 +114,20 @@ backend, and surfaces each tool call without presenting itself as real ChatGPT.
 **Visible copy**
 
 > Compare products · Check compatibility · Find one store · Rebuild checkout
+
+**Layout and what to show**
+
+- Runway Paper background.
+- Left 42%: the title, with **Rebuild the cart at checkout** in Alert Clay as the
+  consequence.
+- Right 50%: three numbered horizontal steps—**Compare products**, **Check
+  compatibility**, **Find one store**—ending at a lime rule that visually stops
+  before checkout.
+- Do not show logos or generic search screenshots. The incomplete process is the
+  visual.
+
+**Presenter cue:** Point once down the three steps as you say “works together,
+fits your budget, is available today.”
 
 **Say**
 
@@ -85,6 +142,18 @@ backend, and surfaces each tool call without presenting itself as real ChatGPT.
 
 > One merchant · Everything compatible · Under budget · Pickup today
 
+**Layout and what to show**
+
+- Runway Paper background with the claim across the top.
+- Left 28%: three oversized proof points stacked vertically—**1 merchant and
+  pickup point**, **4 compatible components**, **S$133 under budget**.
+- Right 62%: a large verified buyer-results screenshot showing the three complete
+  carts. Crop closely enough that the cards and total are legible.
+- Signal Lime marks completeness; Alert Clay may emphasize the S$133 total.
+
+**Presenter cue:** Point in order to **1**, **4**, then **S$133**. End by moving
+your hand toward the product screenshot and say, “Let me show you.”
+
 **Say**
 
 > “Woven understands the complete request, eliminates incompatible combinations,
@@ -95,7 +164,19 @@ backend, and surfaces each tool call without presenting itself as real ChatGPT.
 
 > “Let me show you.”
 
-### 0:48–1:30 — Live demo: ask once
+### 0:48–1:30 — Slide 4 → live buyer demo: ask once
+
+**Slide 4 layout and what to show**
+
+- Route Ink full-bleed background.
+- Left 68%: the canonical request as one large quotation.
+- Right 24%: a thin constraint rail listing **Tokyo**, **MacBook + iPhone +
+  AirPods**, **S$150 hard cap**, and **Pickup today**.
+- Bottom-left: **3 complete carts. 1 natural sentence.** in Signal Lime.
+- Keep this slide up only long enough for the judges to read the request, then
+  cut directly to the live buyer surface.
+
+**Live screen sequence**
 
 Enter or reveal the canonical request. In `/demo`, let the simulated host type it
 and show the staged `start_mission` activity before the real widget appears:
@@ -105,10 +186,19 @@ and show the staged `start_mission` activity before the real widget appears:
 
 Then:
 
-1. Show the three ranked carts.
-2. Select ByteRoute.
-3. Point to the charger wattage and voltage, both cables, Japan adapter, pickup
-   location, demo stock, and S$133 total.
+1. Show the host header so the environment is honest: real ChatGPT/Codex when
+   connected, or the clearly labeled **Simulated** host in `/demo`.
+2. Let the `start_mission` tool call appear; do not narrate the protocol details.
+3. When the widget loads, pause on the three ranked one-merchant carts.
+4. Select **ByteRoute**.
+5. Point to the charger wattage and voltage, both cables, Japan adapter, pickup
+   location, seeded demo stock, and **S$133.00** total.
+
+**Screen priority:** Keep the widget large enough that the product names,
+compatibility proof, pickup location, and total are readable. Browser chrome and
+developer tools are never part of the shot.
+
+**Fallback frame:** `docs/assets/demo/01-ask-once.png`.
 
 **Say**
 
@@ -120,14 +210,36 @@ Then:
 Do not explain the ranking algorithm unless a judge asks. The visible result is
 the proof.
 
-### 1:30–2:15 — Live demo: the user controls authorization
+### 1:30–2:15 — Slide 5 → live checkout: the user controls authorization
+
+**Slide 5 layout and what to show**
+
+- Runway Paper background.
+- Left 35%: **The AI recommends. The user authorizes.** with **Identity is the
+  next integration** in Alert Clay.
+- Right 57%: a three-step vertical path—**Verify identity** labeled **PLANNED**,
+  then **Review exact terms** and **Confirm once** labeled **WORKING**.
+- Keep the planned label visible. Never animate the identity step into a
+  completed state.
+- Use this slide as a five-second trust-boundary bridge, then cut back to the
+  selected ByteRoute cart in the live buyer surface.
 
 #### Working checkout block — use now
 
 1. Click **Review checkout**.
-2. Point to the exact merchant, items, pickup location, total, and expiry.
-3. Pause before clicking **Confirm S$133.00**.
-4. Confirm and show the simulated result and receipt.
+2. Let the preview load without moving the cursor.
+3. Point to the exact merchant, four items, pickup location, total, and expiry—in
+   that order.
+4. Rest the cursor beside, not on, **Confirm S$133.00** while explaining that the
+   AI cannot approve the purchase.
+5. Pause for one beat, click **Confirm S$133.00**, and show the blue simulated
+   Visa result and pickup receipt.
+
+**What must remain visible:** the full amount on the confirmation button, the
+expiry, the **simulated** payment label, and the receipt state after the click.
+
+**Fallback frames:** `docs/assets/demo/02-review-once.png` followed by
+`docs/assets/demo/03-confirm-once.png`.
 
 **Say**
 
@@ -171,7 +283,7 @@ This replaces the working checkout block; it is not an extra slide.
 Authentication and purchase confirmation must remain two separate user actions.
 Do not describe the planned flow as KYC, a real Visa login, or Visa OAuth.
 
-### 2:15–2:35 — Slide 6: Merchants control what the AI can sell
+### 2:15–2:35 — Slide 6 → Merchant Desk: merchants control what the AI can sell
 
 Show the Merchant Desk with inventory, orders, scenario controls, and audit.
 
@@ -179,6 +291,20 @@ Show the Merchant Desk with inventory, orders, scenario controls, and audit.
 
 > Import inventory · Update price and availability · Receive exact orders · Audit
 > every action
+
+**Layout and what to show**
+
+- Route Ink full-bleed background.
+- Left 28%: four short merchant actions stacked vertically—**Import validated
+  inventory**, **Update availability in seconds**, **Receive exact confirmed
+  orders**, **Inspect every action**.
+- Right 62%: a large verified Merchant Desk screenshot with inventory, scenario
+  controls, and recent activity visible.
+- If the live tab is already prepared, cut to `/merchant` after two seconds and
+  point to **Normal**, the ByteRoute stock row, the confirmed order, and the audit
+  event. Otherwise remain on the verified screenshot; do not waste time loading.
+
+**Fallback frame:** `docs/assets/demo/04-merchant-control.png`.
 
 **Say**
 
@@ -200,6 +326,22 @@ that Woven reads live merchant inventory.
 Close with:
 
 > **Ask once. Review once. Confirm once.**
+
+**Layout and what to show**
+
+- Route Ink full-bleed background.
+- Left 48%: the closing claim, then three short lines—**ChatGPT understands**,
+  **Woven builds**, **The user controls authorization**.
+- Right 42%: one verified composite showing the cart and exact confirmation
+  states. Keep **Identity planned** and **Visa authorization simulated** visible
+  in the lower edge treatment.
+- Signal Lime carries the eye from the request to the cart; Waypoint Blue marks
+  only the simulated authorization result.
+- Finish with **Ask once. Review once. Confirm once.** visible. Do not end on a
+  generic thank-you slide.
+
+**Presenter cue:** Return to center, stop touching the laptop, and deliver the
+last sentence directly to the judges.
 
 **Say**
 

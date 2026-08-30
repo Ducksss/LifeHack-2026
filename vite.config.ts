@@ -16,8 +16,10 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
+        demo: path.resolve("web/demo.html"),
         widget: path.resolve("web/widget.html"),
         merchant: path.resolve("web/merchant.html"),
+        landing: path.resolve("web/landing.html"),
       },
     },
   },

@@ -20,7 +20,7 @@ import {
 } from "./domain.js";
 import { WovenStore } from "./store.js";
 
-const VERSION = "0.1.1";
+const VERSION = "0.1.2";
 const WIDGET_URI = "ui://woven/mission-v1.html";
 const port = Number(process.env.PORT || 8787);
 const baseUrl = (process.env.BASE_URL || `http://localhost:${port}`).replace(/\/$/, "");
@@ -269,8 +269,8 @@ app.use("/assets", express.static(path.join(webRoot, "assets"), { immutable: tru
 
 app.get("/healthz", (_req, res) => res.json({ ok: true, service: "woven", version: VERSION, paymentMode: "simulated" }));
 app.get("/favicon.ico", (_req, res) => res.sendStatus(204));
-app.get("/", (_req, res) => res.redirect("/demo"));
-app.get("/demo", (_req, res) => res.sendFile("widget.html", { root: webRoot }));
+app.get("/", (_req, res) => res.sendFile("landing.html", { root: webRoot }));
+app.get("/demo", (_req, res) => res.sendFile("demo.html", { root: webRoot }));
 app.get("/merchant", (_req, res) => res.sendFile("merchant.html", { root: webRoot }));
 
 app.post("/api/demo/start", (req, res) => api(res, () => {

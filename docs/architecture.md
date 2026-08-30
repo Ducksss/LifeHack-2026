@@ -24,6 +24,11 @@ flowchart LR
 
 The in-chat surface uses the standard MCP Apps bridge (`app.callServerTool`). `/demo` is a rehearsal transport for on-stage reliability: it renders a clearly labeled simulated chat host (marked “Simulated” in its header and footer) that drives the same backend over HTTP and surfaces each MCP tool call as it happens. It never impersonates a real host and performs no live charges.
 
+The hosted MCP resource and `/demo` use explicit HTML entry points. The hosted
+entry always initializes the MCP Apps bridge; it does not infer host mode from
+iframe nesting because Codex may run the resource in a top-level sandboxed
+guest.
+
 ## Tool contract
 
 | Tool | Visibility | Effect |
