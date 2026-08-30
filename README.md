@@ -455,8 +455,9 @@ issue describing the user-visible change, create a focused branch, run
 
 ## License
 
-No open-source license has been granted. All rights are reserved by the project
-contributors unless a license is added later.
+This project is licensed under the [MIT License](LICENSE).
+
+Copyright (c) 2026 Chai Pin Zheng and Ho Boon How.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
