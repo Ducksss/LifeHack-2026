@@ -26,9 +26,13 @@ flowchart LR
 The in-chat surface uses the standard MCP Apps bridge (`app.callServerTool`). `/demo` is a rehearsal transport for on-stage reliability: it renders a clearly labeled simulated chat host (marked “Simulated” in its header and footer) that drives the same backend over HTTP and surfaces each MCP tool call as it happens. It never impersonates a real host and performs no live charges.
 
 The hosted MCP resource and `/demo` use explicit HTML entry points. The hosted
-entry always initializes the MCP Apps bridge; it does not infer host mode from
-iframe nesting because Codex may run the resource in a top-level sandboxed
-guest.
+entry is bundled into one self-contained HTML resource so sandboxed hosts do
+not need to fetch scripts, styles, or fonts from localhost. It always
+initializes the MCP Apps bridge and does not infer host mode from iframe nesting
+because Codex may run the resource in a top-level sandboxed guest. In ChatGPT,
+the hosted entry also hydrates from the current tool-output snapshot before
+subscribing to later bridge results, so a cold first render does not require a
+second prompt.
 
 ## Tool contract
 

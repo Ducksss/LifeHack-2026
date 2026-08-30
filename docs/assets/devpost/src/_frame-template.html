@@ -1,0 +1,183 @@
+<!doctype html>
+<!--
+  Fast path for a new 1600x900 Woven frame:
+
+    cp docs/assets/devpost/src/_frame-template.html docs/assets/devpost/src/woven-<name>.html
+    npm run frame:render -- docs/assets/devpost/src/woven-<name>.html
+
+  Keep the shell. Replace the page title, header label, headline, supporting
+  copy, <main>, and the final frame-specific <style> block.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1600, initial-scale=1" />
+<title>Woven frame template</title>
+<style>
+  @font-face {
+    font-family: "Geist Variable";
+    font-weight: 100 900;
+    src: url("../../../../node_modules/@fontsource-variable/geist/files/geist-latin-wght-normal.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Geist Mono Variable";
+    font-weight: 100 900;
+    src: url("../../../../node_modules/@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2") format("woff2");
+  }
+  :root {
+    --ink: #09090b;
+    --panel: #131316;
+    --paper: #fafafa;
+    --muted: rgb(255 255 255 / .55);
+    --line: rgb(255 255 255 / .12);
+    --lime: #b7f522;
+    --blue: #1545e8;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 900px; overflow: hidden; width: 1600px; }
+  body {
+    background: var(--ink);
+    color: var(--paper);
+    display: flex;
+    flex-direction: column;
+    font-family: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+    padding: 56px 72px 44px;
+    position: relative;
+  }
+  .grid-bg {
+    background-image: radial-gradient(circle, rgb(255 255 255 / .13) 1px, transparent 1px);
+    background-size: 24px 24px;
+    inset: 0;
+    mask-image: radial-gradient(ellipse 85% 70% at 75% 0%, black 25%, transparent 70%);
+    position: absolute;
+  }
+  .glow {
+    background: rgb(21 69 232 / .2);
+    border-radius: 50%;
+    filter: blur(90px);
+    height: 340px;
+    position: absolute;
+    right: -60px;
+    top: -140px;
+    width: 560px;
+  }
+  header, .title, main, footer { position: relative; }
+  header { align-items: center; display: flex; justify-content: space-between; }
+  .brand { align-items: center; display: flex; gap: 12px; }
+  .brand-chip {
+    background: rgb(255 255 255 / .08);
+    border: 1px solid rgb(255 255 255 / .15);
+    border-radius: 10px;
+    display: grid;
+    height: 40px;
+    place-items: center;
+    width: 40px;
+  }
+  .brand-chip svg { height: 26px; width: 26px; }
+  .brand strong { font-size: 19px; font-weight: 600; letter-spacing: -.02em; }
+  .microlabel, .mono {
+    font-family: "Geist Mono Variable", ui-monospace, monospace;
+  }
+  .microlabel {
+    color: rgb(255 255 255 / .45);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  .title { margin-top: 34px; }
+  .title h1 { font-size: 48px; font-weight: 600; letter-spacing: -.035em; line-height: 1.04; }
+  .title p { color: var(--muted); font-size: 18px; margin-top: 11px; }
+  main { flex: 1; margin-top: 34px; min-height: 0; }
+  .grid { display: grid; gap: 18px; }
+  .grid.two { grid-template-columns: repeat(2, 1fr); }
+  .grid.three { grid-template-columns: repeat(3, 1fr); }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .card h2 { font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
+  .card p { color: var(--muted); font-size: 15px; line-height: 1.55; margin-top: 10px; }
+  .eyebrow { color: var(--lime); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
+  .badge {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: .08em;
+    padding: 5px 9px;
+    text-transform: uppercase;
+  }
+  footer {
+    color: rgb(255 255 255 / .38);
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+  }
+</style>
+<style>
+  /* Frame-specific layout starts here. Replace this block and <main>. */
+  .template-cards { height: 100%; }
+  .template-cards .card { display: flex; flex-direction: column; justify-content: space-between; }
+  .template-cards strong { color: var(--lime); font-size: 54px; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <div class="glow"></div>
+
+  <header>
+    <div class="brand">
+      <span class="brand-chip">
+        <svg viewBox="0 0 48 48" aria-label="Woven Flightpath mark">
+          <path d="M7 13c5 0 5 22 11 22 5 0 5-14 8-14s3 14 8 14c6 0 6-22 8-22" fill="none" stroke="#fcfaf5" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+          <circle cx="7" cy="13" r="4" fill="#b7f522"/>
+          <circle cx="42" cy="13" r="4.5" fill="#fcfaf5"/>
+          <circle cx="42" cy="13" r="2.75" fill="#1545e8"/>
+        </svg>
+      </span>
+      <strong>Woven</strong>
+    </div>
+    <span class="microlabel">Frame type · short context</span>
+  </header>
+
+  <div class="title">
+    <h1>Say one useful thing.</h1>
+    <p>Use one supporting sentence. Let the frame carry the rest.</p>
+  </div>
+
+  <main class="grid three template-cards">
+    <section class="card">
+      <div>
+        <span class="eyebrow mono">01 · Point</span>
+        <h2>Replace this card.</h2>
+        <p>Keep only the components the frame needs.</p>
+      </div>
+      <strong>1</strong>
+    </section>
+    <section class="card">
+      <div>
+        <span class="eyebrow mono">02 · Point</span>
+        <h2>Reuse the shell.</h2>
+        <p>The canvas, fonts, brand, spacing, and footer are already done.</p>
+      </div>
+      <strong>2</strong>
+    </section>
+    <section class="card">
+      <div>
+        <span class="eyebrow mono">03 · Point</span>
+        <h2>Render once.</h2>
+        <p>The local Chrome command writes the PNG at exactly 1600 × 900.</p>
+      </div>
+      <strong>3</strong>
+    </section>
+  </main>
+
+  <footer class="microlabel">
+    <span>LifeHack 2026 · MCP commerce app</span>
+    <span>Everything works together.</span>
+  </footer>
+</body>
+</html>

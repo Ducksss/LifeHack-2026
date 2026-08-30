@@ -19,13 +19,15 @@ import {
   type Scenario,
 } from "./domain.js";
 import { WovenStore } from "./store.js";
+import { inlineWidgetAssets } from "./widget.js";
 
-const VERSION = "0.2.0";
-const WIDGET_URI = "ui://woven/mission-v1.html";
+const VERSION = "0.2.1";
+const WIDGET_URI = "ui://woven/mission-v2.html";
 const port = Number(process.env.PORT || 8787);
 const baseUrl = (process.env.BASE_URL || `http://localhost:${port}`).replace(/\/$/, "");
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const webRoot = path.join(root, "dist", "web");
+const widgetRoot = path.join(root, "dist", "widget");
 const store = new WovenStore();
 
 type ToolResult = {
@@ -36,13 +38,14 @@ type ToolResult = {
 };
 
 function widgetHtml(): string {
-  const filename = path.join(webRoot, "widget.html");
+  const filename = path.join(widgetRoot, "widget.html");
   if (!existsSync(filename)) {
     throw new Error(`Widget not built at ${filename}. Run npm run build first.`);
   }
-  return readFileSync(filename, "utf8")
-    .replaceAll('="/assets/', `="${baseUrl}/assets/`)
-    .replaceAll("='/assets/", `='${baseUrl}/assets/`);
+  return inlineWidgetAssets(
+    readFileSync(filename, "utf8"),
+    (asset) => readFileSync(path.join(widgetRoot, asset), "utf8"),
+  );
 }
 
 function viewResult(view: MissionView, text: string, meta?: Record<string, unknown>): ToolResult {
@@ -368,9 +371,6 @@ app.post("/api/tools/swap_cart_item", (req, res) => api(res, () => {
   const input = swapActionSchema.parse(req.body);
   return { view: store.swapCartItem(input.missionId, input.cartId, input.offerId) };
 }));
-app.post("/api/tools/build_carts", (req, res) => api(res, () => ({
-  view: store.view(z.string().min(5).max(80).parse(req.body.missionId)),
-})));
 app.post("/api/tools/start_demo_identity", (req, res) => api(res, () => {
   const missionId = z.string().min(5).max(80).parse(req.body.missionId);
   const result = store.beginDemoIdentity(missionId, new URL("/auth/demo/callback", baseUrl).toString());

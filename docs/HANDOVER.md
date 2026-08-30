@@ -87,15 +87,15 @@ Within three minutes, the audience should see:
 7. a clearly simulated Visa result and signed receipt; and
 8. merchant-controlled alternatives plus stale price, stockout, decline, and reversal scenarios.
 
-The judge deck follows this as a seven-slide main story with six Q&A backups.
+The judge deck follows this as a ten-slide camping story.
 Its identity step is implemented and must remain labeled simulated.
 
 ## Current product state
 
 | Area | Status | Notes |
 | --- | --- | --- |
-| Buyer MCP App | Complete | React widget using an explicit hosted entry point and the MCP Apps bridge |
-| Local plugin packaging | Complete | Repo marketplace, branded install-page assets, cache-safe stdio launcher, real Codex CLI install, nine-tool smoke test, and verified guide |
+| Buyer MCP App | Complete | React widget using a self-contained hosted entry point, first-result snapshot fallback, and the MCP Apps bridge |
+| Local plugin packaging | Complete | Repo marketplace, branded install-page assets, self-contained widget bundle, cache-safe stdio launcher, real Codex CLI install, nine-tool smoke test, and verified guide |
 | Browser fallback | Complete | `/demo`; simulated chat-host rehearsal, same domain behavior over HTTP (`?instant` skips animations) |
 | Demo identity page | Complete | `/identity`; working provider-style handoff with a prominent simulator boundary and no credential fields |
 | Install guide page | Complete | `/install`; Woven-branded guide styled after the ChatGPT Plugins tab (clearly labeled preview, three install paths, verification checklist); linked from the landing page and demo host headers |
@@ -104,10 +104,10 @@ Its identity step is implemented and must remain labeled simulated.
 | Checkout safety | Complete for prototype | Identity-session binding, expiry, hash, private nonce, exact terms, idempotency, signed receipt verification |
 | Demo identity check | Complete for prototype | Server-enforced state + PKCE + allowlisted callback + one-time code + 15-minute session; never call it Visa OAuth, KYC, or a real Visa login |
 | Visa rail | Simulated only | Approval, decline, failure, and reversal semantics |
-| Automated verification | Green | Twelve tests, TypeScript/build gate, GitHub CI |
-| README and gallery | Complete | Best-README structure and eight 1600×900 Devpost assets |
+| Automated verification | Green | Fourteen tests, TypeScript/build gate, GitHub CI |
+| README and gallery | Complete | Best-README structure and nine 1600×900 Devpost assets |
 | Stage fallback assets | Complete | Five numbered 1600×900 frames with editable SVG sources and explicit simulator boundaries |
-| Judge pitch deck | Complete | Seven-slide story plus six backups; presenter notes and source blocks included |
+| Judge pitch deck | Complete | Ten-slide camping story; presenter notes and source blocks included |
 | Judge demo video | Complete locally | Three-minute Remotion master with ElevenLabs AI narration and sidecar captions; public upload URL remains outstanding |
 | Agent context | Current | `AGENTS.md` is canonical; Claude and Copilot use thin pointers to it |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
@@ -310,7 +310,7 @@ the currently working product flow.
 The README, product-led cover, Woven brand system, user-flow slide,
 authorization-boundary slide, architecture slide, product screenshots, numbered
 stage fallback sequence, Devpost story, captions, judge Q&A, three-minute script,
-and thirteen-slide pitch deck are complete. The main deck story is: friction →
+and ten-slide pitch deck are complete. The deck story is: friction →
 complete cart → live request → human authorization → merchant control →
 takeaway. The identity scene is now working and must be described as a simulated,
 server-enforced POC rather than a Visa identity product.

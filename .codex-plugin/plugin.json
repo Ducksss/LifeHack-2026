@@ -1,6 +1,6 @@
 {
   "name": "woven",
-  "version": "0.2.0+codex.20260830",
+  "version": "0.2.1+codex.20260830",
   "description": "Ask once. Woven builds a complete compatible cart, then waits for one exact confirmation.",
   "author": {
     "name": "Chai Pin Zheng"

@@ -63,7 +63,7 @@ const quickFixes = [
   },
   {
     symptom: "The bundled MCP server cannot launch",
-    fix: "Run npm ci, remove and reinstall Woven, then start a new task. Port 8788 must be free for widget assets.",
+    fix: "Run npm ci and npm run build, remove and reinstall Woven, then start a new task. Port 8788 is used only for the demo identity handoff.",
   },
   {
     symptom: "ChatGPT cannot connect",
@@ -124,7 +124,7 @@ function InstallGuide() {
           <div className="absolute -top-32 right-[-10%] h-72 w-[480px] rounded-full bg-indigo-500/20 blur-3xl" aria-hidden />
           <div className="relative flex flex-wrap items-center justify-between gap-4">
             <Badge variant="outline" className="border-white/25 font-mono text-[10px] uppercase tracking-[0.1em] text-white/70">
-              Plugin · v0.2.0
+              Plugin · v0.2.1
             </Badge>
             <div
               className="flex items-center gap-2.5 font-mono text-xs tracking-[0.1em] text-white/60"
@@ -309,7 +309,7 @@ function InstallGuide() {
                   <ShieldCheck className="mt-0.5 size-4 flex-none" />
                   <span>
                     No <code className="font-mono">npm start</code> needed on this path. The plugin host launches the
-                    bundled stdio server itself and serves widget assets on local port 8788.
+                    bundled stdio server itself. The Choice Center is self-contained; port 8788 supports only the demo identity handoff.
                   </span>
                 </li>
               </ol>

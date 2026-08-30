@@ -32,6 +32,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import type { CartAlternative, Category, MissionView, RankedCart } from "../src/domain";
+import { initialToolResult } from "../src/widget";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -60,9 +61,15 @@ const canonicalRequest =
   "I need a complete rainy-weekend camping kit for 2 first-time campers. Keep it under S$300, fit it in one car boot, and make it pickup-ready today.";
 
 function HostedWidget() {
-  const [view, setView] = useState<MissionView | null>(null);
-  const [nonce, setNonce] = useState<string | null>(null);
-  const [connectionError, setConnectionError] = useState<string | null>(null);
+  const initialResult = initialToolResult((window as Window & { openai?: unknown }).openai);
+  const initialPayload = (initialResult?.structuredContent || {}) as Payload;
+  const [view, setView] = useState<MissionView | null>(initialPayload.view || null);
+  const [nonce, setNonce] = useState<string | null>(
+    typeof initialResult?._meta?.confirmationNonce === "string"
+      ? initialResult._meta.confirmationNonce
+      : null,
+  );
+  const [connectionError, setConnectionError] = useState<string | null>(initialPayload.error?.message || null);
 
   const receive = (result: { structuredContent?: unknown; _meta?: Record<string, unknown>; isError?: boolean }) => {
     const payload = (result.structuredContent || {}) as Payload;
@@ -73,7 +80,7 @@ function HostedWidget() {
   };
 
   const { app, error } = useApp({
-    appInfo: { name: "Woven", version: "0.2.0" },
+    appInfo: { name: "Woven", version: "0.2.1" },
     capabilities: {},
     onAppCreated: (created: McpApp) => {
       created.ontoolresult = (result) => {

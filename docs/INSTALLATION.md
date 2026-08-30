@@ -42,8 +42,8 @@ Expected result:
 - `npm run check` ends with these key lines (durations and asset hashes vary):
 
   ```text
-  # tests 12
-  # pass 12
+  # tests 14
+  # pass 14
   # fail 0
   ✓ built in ...
   ```
@@ -71,7 +71,8 @@ The installable package is already defined by:
    > Build a rainy-weekend camping kit for 2 under S$300, one car boot, pickup today.
 
 You do not need to run `npm start` for this path. The plugin host launches the
-bundled stdio server itself and serves the widget on local port `8788`.
+bundled stdio server itself. The Choice Center is embedded in the MCP resource;
+local port `8788` is used only for the simulated identity handoff.
 
 ### Expected result
 
@@ -159,7 +160,7 @@ curl https://visa-woven.vercel.app/healthz
 Expected JSON:
 
 ```json
-{"ok":true,"service":"woven","version":"0.2.0","paymentMode":"simulated"}
+{"ok":true,"service":"woven","version":"0.2.1","paymentMode":"simulated"}
 ```
 
 ### Create the ChatGPT connection
@@ -216,8 +217,8 @@ the MCP App. It is a rehearsal transport, not the primary product.
 | Woven is installed but tools are missing | Start a new task/session; plugin changes are not injected into an already-running session | Nine Woven tools become available |
 | The bundled MCP server cannot launch | Run `npm ci`, remove and reinstall Woven, then start a new task | The bundled MCP server starts and exposes nine tools |
 | `codex --version` fails with a native-binary `ENOENT` error | Use ChatGPT desktop, or repair the CLI with OpenAI's official installer shown below | `codex --version` prints a version instead of an error |
-| Port `8788` is already in use | Stop the other Woven/plugin process, then start a new task | The widget asset server binds to `8788` |
-| `start_mission` succeeds but the widget area is blank | Reinstall Woven 0.2.0 or newer, then start a new task | The Choice Center opens with five interactive cart choices |
+| Port `8788` is already in use | Stop the other Woven/plugin process, then start a new task | The demo identity handoff can open |
+| `start_mission` succeeds but the widget area is blank | Run `npm run check`, reinstall Woven 0.2.1 or newer, then start a new task | The self-contained Choice Center opens with five interactive cart choices |
 | ChatGPT cannot connect | Verify public HTTPS, include the `/mcp` path, set `BASE_URL` to the same origin, and retry | Tool discovery succeeds |
 | The widget is stale after code changes | Run `npm run check`, reinstall the local plugin or refresh the ChatGPT connection, then start a new conversation | Updated tools and UI load |
 | Developer Mode is absent | Check the ChatGPT account/workspace policy | The toggle appears after an admin permits it |

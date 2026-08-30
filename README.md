@@ -305,7 +305,8 @@ guide][openai-connect].
 
 Follow the [local Codex installation guide](docs/INSTALLATION.md#2-recommended-install-in-codex-desktop).
 The repository includes a **Woven Local** marketplace entry; its bundled stdio
-server serves widget assets on port `8788`, separate from the HTTP demo.
+server returns a self-contained Choice Center; port `8788` remains available
+only for the simulated identity handoff.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

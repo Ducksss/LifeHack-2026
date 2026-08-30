@@ -105,6 +105,7 @@ confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 | `docs/assets/devpost/woven-system-architecture.png` | Surfaces → one service → trust boundary diagram in the shipped product UI style |
 | `docs/assets/devpost/woven-under-the-hood.png` | Deep-dive sequence: the model's tool call to receipt, with real payloads and gates |
 | `docs/assets/devpost/src/*.html` | Editable sources for the three product-style explainers; render at 1600 × 900 (see file comments) |
+| `docs/assets/devpost/src/_frame-template.html` | Copyable branded shell for new 1600 × 900 HTML frames; render with `npm run frame:render -- <source.html>` |
 | `docs/Woven-Devpost-Visuals.pptx` | Presentation-ready source deck for the three slides |
 | `docs/assets/screenshots/*.png` | Verified product gallery |
 | `docs/assets/screenshots/demo-identity.png` | Verified `/identity` simulator evidence |
