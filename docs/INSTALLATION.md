@@ -42,8 +42,8 @@ Expected result:
 - `npm run check` ends with these key lines (durations and asset hashes vary):
 
   ```text
-  # tests 8
-  # pass 8
+  # tests 9
+  # pass 9
   # fail 0
   ✓ built in ...
   ```
@@ -137,7 +137,7 @@ curl https://your-public-origin.example/healthz
 Expected JSON:
 
 ```json
-{"ok":true,"service":"woven","version":"0.1.1","paymentMode":"simulated"}
+{"ok":true,"service":"woven","version":"0.1.2","paymentMode":"simulated"}
 ```
 
 ### Create the ChatGPT connection
@@ -195,6 +195,7 @@ the MCP App. It is a rehearsal transport, not the primary product.
 | The bundled MCP server cannot launch | Run `npm ci`, remove and reinstall Woven, then start a new task | The bundled MCP server starts and exposes six tools |
 | `codex --version` fails with a native-binary `ENOENT` error | Use ChatGPT desktop, or repair the CLI with OpenAI's official installer shown below | `codex --version` prints a version instead of an error |
 | Port `8788` is already in use | Stop the other Woven/plugin process, then start a new task | The widget asset server binds to `8788` |
+| `start_mission` succeeds but the widget area is blank | Reinstall Woven 0.1.2 or newer, then start a new task | Three interactive cart choices appear above the model response |
 | ChatGPT cannot connect | Verify public HTTPS, include the `/mcp` path, set `BASE_URL` to the same origin, and retry | Tool discovery succeeds |
 | The widget is stale after code changes | Run `npm run check`, reinstall the local plugin or refresh the ChatGPT connection, then start a new conversation | Updated tools and UI load |
 | Developer Mode is absent | Check the ChatGPT account/workspace policy | The toggle appears after an admin permits it |

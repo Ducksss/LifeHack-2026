@@ -1,0 +1,189 @@
+<!doctype html>
+<!--
+  Editable source for docs/assets/devpost/woven-how-it-works.png (1600x900).
+  Render: open in Chromium at 1600x900 and screenshot, e.g.
+    npx playwright screenshot --viewport-size=1600,900 <this file> ../woven-how-it-works.png
+  Fonts resolve from the repository's node_modules; run `npm install` first.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  @font-face {
+    font-family: "Geist Variable";
+    font-weight: 100 900;
+    src: url("../../../../node_modules/@fontsource-variable/geist/files/geist-latin-wght-normal.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Geist Mono Variable";
+    font-weight: 100 900;
+    src: url("../../../../node_modules/@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2") format("woff2");
+  }
+  * { margin: 0; box-sizing: border-box; }
+  html, body { width: 1600px; height: 900px; overflow: hidden; }
+  body {
+    position: relative;
+    font-family: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+    background: #09090b;
+    color: #fafafa;
+    padding: 56px 72px 48px;
+    display: flex;
+    flex-direction: column;
+  }
+  .grid-bg {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgb(255 255 255 / 0.13) 1px, transparent 1px);
+    background-size: 24px 24px;
+    -webkit-mask-image: radial-gradient(ellipse 85% 70% at 75% 0%, black 25%, transparent 70%);
+  }
+  .glow {
+    position: absolute; top: -140px; right: -60px; width: 560px; height: 340px;
+    background: rgb(99 102 241 / 0.18); border-radius: 50%; filter: blur(90px);
+  }
+  .mono { font-family: "Geist Mono Variable", ui-monospace, monospace; }
+  .microlabel { font-family: "Geist Mono Variable", ui-monospace, monospace; font-size: 13px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; }
+
+  header { position: relative; display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-chip { width: 40px; height: 40px; border-radius: 10px; border: 1px solid rgb(255 255 255 / 0.15); background: rgb(255 255 255 / 0.08); display: grid; place-items: center; }
+  .brand-chip svg { width: 26px; height: 26px; }
+  .brand strong { font-size: 19px; font-weight: 600; letter-spacing: -0.02em; }
+  header .microlabel { color: rgb(255 255 255 / 0.45); }
+
+  .title { position: relative; margin-top: 40px; }
+  .title h1 { font-size: 52px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; }
+  .title p { margin-top: 12px; font-size: 19px; color: rgb(255 255 255 / 0.55); }
+
+  .flow { position: relative; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .steps-wrap { position: relative; }
+  .thread { position: absolute; top: 24px; left: 0; width: 100%; height: 40px; }
+  .steps { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; }
+  .card { min-height: 235px; }
+  .step { display: flex; flex-direction: column; }
+  .node { position: relative; z-index: 1; width: 34px; height: 34px; margin-bottom: 18px; border-radius: 50%; background: #09090b; border: 1.5px solid rgb(255 255 255 / 0.3); display: grid; place-items: center; font-family: "Geist Mono Variable", monospace; font-size: 13px; font-weight: 600; color: rgb(255 255 255 / 0.8); }
+  .node.lime { border-color: #b7f522; color: #b7f522; }
+  .node.blue { border-color: #1545e8; background: #1545e8; color: #fff; }
+  .card { flex: 1; background: #131316; border: 1px solid rgb(255 255 255 / 0.11); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+  .card h3 { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+  .card .desc { font-size: 13.5px; line-height: 1.45; color: rgb(255 255 255 / 0.5); }
+  .frag { margin-top: auto; }
+
+  .bubble { background: rgb(255 255 255 / 0.1); border-radius: 14px 14px 4px 14px; padding: 10px 12px; font-size: 12.5px; line-height: 1.45; color: rgb(255 255 255 / 0.85); }
+  .chip { display: inline-flex; align-items: center; gap: 7px; background: rgb(255 255 255 / 0.08); border-radius: 999px; padding: 7px 12px; font-family: "Geist Mono Variable", monospace; font-size: 12px; color: rgb(255 255 255 / 0.9); }
+  .chip .ok { color: #34d399; }
+  .rows { display: flex; flex-direction: column; gap: 6px; }
+  .row { display: flex; align-items: center; gap: 7px; font-size: 12px; color: rgb(255 255 255 / 0.75); }
+  .row .ok { color: #34d399; font-size: 12px; }
+  .pricebox { border: 1px solid rgb(255 255 255 / 0.14); border-radius: 10px; padding: 9px 12px; display: flex; align-items: baseline; justify-content: space-between; }
+  .pricebox span { font-size: 11px; color: rgb(255 255 255 / 0.5); }
+  .pricebox strong { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+  .btn { background: #fafafa; color: #09090b; border-radius: 9px; padding: 10px 0; text-align: center; font-size: 13.5px; font-weight: 600; }
+  .receipt { border: 1px solid rgb(52 211 153 / 0.4); background: rgb(52 211 153 / 0.08); border-radius: 10px; padding: 10px 12px; }
+  .receipt strong { display: block; font-size: 12.5px; font-weight: 600; color: #6ee7b7; }
+  .receipt span { display: block; margin-top: 3px; font-family: "Geist Mono Variable", monospace; font-size: 11px; color: rgb(255 255 255 / 0.55); }
+
+  .lane { margin-top: 26px; position: relative; display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; }
+  .lane .microlabel { font-size: 13px; }
+  .lane .ai { grid-column: 1 / span 4; color: rgb(255 255 255 / 0.45); }
+  .lane .you { grid-column: 5; color: #b7f522; text-align: center; }
+  .lane .sim { grid-column: 6; color: #7d9bff; text-align: right; white-space: nowrap; }
+
+  footer { position: relative; margin-top: 34px; display: flex; justify-content: space-between; color: rgb(255 255 255 / 0.38); }
+</style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <div class="glow"></div>
+
+  <header>
+    <div class="brand">
+      <span class="brand-chip">
+        <svg viewBox="0 0 48 48"><path d="M7 13c5 0 5 22 11 22 5 0 5-14 8-14s3 14 8 14c6 0 6-22 8-22" fill="none" stroke="#fcfaf5" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/><circle cx="7" cy="13" r="4" fill="#b7f522"/><circle cx="42" cy="13" r="4.5" fill="#fcfaf5"/><circle cx="42" cy="13" r="2.75" fill="#1545e8"/></svg>
+      </span>
+      <strong>Woven</strong>
+    </div>
+    <span class="microlabel">How it works · one request to pickup</span>
+  </header>
+
+  <div class="title">
+    <h1>Ask once. Review once. Confirm once.</h1>
+    <p>Woven carries every constraint forward — authorization never moves past you.</p>
+  </div>
+
+  <div class="flow">
+    <div class="steps-wrap">
+    <svg class="thread" preserveAspectRatio="none" viewBox="0 0 1456 40">
+      <path d="M17 20 C 140 -6, 200 46, 310 20 S 540 -6, 650 20 S 880 46, 990 20 S 1220 -6, 1439 20"
+            fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>
+      <circle cx="17" cy="20" r="5" fill="#b7f522"/>
+      <circle cx="1439" cy="20" r="6" fill="#fcfaf5"/>
+      <circle cx="1439" cy="20" r="3.6" fill="#1545e8"/>
+    </svg>
+    <div class="steps">
+      <div class="step">
+        <span class="node lime">01</span>
+        <div class="card">
+          <h3>Ask</h3>
+          <p class="desc">One message with every constraint.</p>
+          <div class="frag bubble">“Charging kit for MacBook Air, iPhone, AirPods — under S$150, pickup today.”</div>
+        </div>
+      </div>
+      <div class="step">
+        <span class="node">02</span>
+        <div class="card">
+          <h3>Build</h3>
+          <p class="desc">One tool call returns complete one-merchant carts.</p>
+          <div class="frag"><span class="chip">&gt;_&nbsp;start_mission <span class="ok">✓</span></span></div>
+        </div>
+      </div>
+      <div class="step">
+        <span class="node">03</span>
+        <div class="card">
+          <h3>Prove</h3>
+          <p class="desc">Every thread checked against devices and destination.</p>
+          <div class="frag rows">
+            <span class="row"><span class="ok">✓</span> 65W charger fits MacBook Air</span>
+            <span class="row"><span class="ok">✓</span> Cables match every port</span>
+            <span class="row"><span class="ok">✓</span> Adapter fits Japan outlets</span>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <span class="node">04</span>
+        <div class="card">
+          <h3>Recheck</h3>
+          <p class="desc">Price and stock revalidated into an expiring mandate.</p>
+          <div class="frag pricebox"><span>Authorized total</span><strong>S$133.00</strong></div>
+        </div>
+      </div>
+      <div class="step">
+        <span class="node lime">05</span>
+        <div class="card">
+          <h3>Confirm</h3>
+          <p class="desc">A direct human click on the exact terms — nothing moves without it.</p>
+          <div class="frag btn">Confirm S$133.00</div>
+        </div>
+      </div>
+      <div class="step">
+        <span class="node blue">06</span>
+        <div class="card">
+          <h3>Collect</h3>
+          <p class="desc">A pickup-ready receipt the moment you confirm.</p>
+          <div class="frag receipt"><strong>Kit reserved. Everything aligned.</strong><span>Receipt WV-MTEN8XEM · Funan · Level 3</span></div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="lane">
+      <span class="microlabel ai">The AI recommends</span>
+      <span class="microlabel you">Only you authorize</span>
+      <span class="microlabel sim">Pickup ready</span>
+    </div>
+  </div>
+
+  <footer>
+    <span class="microlabel">LifeHack 2026 · MCP commerce app</span>
+    <span class="microlabel">Proof of concept</span>
+  </footer>
+</body>
+</html>

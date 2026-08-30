@@ -88,16 +88,22 @@ confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 | `docs/assets/brand/woven-hero-flightpath.png` | Text-free campaign hero |
 | `docs/assets/brand/woven-cover.{png,svg}` | Product statement beside the working buyer UI |
 | `docs/assets/brand/concepts/*.png` | Archived identity explorations; not production marks |
-| `docs/assets/devpost/cover.png` | Devpost thumbnail and gallery cover |
-| `docs/assets/devpost/cover.svg` | Editable cover source |
+| `docs/assets/devpost/cover.png` | Devpost thumbnail and gallery cover (Flightpath lockup on Route Ink) |
+| `docs/assets/devpost/cover.html` | Editable cover source; render at 1600 × 900 with Playwright |
 | `docs/assets/devpost/architecture.{png,svg}` | Concise system-story slide |
 | `docs/assets/devpost/woven-user-flow.png` | Six-step product flow with real product screens |
 | `docs/assets/devpost/woven-trust-boundary.png` | Human authorization and simulator boundary |
 | `docs/assets/devpost/woven-architecture.png` | Detailed technical architecture |
+| `docs/assets/devpost/woven-how-it-works.png` | Six-step ask→confirm→collect flow drawn in the shipped product UI style |
+| `docs/assets/devpost/woven-system-architecture.png` | Surfaces → one service → trust boundary diagram in the shipped product UI style |
+| `docs/assets/devpost/src/*.html` | Editable sources for the two product-style explainers; render at 1600 × 900 (see file comments) |
 | `docs/Woven-Devpost-Visuals.pptx` | Presentation-ready source deck for the three slides |
 | `docs/assets/screenshots/*.png` | Verified product gallery |
 | `docs/assets/slides/*.png` | Text-free editorial backgrounds for friction, the complete kit, and explicit human confirmation |
 | `docs/assets/demo/*.{png,svg}` | Numbered 16:9 stage fallback sequence and closing card built from verified product screens |
+| `docs/assets/marketing/woven-demo-loop.gif` | Animated ~17s loop of the real `/demo` flow for README, Devpost, and social posts |
+| `docs/assets/marketing/woven-how-it-works-square.png` | 1080 × 1080 four-step how-it-works card for feeds |
+| `docs/assets/marketing/woven-how-it-works-story.png` | 1080 × 1920 four-step how-it-works card for stories |
 | `script.md` | Authoritative three-minute narration and language guardrails |
 | `docs/Woven-Hackathon-Pitch.pptx` | Eleven-slide judge deck; the identity slide is explicitly labeled as planned |
 
@@ -106,7 +112,11 @@ listed in `docs/DEVPOST_SUBMISSION.md`.
 
 The demo fallback PNGs are also 1600 × 900. Their editable SVG sources reference
 the canonical logo and raw product screenshots, so update the source screenshots
-first whenever the buyer or merchant UI changes.
+first whenever the buyer or merchant UI changes, then re-render each SVG to PNG.
+The marketing cards embed a live portrait capture of `/demo` and the current
+gallery screenshots; regenerate them after any visible UI change. The animated
+loop is recorded from the real `/demo` sequence at 1280 × 800 and assembled with
+ffmpeg at 8 fps, 960px wide.
 
 ## Campaign image brief
 

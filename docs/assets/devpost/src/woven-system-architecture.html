@@ -1,0 +1,210 @@
+<!doctype html>
+<!--
+  Editable source for docs/assets/devpost/woven-system-architecture.png (1600x900).
+  Render: open in Chromium at 1600x900 and screenshot, e.g.
+    npx playwright screenshot --viewport-size=1600,900 <this file> ../woven-system-architecture.png
+  Fonts resolve from the repository's node_modules; run `npm install` first.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  @font-face {
+    font-family: "Geist Variable";
+    font-weight: 100 900;
+    src: url("../../../../node_modules/@fontsource-variable/geist/files/geist-latin-wght-normal.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Geist Mono Variable";
+    font-weight: 100 900;
+    src: url("../../../../node_modules/@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2") format("woff2");
+  }
+  * { margin: 0; box-sizing: border-box; }
+  html, body { width: 1600px; height: 900px; overflow: hidden; }
+  body {
+    position: relative;
+    font-family: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+    background: #09090b;
+    color: #fafafa;
+    padding: 56px 72px 48px;
+    display: flex;
+    flex-direction: column;
+  }
+  .grid-bg {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgb(255 255 255 / 0.13) 1px, transparent 1px);
+    background-size: 24px 24px;
+    -webkit-mask-image: radial-gradient(ellipse 85% 70% at 75% 0%, black 25%, transparent 70%);
+  }
+  .glow {
+    position: absolute; top: -140px; right: -60px; width: 560px; height: 340px;
+    background: rgb(99 102 241 / 0.18); border-radius: 50%; filter: blur(90px);
+  }
+  .microlabel { font-family: "Geist Mono Variable", ui-monospace, monospace; font-size: 13px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; }
+  .mono { font-family: "Geist Mono Variable", ui-monospace, monospace; }
+
+  header { position: relative; display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-chip { width: 40px; height: 40px; border-radius: 10px; border: 1px solid rgb(255 255 255 / 0.15); background: rgb(255 255 255 / 0.08); display: grid; place-items: center; }
+  .brand-chip svg { width: 26px; height: 26px; }
+  .brand strong { font-size: 19px; font-weight: 600; letter-spacing: -0.02em; }
+  header .microlabel { color: rgb(255 255 255 / 0.45); }
+
+  .title { position: relative; margin-top: 38px; }
+  .title h1 { font-size: 48px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; }
+  .title p { margin-top: 11px; font-size: 18px; color: rgb(255 255 255 / 0.55); }
+
+  .diagram { position: relative; margin-top: 42px; flex: 1; display: grid; grid-template-columns: 360px 56px 1fr 56px 400px; align-items: stretch; }
+  .col { display: flex; flex-direction: column; gap: 14px; }
+  .col > .microlabel { color: rgb(255 255 255 / 0.45); margin-bottom: 2px; }
+
+  .surface { background: #131316; border: 1px solid rgb(255 255 255 / 0.11); border-radius: 14px; padding: 16px 18px; }
+  .surface h3 { font-size: 16.5px; font-weight: 600; letter-spacing: -0.01em; }
+  .surface p { margin-top: 4px; font-size: 13px; line-height: 1.4; color: rgb(255 255 255 / 0.5); }
+  .surface .tag { display: inline-block; margin-top: 8px; font-family: "Geist Mono Variable", monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(255 255 255 / 0.45); border: 1px solid rgb(255 255 255 / 0.16); border-radius: 999px; padding: 3px 8px; }
+
+  .links { position: relative; }
+  .links svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  .service { background: #131316; border: 1px solid rgb(255 255 255 / 0.16); border-radius: 18px; padding: 22px 24px 18px; display: flex; flex-direction: column; }
+  .service-head { display: flex; align-items: center; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid rgb(255 255 255 / 0.1); }
+  .service-head .brand-chip { width: 36px; height: 36px; }
+  .service-head .brand-chip svg { width: 23px; height: 23px; }
+  .service-head strong { font-size: 18px; font-weight: 600; }
+  .service-head span { display: block; margin-top: 2px; font-family: "Geist Mono Variable", monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: rgb(183 245 34 / 0.85); }
+  .layer { display: grid; grid-template-columns: 30px 1fr; gap: 10px; padding: 13px 0; border-bottom: 1px solid rgb(255 255 255 / 0.08); }
+  .layer:last-of-type { border-bottom: 0; }
+  .layer i { font-style: normal; font-family: "Geist Mono Variable", monospace; font-size: 12px; color: rgb(255 255 255 / 0.4); padding-top: 2px; }
+  .layer h4 { font-size: 15.5px; font-weight: 600; letter-spacing: -0.01em; }
+  .layer p { margin-top: 3px; font-size: 12.5px; line-height: 1.4; color: rgb(255 255 255 / 0.5); }
+  .layer code { font-family: "Geist Mono Variable", monospace; font-size: 11.5px; color: rgb(255 255 255 / 0.7); }
+  .seams { margin-top: auto; padding: 12px 0 14px; text-align: center; font-family: "Geist Mono Variable", monospace; font-size: 11px; letter-spacing: 0.06em; color: rgb(255 255 255 / 0.35); }
+  .service-foot { background: rgb(255 255 255 / 0.06); border-radius: 999px; text-align: center; padding: 9px; font-family: "Geist Mono Variable", monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(255 255 255 / 0.65); }
+
+  .trust { background: #131316; border: 1px solid rgb(255 255 255 / 0.11); border-radius: 14px; padding: 16px 18px; }
+  .trust h3 { font-size: 16.5px; font-weight: 600; }
+  .trust ul { margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .trust li { position: relative; padding-left: 16px; font-size: 12.5px; line-height: 1.45; color: rgb(255 255 255 / 0.62); }
+  .trust li::before { content: ""; position: absolute; left: 0; top: 7px; width: 6px; height: 6px; border-radius: 50%; background: #b7f522; }
+  .visa { background: #1545e8; border: 0; border-radius: 14px; padding: 16px 18px; color: #fff; }
+  .visa h3 { font-family: "Geist Mono Variable", monospace; font-size: 12.5px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .visa p { margin-top: 7px; font-size: 13.5px; line-height: 1.5; color: rgb(255 255 255 / 0.85); }
+  .visa .fine { margin-top: 8px; font-family: "Geist Mono Variable", monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(255 255 255 / 0.65); }
+
+  .tagline { position: relative; margin-top: 26px; text-align: center; font-size: 16px; font-weight: 500; color: rgb(255 255 255 / 0.7); }
+  footer { position: relative; margin-top: 22px; display: flex; justify-content: space-between; color: rgb(255 255 255 / 0.38); }
+</style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <div class="glow"></div>
+
+  <header>
+    <div class="brand">
+      <span class="brand-chip">
+        <svg viewBox="0 0 48 48"><path d="M7 13c5 0 5 22 11 22 5 0 5-14 8-14s3 14 8 14c6 0 6-22 8-22" fill="none" stroke="#fcfaf5" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/><circle cx="7" cy="13" r="4" fill="#b7f522"/><circle cx="42" cy="13" r="4.5" fill="#fcfaf5"/><circle cx="42" cy="13" r="2.75" fill="#1545e8"/></svg>
+      </span>
+      <strong>Woven</strong>
+    </div>
+    <span class="microlabel">System · one deployable service</span>
+  </header>
+
+  <div class="title">
+    <h1>One service keeps every surface in sync.</h1>
+    <p>The MCP App, the browser rehearsal, and the merchant desk share the same rules and SQLite transaction boundary.</p>
+  </div>
+
+  <div class="diagram">
+    <div class="col">
+      <span class="microlabel">Surfaces</span>
+      <div class="surface">
+        <h3>ChatGPT / Codex</h3>
+        <p>MCP tools plus the embedded React widget over the MCP Apps bridge.</p>
+        <span class="tag">Primary product</span>
+      </div>
+      <div class="surface">
+        <h3>/demo</h3>
+        <p>Stage rehearsal of the buyer flow — the same tools over plain HTTP.</p>
+        <span class="tag">Stage rehearsal</span>
+      </div>
+      <div class="surface">
+        <h3>/merchant</h3>
+        <p>Inventory, prices, failure scenarios, orders, and the audit trail.</p>
+        <span class="tag">Demo control</span>
+      </div>
+    </div>
+
+    <div class="links">
+      <svg viewBox="0 0 56 620" preserveAspectRatio="none">
+        <path d="M0 90 H56 M0 305 H56 M0 520 H56" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+      </svg>
+    </div>
+
+    <div class="service">
+      <div class="service-head">
+        <span class="brand-chip">
+          <svg viewBox="0 0 48 48"><path d="M7 13c5 0 5 22 11 22 5 0 5-14 8-14s3 14 8 14c6 0 6-22 8-22" fill="none" stroke="#fcfaf5" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/><circle cx="7" cy="13" r="4" fill="#b7f522"/><circle cx="42" cy="13" r="4.5" fill="#fcfaf5"/><circle cx="42" cy="13" r="2.75" fill="#1545e8"/></svg>
+        </span>
+        <div>
+          <strong>Woven service</strong>
+          <span>One Node.js process</span>
+        </div>
+      </div>
+      <div class="layer">
+        <i>01</i>
+        <div>
+          <h4>Transports &amp; tools</h4>
+          <p>HTTP + stdio MCP and the browser API expose six tools — <code>select_cart</code>, <code>create_checkout_preview</code>, and <code>confirm_purchase</code> are app-only.</p>
+        </div>
+      </div>
+      <div class="layer">
+        <i>02</i>
+        <div>
+          <h4>Cart engine</h4>
+          <p>Filters incompatible or out-of-stock offers, assembles complete one-merchant carts, ranks them, and explains every thread.</p>
+        </div>
+      </div>
+      <div class="layer">
+        <i>03</i>
+        <div>
+          <h4>Checkout guard</h4>
+          <p>Rechecks price and stock, binds an expiring mandate hash, and requires the private one-time nonce plus an idempotency key.</p>
+        </div>
+      </div>
+      <div class="seams">src/server.ts · src/domain.ts · src/store.ts · src/payment.ts</div>
+      <div class="service-foot">Node SQLite · atomic inventory + order</div>
+    </div>
+
+    <div class="links">
+      <svg viewBox="0 0 56 620" preserveAspectRatio="none">
+        <path d="M0 170 H56 M0 440 H56" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+      </svg>
+    </div>
+
+    <div class="col">
+      <span class="microlabel">Trust boundary</span>
+      <div class="trust">
+        <h3>The consent boundary</h3>
+        <ul>
+          <li>The confirmation nonce travels only in <span class="mono">_meta</span> — the model never sees it.</li>
+          <li>Recommendation is not authorization: confirming takes a separate direct click.</li>
+          <li>Mandates expire; duplicate confirms stay idempotent; declines create no order.</li>
+          <li>Merchant failure after authorization enters reversal.</li>
+        </ul>
+      </div>
+      <div class="visa">
+        <h3>Payment rail</h3>
+        <p>Approve, decline, and reverse semantics behind one adapter seam — no card credentials ever enter Woven, and a production processor drops into <code style="font-family:'Geist Mono Variable',monospace;font-size:12px">src/payment.ts</code>.</p>
+        <span class="fine">Proof of concept · fail-closed by default</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tagline">One code path — the stage rehearsal cannot drift from the MCP product.</div>
+
+  <footer>
+    <span class="microlabel">LifeHack 2026 · MCP commerce app</span>
+    <span class="microlabel">Proof of concept</span>
+  </footer>
+</body>
+</html>

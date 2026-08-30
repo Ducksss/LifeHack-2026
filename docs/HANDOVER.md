@@ -91,7 +91,7 @@ live demo through the implemented review-and-confirm flow only.
 
 | Area | Status | Notes |
 | --- | --- | --- |
-| Buyer MCP App | Complete | React widget using MCP Apps bridge |
+| Buyer MCP App | Complete | React widget using an explicit hosted entry point and the MCP Apps bridge |
 | Local plugin packaging | Complete | Repo marketplace, cache-safe stdio launcher, real Codex CLI install, fresh-host six-tool smoke test, and verified guide |
 | Browser fallback | Complete | `/demo`; simulated chat-host rehearsal, same domain behavior over HTTP (`?instant` skips animations) |
 | Install guide page | Complete | `/install`; Woven-branded guide styled after the ChatGPT Plugins tab (clearly labeled preview, three install paths, verification checklist); linked from the demo host header |
@@ -100,7 +100,7 @@ live demo through the implemented review-and-confirm flow only.
 | Checkout safety | Complete for prototype | Expiry, hash, private nonce, exact terms, idempotency |
 | Demo identity check | Planned, not implemented | Target is a simulated connector-style flow; never call it Visa OAuth, KYC, or a real Visa login |
 | Visa rail | Simulated only | Approval, decline, failure, and reversal semantics |
-| Automated verification | Green | Eight tests, TypeScript/build gate, GitHub CI |
+| Automated verification | Green | Nine tests, TypeScript/build gate, GitHub CI |
 | README and gallery | Complete | Best-README structure and eight 1600×900 Devpost assets |
 | Stage fallback assets | Complete | Five numbered 1600×900 frames with editable SVG sources and explicit simulator boundaries |
 | Judge pitch deck | Complete | Seven-slide story plus four backups; presenter notes and source blocks included |
@@ -154,6 +154,7 @@ and domain rules. Do not split it into services without a measured reason.
 | `src/payment.ts` | Simulated authorization adapter and the future real-payment replacement seam |
 | `src/server.ts` | MCP tools/transports, HTTP APIs, static UI, validation and process startup |
 | `web/widget.tsx` | Buyer MCP App plus the simulated chat-host rehearsal (`/demo`) |
+| `web/landing.tsx` | Marketing landing page served at `/` |
 | `web/merchant.tsx` | Merchant operations desk |
 | `web/install.tsx` | In-product install guide (`/install`) styled after the ChatGPT Plugins tab |
 | `web/woven-mark.tsx` | Shared Flightpath brand mark: one route from request to verified destination |
@@ -197,6 +198,7 @@ model-visible `structuredContent`.
 
 | Surface | Default URL |
 | --- | --- |
+| Landing page | `http://localhost:8787/` |
 | Buyer fallback | `http://localhost:8787/demo` |
 | Merchant desk | `http://localhost:8787/merchant` |
 | Install guide | `http://localhost:8787/install` |

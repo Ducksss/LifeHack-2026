@@ -121,7 +121,7 @@ function InstallGuide() {
           <div className="absolute -top-32 right-[-10%] h-72 w-[480px] rounded-full bg-indigo-500/20 blur-3xl" aria-hidden />
           <div className="relative flex flex-wrap items-center justify-between gap-4">
             <Badge variant="outline" className="border-white/25 font-mono text-[10px] uppercase tracking-[0.1em] text-white/70">
-              Plugin · v0.1.1
+              Plugin · v0.1.2
             </Badge>
             <div
               className="flex items-center gap-2.5 font-mono text-xs tracking-[0.1em] text-white/60"
