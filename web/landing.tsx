@@ -54,6 +54,12 @@ const tools = [
   "get_order_status",
 ];
 
+const SHOT = { w: 1600, h: 900 } as const;
+type Crop = { x: number; y: number; w: number; h: number };
+const checkoutCrop: Crop = { x: 420, y: 186, w: 750, h: 478 };
+const receiptCrop: Crop = { x: 420, y: 250, w: 750, h: 478 };
+const merchantCrop: Crop = { x: 200, y: 0, w: 1200, h: 820 };
+
 function Landing() {
   return (
     <div className="bg-background text-foreground">
@@ -78,7 +84,7 @@ function Landing() {
             <Button variant="ghost" size="sm" asChild>
               <a href="/install">Install</a>
             </Button>
-            <Button variant="ghost" size="sm" className="hidden sm:inline-flex" asChild>
+            <Button variant="ghost" size="sm" className="hidden lg:inline-flex" asChild>
               <a href="/merchant">Merchant desk</a>
             </Button>
             <Button size="sm" asChild>
@@ -88,6 +94,7 @@ function Landing() {
         </div>
       </header>
 
+      <main>
       <section className="relative overflow-hidden bg-zinc-950 text-white">
         <div className="hero-grid absolute inset-0" aria-hidden />
         <div className="absolute -top-24 left-[-10%] h-80 w-[420px] rounded-full bg-lime-400/15 blur-3xl" aria-hidden />
@@ -141,7 +148,7 @@ function Landing() {
                 <a href="#how">See how it works</a>
               </Button>
             </div>
-            <p className="rise-in mt-6 font-mono text-[11px] uppercase tracking-[0.14em] text-white/40 [animation-delay:480ms]">
+            <p className="rise-in mt-6 font-mono text-[11px] uppercase tracking-[0.14em] text-white/55 [animation-delay:480ms]">
               Ask once · Review once · Confirm once
             </p>
           </div>
@@ -186,6 +193,7 @@ function Landing() {
               shot={checkoutShot}
               alt="Woven checkout mandate with the exact merchant, pickup, items, and total"
               url="woven.demo/checkout"
+              crop={checkoutCrop}
             />
             <Feature
               title="Your yes is the final thread"
@@ -193,6 +201,7 @@ function Landing() {
               shot={orderShot}
               alt="Simulated Visa result with pickup receipt and live MCP tool calls"
               url="woven.demo/receipt"
+              crop={receiptCrop}
             />
           </div>
           <div className="mt-10">
@@ -203,6 +212,7 @@ function Landing() {
               shot={merchantShot}
               alt="Woven merchant desk with demo scenarios, inventory, and audit trail"
               url="woven.demo/merchant"
+              crop={merchantCrop}
             />
           </div>
         </div>
@@ -237,7 +247,7 @@ function Landing() {
             ))}
           </div>
           <div className="mt-10 flex flex-wrap items-center gap-2">
-            <span className="microlabel mr-1 text-white/40">MCP tools</span>
+            <span className="microlabel mr-1 text-white/55">MCP tools</span>
             {tools.map((tool, index) => (
               <span key={tool} className="flex items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 py-1 pl-2.5 pr-3">
@@ -271,6 +281,7 @@ function Landing() {
           </Button>
         </div>
       </section>
+      </main>
 
       <footer className="border-t bg-muted/40">
         <div className="microlabel mx-auto flex w-full max-w-6xl flex-col gap-2 px-4 py-6 text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6">
@@ -288,23 +299,39 @@ function Landing() {
   );
 }
 
-function Window({ src, alt, url, eager = false, className }: { src: string; alt: string; url: string; eager?: boolean; className?: string }) {
+function Window({ src, alt, url, eager = false, className, crop }: { src: string; alt: string; url: string; eager?: boolean; className?: string; crop?: Crop }) {
   return (
     <figure className={cn("overflow-hidden rounded-[15px] border bg-card", className)}>
       <div className="flex items-center gap-3 border-b bg-muted/60 px-4 py-2.5">
-        <span className="flex gap-1.5">
+        <span className="flex gap-1.5" aria-hidden>
           <i className="size-2.5 rounded-full bg-zinc-300" />
           <i className="size-2.5 rounded-full bg-zinc-300" />
           <i className="size-2.5 rounded-full bg-zinc-300" />
         </span>
         <span className="rounded-md bg-background px-2.5 py-0.5 font-mono text-[10px] text-muted-foreground">{url}</span>
       </div>
-      <img src={src} alt={alt} loading={eager ? "eager" : "lazy"} className="block w-full" />
+      {crop ? (
+        <div className="relative w-full overflow-hidden" style={{ aspectRatio: `${crop.w} / ${crop.h}` }}>
+          <img
+            src={src}
+            alt={alt}
+            loading={eager ? "eager" : "lazy"}
+            className="absolute max-w-none"
+            style={{
+              width: `${(SHOT.w / crop.w) * 100}%`,
+              left: `${(-crop.x / crop.w) * 100}%`,
+              top: `${(-crop.y / crop.h) * 100}%`,
+            }}
+          />
+        </div>
+      ) : (
+        <img src={src} alt={alt} loading={eager ? "eager" : "lazy"} className="block w-full" />
+      )}
     </figure>
   );
 }
 
-function Feature({ title, body, shot, alt, url, wide = false }: { title: string; body: string; shot: string; alt: string; url: string; wide?: boolean }) {
+function Feature({ title, body, shot, alt, url, crop, wide = false }: { title: string; body: string; shot: string; alt: string; url: string; crop?: Crop; wide?: boolean }) {
   return (
     <div className={cn(wide && "grid items-center gap-8 lg:grid-cols-[0.8fr_1.2fr]")}>
       <div>
@@ -312,7 +339,7 @@ function Feature({ title, body, shot, alt, url, wide = false }: { title: string;
         <p className="mt-2 max-w-lg text-sm leading-relaxed text-muted-foreground">{body}</p>
       </div>
       <div className={cn("mt-5 rounded-2xl bg-gradient-to-b from-zinc-200 to-transparent p-px", wide && "lg:mt-0")}>
-        <Window src={shot} alt={alt} url={url} />
+        <Window src={shot} alt={alt} url={url} crop={crop} />
       </div>
     </div>
   );
@@ -320,7 +347,7 @@ function Feature({ title, body, shot, alt, url, wide = false }: { title: string;
 
 function Kicker({ children, dark = false }: { children: string; dark?: boolean }) {
   return (
-    <span className={cn("microlabel", dark ? "text-white/40" : "text-muted-foreground")}>{children}</span>
+    <span className={cn("microlabel", dark ? "text-white/55" : "text-muted-foreground")}>{children}</span>
   );
 }
 
