@@ -50,7 +50,10 @@ Expected result:
 
 The installable package is already defined by:
 
-- `.codex-plugin/plugin.json` — Woven's identity and install-page copy;
+- `.codex-plugin/plugin.json` — Woven's identity, install-page copy, brand
+  color, icon, logo, and screenshot gallery;
+- `assets/` — the packaged Flightpath mark, wordmark, and verified product
+  screenshots shown by plugin install surfaces;
 - `.mcp.json` — the bundled stdio MCP server; and
 - `.agents/plugins/marketplace.json` — the repository marketplace entry.
 
@@ -73,6 +76,9 @@ bundled stdio server itself and serves the widget on local port `8788`.
 ### Expected result
 
 - **Woven** is shown as installed and enabled.
+- Its details page shows the Flightpath icon, Woven wordmark, and three verified
+  screenshots covering cart creation, exact confirmation, and the simulated
+  pickup receipt.
 - The new task can access six Woven tools:
   `start_mission`, `build_carts`, `select_cart`,
   `create_checkout_preview`, `confirm_purchase`, and `get_order_status`.

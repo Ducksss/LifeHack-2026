@@ -1,20 +1,43 @@
 {
   "name": "woven",
-  "version": "0.1.2",
+  "version": "0.1.2+codex.20260830023805",
   "description": "Ask once. Woven builds a complete compatible cart, then waits for one exact confirmation.",
   "author": {
     "name": "Chai Pin Zheng"
   },
+  "homepage": "https://github.com/Ducksss/LifeHack-2026#readme",
+  "repository": "https://github.com/Ducksss/LifeHack-2026",
+  "keywords": [
+    "shopping",
+    "travel",
+    "commerce",
+    "mcp"
+  ],
   "interface": {
     "displayName": "Woven",
     "shortDescription": "Everything works together.",
     "longDescription": "Woven turns one shopping request into complete one-merchant carts, checks compatibility, budget, stock, and pickup, then waits for the user to approve the exact purchase.",
     "developerName": "Chai Pin Zheng",
     "category": "Shopping",
-    "capabilities": ["Product discovery", "Compatibility validation", "Cart building", "Simulated Visa authorization"],
+    "capabilities": [
+      "Product discovery",
+      "Compatibility validation",
+      "Cart building",
+      "Simulated Visa authorization"
+    ],
+    "websiteURL": "https://github.com/Ducksss/LifeHack-2026",
     "defaultPrompt": [
       "Build a Tokyo charging kit under S$150 for pickup today.",
       "Find a compatible travel charging kit for my devices."
+    ],
+    "brandColor": "#0E4B3B",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/logo.png",
+    "logoDark": "./assets/logo.png",
+    "screenshots": [
+      "./assets/screenshot-buyer-overview.png",
+      "./assets/screenshot-checkout-confirmation.png",
+      "./assets/screenshot-order-success.png"
     ]
   },
   "mcpServers": "./.mcp.json"

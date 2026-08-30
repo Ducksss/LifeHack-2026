@@ -92,7 +92,7 @@ live demo through the implemented review-and-confirm flow only.
 | Area | Status | Notes |
 | --- | --- | --- |
 | Buyer MCP App | Complete | React widget using an explicit hosted entry point and the MCP Apps bridge |
-| Local plugin packaging | Complete | Repo marketplace, cache-safe stdio launcher, real Codex CLI install, fresh-host six-tool smoke test, and verified guide |
+| Local plugin packaging | Complete | Repo marketplace, branded install-page assets, cache-safe stdio launcher, real Codex CLI install, fresh-host six-tool smoke test, and verified guide |
 | Browser fallback | Complete | `/demo`; simulated chat-host rehearsal, same domain behavior over HTTP (`?instant` skips animations) |
 | Install guide page | Complete | `/install`; Woven-branded guide styled after the ChatGPT Plugins tab (clearly labeled preview, three install paths, verification checklist); linked from the demo host header |
 | Merchant desk | Complete | `/merchant`; inventory, scenarios, orders, audit, reset |
@@ -103,7 +103,8 @@ live demo through the implemented review-and-confirm flow only.
 | Automated verification | Green | Nine tests, TypeScript/build gate, GitHub CI |
 | README and gallery | Complete | Best-README structure and eight 1600×900 Devpost assets |
 | Stage fallback assets | Complete | Five numbered 1600×900 frames with editable SVG sources and explicit simulator boundaries |
-| Judge pitch deck | Complete | Seven-slide story plus four backups; presenter notes and source blocks included |
+| Judge pitch deck | Complete | Seven-slide story plus six backups; presenter notes and source blocks included |
+| Judge demo video | Complete locally | Three-minute Remotion master with synthetic narration and sidecar captions; public upload URL remains outstanding |
 | Agent context | Current | `AGENTS.md` is canonical; Claude and Copilot use thin pointers to it |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
 | Public HTTPS deployment | Complete for the demo | <https://woven-pi.vercel.app> (canonical — `BASE_URL` points here, verified through `/mcp` widget assets; <https://visa-woven.vercel.app> serves the same deployment). Vercel Express preset; SQLite uses temporary `/tmp` state and may reset on cold start or redeploy — reset the demo right before presenting |
@@ -164,6 +165,7 @@ and domain rules. Do not split it into services without a measured reason.
 | `test/domain.test.ts` | Mission, compatibility and ranking behavior |
 | `test/store.test.ts` | Confirmation, security, failures, inventory and CSV behavior |
 | `.codex-plugin/plugin.json` | Codex plugin metadata |
+| `assets/` | Packaged plugin icon, wordmark, and verified install-page screenshots |
 | `.mcp.json` | Local stdio MCP launch configuration |
 | `.agents/plugins/marketplace.json` | Repository marketplace entry for local plugin installation |
 | `docs/INSTALLATION.md` | Canonical Codex/ChatGPT installation steps and expected results |
@@ -172,6 +174,10 @@ and domain rules. Do not split it into services without a measured reason.
 | `docs/DEVPOST_SUBMISSION.md` | Paste-ready Devpost story, captions, pitch and demo script |
 | `docs/BRAND_GUIDE.md` | Naming, visual tokens, asset inventory and campaign prompt |
 | `docs/Woven-Hackathon-Pitch.pptx` | Thirteen-slide judge deck (7 story + 6 backup); the identity scene is explicitly labeled as planned, not live |
+| `video/WovenJudgeVideo.tsx` | Three-minute Remotion judge composition using the authoritative script and verified product frames |
+| `video/voiceover.ts` | Timed narration transcript; display copy preserves the authoritative wording |
+| `video/Woven-Judge-Video.srt` | Sidecar captions for the three-minute master |
+| `public/woven-video/` | Synthetic narration and ambient audio consumed by the composition |
 | `docs/Woven-Devpost-Visuals.pptx` | Editable three-slide source deck for user flow, architecture, and trust visuals |
 | `docs/assets/brand/woven-cover.{png,svg}` | Product-led repository/social cover using the working buyer UI |
 | `docs/assets/devpost/woven-{user-flow,architecture,trust-boundary}.png` | Verified 1600×900 submission visuals |
@@ -306,8 +312,10 @@ verified with the project name, pitch, story, 13 technology tags, GitHub link,
 `Visa best submission award`, and `Digital Payments`. It is not submitted.
 The story was re-synced after the three-minute script became authoritative; the
 connector-style identity check appears only as planned roadmap work.
-Thumbnail/gallery uploads, the demo video URL, and the required project PDF were
-left empty at the user's request.
+Thumbnail/gallery uploads, the public demo video URL, and the required project
+PDF remain empty. A local three-minute Remotion master is complete at
+`output/Woven-Judge-Video.mp4`; generated `output/` artifacts remain ignored by
+Git.
 
 The verified public demo URL is <https://visa-woven.vercel.app/demo>.
 
@@ -344,8 +352,8 @@ Unless the user changes direction, prioritize in this order:
    sessions, and keep final purchase confirmation separate.
 2. **Real ChatGPT connection:** connect the deployed `/mcp` endpoint in Developer
    Mode and verify the widget, private metadata, CSP and tool calls.
-3. **Demo recording:** capture the three-minute happy path plus one stale-cart
-   failure.
+3. **Demo video upload:** review the local three-minute master, upload it, and add
+   the public URL to Devpost.
 4. **Devpost publication:** add human/team details, upload the eight gallery assets,
    add links and publish only with explicit user authorization.
 5. **Post-hackathon validation:** interview merchants/users before generalizing the

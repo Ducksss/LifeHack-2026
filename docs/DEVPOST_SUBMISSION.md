@@ -34,6 +34,9 @@ three-minute narration and truth boundaries.
 
 **Demo video:** `[ADD DEVPOST/YOUTUBE VIDEO URL]`
 
+**Local master:** `output/Woven-Judge-Video.mp4` (3:00, 1600×900, H.264/AAC,
+synthetic narration). Sidecar captions: `video/Woven-Judge-Video.srt`.
+
 ## Submission story
 
 ### Inspiration
@@ -229,6 +232,11 @@ the numbered `docs/assets/demo/01-ask-once.png` through
 Finish with `docs/assets/demo/05-close.png`. Every frame is 1600 × 900 and keeps
 the seeded-inventory and simulated-authorization boundaries visible.
 
+The checked-in Remotion source at `video/WovenJudgeVideo.tsx` already composes
+this truthful sequence into a three-minute local master. Preview it with
+`npm run video:studio` and render it with `npm run video:render`. The bundled
+voice is synthetic and should be disclosed wherever the upload platform asks.
+
 ## 30-second pitch
 
 Search gives links; Woven gives you a complete cart. Inside ChatGPT or Codex, it
@@ -281,7 +289,8 @@ transactions safely.
 - [x] Save the project name, pitch, story, technology tags, and GitHub link
 - [x] Select `Visa best submission award` and `Digital Payments`
 - [ ] Add the public HTTPS demo URL
-- [ ] Record and upload the three-minute demo
+- [x] Render the three-minute local demo master
+- [ ] Upload the demo master and add its public URL
 - [ ] Upload the required project-description PDF
 - [ ] Add team member names and roles without inventing missing details
 - [ ] Confirm the event's rules for using “Visa” in tags and screenshots

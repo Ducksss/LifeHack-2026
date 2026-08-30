@@ -164,6 +164,21 @@ confirmation and must never collect Visa credentials or card data.
 See [`script.md`](script.md) for the exact narration, stage actions, fallback
 path, and the identity insert that becomes usable only after implementation.
 
+### Render the judge video
+
+The repository includes a three-minute Remotion composition that follows the
+authoritative script, uses the verified Woven product frames, keeps identity
+visibly planned, and labels inventory and Visa authorization as simulated.
+
+```bash
+npm run video:studio   # preview and scrub the composition
+npm run video:render   # output/Woven-Judge-Video.mp4
+```
+
+The sidecar captions are in `video/Woven-Judge-Video.srt`. The bundled voice is
+synthetic narration and can be replaced by swapping the files in
+`public/woven-video/voiceover/` without changing the timeline.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Product gallery
@@ -214,6 +229,7 @@ are documented in [the architecture guide](docs/architecture.md).
 - [Express](https://expressjs.com/)
 - Node's built-in [SQLite](https://nodejs.org/api/sqlite.html)
 - [Zod](https://zod.dev/)
+- [Remotion](https://www.remotion.dev/) for the three-minute judge video
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -318,6 +334,8 @@ npm run build        # production bundle + TypeScript validation
 npm test             # domain, security, idempotency, failure, and CSV checks
 npm run check        # full test and build gate
 npm run mcp          # stdio MCP transport used by the Codex plugin
+npm run video:studio # preview the three-minute judge video
+npm run video:render # render output/Woven-Judge-Video.mp4
 ```
 
 ### Configuration

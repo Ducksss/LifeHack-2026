@@ -83,6 +83,8 @@ confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 
 | Asset | Purpose |
 | --- | --- |
+| `assets/{icon,logo}.png` | Packaged Codex plugin composer icon and light/dark-safe wordmark |
+| `assets/screenshot-*.png` | Packaged plugin details-page gallery copied from verified product evidence |
 | `docs/assets/brand/woven-mark.svg` | Square avatar and app icon |
 | `docs/assets/brand/woven-wordmark.svg` | Horizontal wordmark and promise |
 | `docs/assets/brand/woven-hero-flightpath.png` | Text-free campaign hero |
@@ -107,6 +109,10 @@ confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 | `docs/assets/marketing/woven-how-it-works-story.png` | 1080 × 1920 four-step how-it-works card for stories |
 | `script.md` | Authoritative three-minute narration and language guardrails |
 | `docs/Woven-Hackathon-Pitch.pptx` | Thirteen-slide judge deck; the identity slide is explicitly labeled as planned |
+| `video/WovenJudgeVideo.tsx` | Three-minute Remotion judge-video source using the same brand tokens and verified evidence |
+| `video/Woven-Judge-Video.srt` | Sidecar captions for the judge-video master |
+| `public/woven-video/` | Replaceable synthetic narration and ambient audio for the Remotion composition |
+| `output/Woven-Judge-Video.mp4` | Generated local master; ignored by Git and uploaded only after final review |
 
 All Devpost gallery images are 1600 × 900. Upload them uncropped in the order
 listed in `docs/DEVPOST_SUBMISSION.md`.

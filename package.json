@@ -11,6 +11,8 @@
     "dev": "vite --host 0.0.0.0",
     "dev:server": "tsx watch src/server.ts",
     "build": "vite build && tsc --noEmit",
+    "video:studio": "remotion studio video/index.tsx",
+    "video:render": "remotion render video/index.tsx WovenJudgeVideo output/Woven-Judge-Video.mp4 --codec=h264 --crf=18",
     "start": "tsx src/server.ts",
     "mcp": "tsx src/server.ts --stdio",
     "test": "node --import tsx --test test/*.test.ts",
@@ -29,15 +31,18 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "tailwind-merge": "^3.6.0",
-    "zod": "^4.1.5"
+    "zod": "4.4.3"
   },
   "devDependencies": {
+    "@remotion/cli": "4.0.518",
+    "@remotion/media": "4.0.518",
     "@tailwindcss/vite": "^4.3.3",
     "@types/express": "^5.0.3",
     "@types/node": "^24.3.0",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^4.5.2",
+    "remotion": "4.0.518",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.20.4",
     "typescript": "^5.9.2",

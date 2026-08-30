@@ -1,11 +1,13 @@
 {
-  "woven": {
-    "command": "node",
-    "args": ["./node_modules/tsx/dist/cli.mjs", "src/server.ts", "--stdio"],
-    "cwd": ".",
-    "env": {
-      "PORT": "8788",
-      "BASE_URL": "http://localhost:8788"
+  "mcpServers": {
+    "woven": {
+      "command": "node",
+      "args": ["./node_modules/tsx/dist/cli.mjs", "src/server.ts", "--stdio"],
+      "cwd": ".",
+      "env": {
+        "PORT": "8788",
+        "BASE_URL": "http://localhost:8788"
+      }
     }
   }
 }

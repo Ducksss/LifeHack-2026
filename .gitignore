@@ -9,3 +9,4 @@ data/
 .vercel/
 /.tmp-*
 /output/
+~$*.pptx
