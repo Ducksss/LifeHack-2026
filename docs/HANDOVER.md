@@ -94,6 +94,7 @@ live demo through the implemented review-and-confirm flow only.
 | Buyer MCP App | Complete | React widget using an explicit hosted entry point and the MCP Apps bridge |
 | Local plugin packaging | Complete | Repo marketplace, cache-safe stdio launcher, real Codex CLI install, fresh-host six-tool smoke test, and verified guide |
 | Browser fallback | Complete | `/demo`; simulated chat-host rehearsal, same domain behavior over HTTP (`?instant` skips animations) |
+| Install guide page | Complete | `/install`; Woven-branded guide styled after the ChatGPT Plugins tab (clearly labeled preview, three install paths, verification checklist); linked from the demo host header |
 | Merchant desk | Complete | `/merchant`; inventory, scenarios, orders, audit, reset |
 | Cart engine | Complete for canonical mission | Four required categories; one location per cart |
 | Checkout safety | Complete for prototype | Expiry, hash, private nonce, exact terms, idempotency |
@@ -155,6 +156,7 @@ and domain rules. Do not split it into services without a measured reason.
 | `web/widget.tsx` | Buyer MCP App plus the simulated chat-host rehearsal (`/demo`) |
 | `web/landing.tsx` | Marketing landing page served at `/` |
 | `web/merchant.tsx` | Merchant operations desk |
+| `web/install.tsx` | In-product install guide (`/install`) styled after the ChatGPT Plugins tab |
 | `web/woven-mark.tsx` | Shared Flightpath brand mark: one route from request to verified destination |
 | `web/components/ui/` | Vendored shadcn/ui primitives (button, card, badge, table, input, separator, skeleton) |
 | `web/lib/utils.ts` | `cn` class-merge helper for shadcn components |
@@ -199,6 +201,7 @@ model-visible `structuredContent`.
 | Landing page | `http://localhost:8787/` |
 | Buyer fallback | `http://localhost:8787/demo` |
 | Merchant desk | `http://localhost:8787/merchant` |
+| Install guide | `http://localhost:8787/install` |
 | MCP endpoint | `http://localhost:8787/mcp` |
 | Health check | `http://localhost:8787/healthz` |
 

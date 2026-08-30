@@ -243,6 +243,7 @@ Open the local surfaces:
 | Landing page | <http://localhost:8787/> |
 | Buyer fallback | <http://localhost:8787/demo> |
 | Merchant desk | <http://localhost:8787/merchant> |
+| Install guide | <http://localhost:8787/install> |
 | MCP endpoint | <http://localhost:8787/mcp> |
 | Health check | <http://localhost:8787/healthz> |
 
