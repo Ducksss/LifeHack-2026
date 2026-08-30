@@ -9,6 +9,10 @@ demo.
 | Use Woven inside a ChatGPT conversation | ChatGPT Developer Mode | Yes |
 | Rehearse without a plugin host | Browser fallback at `/demo` | No |
 
+While the server is running, this guide is also available in-product at
+`/install` — a Woven-branded page styled after the ChatGPT desktop Plugins tab,
+linked from the demo host header.
+
 > [!IMPORTANT]
 > Woven is a local hackathon prototype. Its catalog, inventory, merchants, and
 > Visa authorization are simulated. It never asks for payment credentials and
@@ -176,6 +180,7 @@ Open:
 
 - buyer fallback: <http://localhost:8787/demo>
 - merchant desk: <http://localhost:8787/merchant>
+- install guide: <http://localhost:8787/install>
 - health check: <http://localhost:8787/healthz>
 
 The browser fallback uses the same store, domain rules, and payment simulator as

@@ -18,6 +18,7 @@ export default defineConfig({
       input: {
         widget: path.resolve("web/widget.html"),
         merchant: path.resolve("web/merchant.html"),
+        install: path.resolve("web/install.html"),
       },
     },
   },

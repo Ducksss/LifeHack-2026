@@ -277,6 +277,11 @@ function StandaloneDemo() {
         </div>
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="sm" asChild>
+            <a href="/install" target="_blank" rel="noreferrer">
+              How to install <ArrowUpRight className="size-3.5" />
+            </a>
+          </Button>
+          <Button variant="ghost" size="sm" asChild>
             <a href="/merchant" target="_blank" rel="noreferrer">
               Merchant desk <ArrowUpRight className="size-3.5" />
             </a>
