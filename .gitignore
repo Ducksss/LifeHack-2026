@@ -10,3 +10,4 @@ data/
 /.tmp-*
 /output/
 ~$*.pptx
+.env.local

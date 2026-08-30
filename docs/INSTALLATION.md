@@ -117,19 +117,18 @@ Codex CLI.
 
 ## 3. Connect Woven to ChatGPT
 
-ChatGPT cannot connect to `localhost`. The verified public deployment is:
+ChatGPT cannot connect to `localhost`. The current public deployment is
+reachable at:
 
-- landing page: <https://visa-woven.vercel.app>
-- buyer demo: <https://visa-woven.vercel.app/demo>
-- merchant desk: <https://visa-woven.vercel.app/merchant>
-- MCP endpoint: <https://visa-woven.vercel.app/mcp>
-- health check: <https://visa-woven.vercel.app/healthz>
+- MCP endpoint: <https://woven-pi.vercel.app/mcp>
+- buyer rehearsal: <https://woven-pi.vercel.app/demo>
+- merchant desk: <https://woven-pi.vercel.app/merchant>
+- health check: <https://woven-pi.vercel.app/healthz>
 
-Vercel runs the repository as one Express function with
-`BASE_URL=https://visa-woven.vercel.app`, `PAYMENT_MODE=simulated`, and
-`WOVEN_DB=/tmp/woven.db`. The database is intentionally temporary demo state:
-it may reset after a cold start or redeployment and must not be described as
-durable inventory or order storage.
+The hosted deployment uses SQLite at `/tmp/woven.db`. Vercel can route
+consecutive requests to different function instances, so the mission may be
+missing at checkout. Treat these URLs as deployment diagnostics, not a reliable
+multi-step demo or ChatGPT connection, until persistent storage is selected.
 
 ### Start and verify the server
 
@@ -149,7 +148,7 @@ Woven ready: https://your-public-origin.example/mcp · https://your-public-origi
 Verify the deployed health endpoint:
 
 ```bash
-curl https://visa-woven.vercel.app/healthz
+curl https://woven-pi.vercel.app/healthz
 ```
 
 Expected JSON:
@@ -163,10 +162,11 @@ Expected JSON:
 1. In ChatGPT, open **Settings → Security and login** and enable
    **Developer mode**.
 2. Open **Plugins** and select the plus button.
-3. Create a plugin named **Woven** with this MCP endpoint:
+3. After persistent public storage is configured, create a plugin named
+   **Woven** with this MCP endpoint:
 
    ```text
-   https://visa-woven.vercel.app/mcp
+   https://woven-pi.vercel.app/mcp
    ```
 
 4. Review the discovered tools and create the connection.

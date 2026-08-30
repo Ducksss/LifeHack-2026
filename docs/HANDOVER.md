@@ -6,8 +6,9 @@
 
 **Product:** Woven
 
-**Current phase:** Working, submission-ready prototype with a verified public
-browser deployment; ChatGPT connection and Devpost publishing remain outstanding.
+**Current phase:** Working, submission-ready local prototype with reachable
+public routes; persistent public state, ChatGPT connection testing, and Devpost
+publishing are outstanding.
 
 **Repository synchronization:** The primary checkout should be clean and aligned
 with `origin/main` after handoff. Worktree paths and counts are ephemeral; always
@@ -107,7 +108,7 @@ live demo through the implemented review-and-confirm flow only.
 | Judge demo video | Complete locally | Three-minute Remotion master with synthetic narration and sidecar captions; public upload URL remains outstanding |
 | Agent context | Current | `AGENTS.md` is canonical; Claude and Copilot use thin pointers to it |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
-| Public HTTPS deployment | Complete for the demo | <https://woven-pi.vercel.app> (canonical — `BASE_URL` points here, verified through `/mcp` widget assets; <https://visa-woven.vercel.app> serves the same deployment). Vercel Express preset; SQLite uses temporary `/tmp` state and may reset on cold start or redeploy — reset the demo right before presenting |
+| Public HTTPS deployment | Routes live; state blocked | Vercel production at `https://woven-pi.vercel.app`; routes and MCP initialization pass, but `/tmp` SQLite loses missions across function instances |
 | Devpost submission | Text ready — media blocked | Draft story includes the current simulated-host UI and planned identity boundary; 13 technology tags, repository, Visa prize and Digital Payments are saved; uploads and submission remain outstanding |
 | Real merchant/Visa integrations | Not started | Explicitly outside current prototype scope |
 
@@ -211,6 +212,9 @@ model-visible `structuredContent`.
 | MCP endpoint | `http://localhost:8787/mcp` |
 | Health check | `http://localhost:8787/healthz` |
 
+The active public deployment is `https://woven-pi.vercel.app`; append `/demo`,
+`/merchant`, `/mcp`, or `/healthz` for each surface.
+
 ### Configuration
 
 | Variable | Default | Constraint |
@@ -219,6 +223,13 @@ model-visible `structuredContent`.
 | `BASE_URL` | `http://localhost:8787` | Must be the public HTTPS origin for ChatGPT |
 | `WOVEN_DB` | `./data/woven.db` | Local demo state; ignored by Git |
 | `PAYMENT_MODE` | `simulated` | Every other value fails closed |
+
+Vercel production sets `BASE_URL=https://woven-pi.vercel.app`,
+`PAYMENT_MODE=simulated`, and `WOVEN_DB=/tmp/woven.db`. Route, asset, API-start,
+and MCP-initialize checks pass. An actual browser checkout fails with
+`MISSION_NOT_FOUND` when the next request reaches another function instance.
+Vercel does not support writable SQLite as shared storage, so this is not yet a
+reliable public demo or durable order store.
 
 ## Non-negotiable trust boundaries
 
@@ -319,9 +330,10 @@ Git.
 
 The verified public demo URL is <https://visa-woven.vercel.app/demo>.
 
+The public HTTPS demo URL is `https://woven-pi.vercel.app/demo`.
+
 Before publishing Devpost, a human must provide or confirm:
 
-- public HTTPS demo URL (<https://woven-pi.vercel.app> is live; confirm it is the final one);
 - demo video URL;
 - team member names and roles;
 - project-description PDF;
@@ -350,13 +362,15 @@ Unless the user changes direction, prioritize in this order:
 1. **Simulated identity check:** add the connector-style demo authorization flow,
    bind its opaque subject to checkout, reject missing/expired/mismatched
    sessions, and keep final purchase confirmation separate.
-2. **Real ChatGPT connection:** connect the deployed `/mcp` endpoint in Developer
+2. **Persistent public state:** choose an approved Vercel-compatible database,
+   preserve checkout transactions and idempotency, then repeat the browser flow.
+3. **Real ChatGPT connection:** connect the deployed `/mcp` endpoint in Developer
    Mode and verify the widget, private metadata, CSP and tool calls.
-3. **Demo video upload:** review the local three-minute master, upload it, and add
+4. **Demo video upload:** review the local three-minute master, upload it, and add
    the public URL to Devpost.
-4. **Devpost publication:** add human/team details, upload the eight gallery assets,
+5. **Devpost publication:** add human/team details, upload the eight gallery assets,
    add links and publish only with explicit user authorization.
-5. **Post-hackathon validation:** interview merchants/users before generalizing the
+6. **Post-hackathon validation:** interview merchants/users before generalizing the
    mission engine or adding production integrations.
 
 ## Do not expand by default

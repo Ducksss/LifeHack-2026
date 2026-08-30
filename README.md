@@ -265,12 +265,19 @@ Open the local surfaces:
 | MCP endpoint | <http://localhost:8787/mcp> |
 | Health check | <http://localhost:8787/healthz> |
 
-The verified public deployment is available at
-[visa-woven.vercel.app](https://visa-woven.vercel.app), with the buyer demo at
-[/demo](https://visa-woven.vercel.app/demo) and merchant desk at
-[/merchant](https://visa-woven.vercel.app/merchant). Its SQLite database lives
-in Vercel's temporary filesystem, so demo state may reset after a cold start or
-redeployment.
+The current Vercel deployment is reachable at:
+
+| Surface | URL |
+| --- | --- |
+| Buyer fallback | <https://woven-pi.vercel.app/demo> |
+| Merchant desk | <https://woven-pi.vercel.app/merchant> |
+| MCP endpoint | <https://woven-pi.vercel.app/mcp> |
+| Health check | <https://woven-pi.vercel.app/healthz> |
+
+The hosted SQLite database currently lives in Vercel's temporary filesystem.
+Routes and the first screen work, but state can disappear between consecutive
+function invocations, so the multi-step checkout is not yet a reliable public
+demo. Use the local/Codex flow until a persistent database is explicitly chosen.
 
 ### Connect the ChatGPT app
 
@@ -394,7 +401,8 @@ the full test and production-build gate on every push and pull request.
 - [x] End-to-end tests and submission-ready gallery
 - [x] Public HTTPS landing page, browser demo, merchant desk, health check, and MCP endpoint
 - [ ] Simulated connector-style identity check, enforced before checkout
-- [ ] Shareable ChatGPT app connection against the deployed MCP endpoint
+- [ ] Persistent public demo state across Vercel function invocations
+- [ ] Shareable ChatGPT app connection and end-to-end host verification
 - [ ] Real merchant inventory/fulfilment connectors
 - [ ] Exact Visa sandbox product adapter after credentials and product approval
 - [ ] Generalized missions beyond the Tokyo charging-kit vertical
