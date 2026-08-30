@@ -88,14 +88,19 @@ with the absolute path to your clone:
 ```bash
 codex plugin marketplace add /absolute/path/to/LifeHack-2026
 codex plugin marketplace list
+codex plugin add woven@woven-local --json
+codex plugin list --json
 codex
 ```
 
-In the new Codex session, enter `/plugins`, choose **Woven Local**, install
-**Woven**, and then start another new session before using it.
+The two JSON commands should report `woven-local` and an installed, enabled
+`woven@woven-local`. Start a new session after installation before using it.
+You can also install through `/plugins` by choosing **Woven Local** and
+**Woven**.
 
 Expected result: `codex plugin marketplace list` includes `woven-local` and the
-absolute repository root. The `/plugins` browser then lists **Woven**.
+absolute repository root, while `codex plugin list` reports Woven as installed
+and enabled.
 
 Plugins are not available in the Codex IDE extension. Use ChatGPT desktop or
 Codex CLI.
@@ -128,7 +133,7 @@ curl https://your-public-origin.example/healthz
 Expected JSON:
 
 ```json
-{"ok":true,"service":"woven","version":"0.1.0","paymentMode":"simulated"}
+{"ok":true,"service":"woven","version":"0.1.1","paymentMode":"simulated"}
 ```
 
 ### Create the ChatGPT connection
@@ -182,7 +187,7 @@ the MCP App. It is a rehearsal transport, not the primary product.
 | --- | --- | --- |
 | Woven Local is missing | Confirm `.agents/plugins/marketplace.json` exists, reopen this repository, then fully restart ChatGPT desktop | **Woven Local** appears under Plugins |
 | Woven is installed but tools are missing | Start a new task/session; plugin changes are not injected into an already-running session | Six Woven tools become available |
-| `./node_modules/.bin/tsx` is missing | Run `npm ci`, then reinstall Woven so the local package is refreshed | The bundled MCP server starts |
+| The bundled MCP server cannot launch | Run `npm ci`, remove and reinstall Woven, then start a new task | The bundled MCP server starts and exposes six tools |
 | `codex --version` fails with a native-binary `ENOENT` error | Use ChatGPT desktop, or repair the CLI with OpenAI's official installer shown below | `codex --version` prints a version instead of an error |
 | Port `8788` is already in use | Stop the other Woven/plugin process, then start a new task | The widget asset server binds to `8788` |
 | ChatGPT cannot connect | Verify public HTTPS, include the `/mcp` path, set `BASE_URL` to the same origin, and retry | Tool discovery succeeds |
@@ -194,6 +199,13 @@ Official Codex CLI repair/install command for macOS and Linux:
 ```bash
 curl -fsSL https://chatgpt.com/codex/install.sh | sh
 codex --version
+```
+
+On macOS, the ChatGPT desktop app also includes a working CLI that can be used
+without downloading another copy:
+
+```bash
+/Applications/ChatGPT.app/Contents/Resources/codex --version
 ```
 
 For low-level MCP debugging, run

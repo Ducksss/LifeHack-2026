@@ -55,7 +55,7 @@ function HostedWidget() {
   };
 
   const { app, error } = useApp({
-    appInfo: { name: "Woven", version: "0.1.0" },
+    appInfo: { name: "Woven", version: "0.1.1" },
     capabilities: {},
     onAppCreated: (created: McpApp) => {
       created.ontoolresult = (result) => {

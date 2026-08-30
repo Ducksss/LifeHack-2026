@@ -1,6 +1,6 @@
 {
   "name": "woven",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Ask once. Woven builds a complete compatible cart, then waits for one exact confirmation.",
   "author": {
     "name": "Chai Pin Zheng"

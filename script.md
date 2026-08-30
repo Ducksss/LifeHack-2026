@@ -221,10 +221,17 @@ Visa authorization; no live charge occurs.”
 ## If the live demo fails
 
 1. Move immediately to `/demo`; do not debug on stage.
-2. If the server itself is unavailable, use the buyer, checkout, receipt, and
-   merchant screenshots in `docs/assets/screenshots/`.
-3. Narrate only what the screenshots prove.
-4. Never substitute a static identity mock and describe it as verification.
+2. If the server itself is unavailable, show the numbered 16:9 fallback sequence:
+   - `docs/assets/demo/01-ask-once.png`
+   - `docs/assets/demo/02-review-once.png`
+   - `docs/assets/demo/03-confirm-once.png`
+   - `docs/assets/demo/04-merchant-control.png`
+3. Use `docs/assets/demo/05-close.png` to finish if the slide deck is also
+   unavailable.
+4. Keep `docs/assets/screenshots/` as the uncropped source evidence behind these
+   frames.
+5. Narrate only what the screenshots prove.
+6. Never substitute a static identity mock and describe it as verification.
 
 Recovery line:
 

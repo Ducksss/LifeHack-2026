@@ -92,7 +92,7 @@ live demo through the implemented review-and-confirm flow only.
 | Area | Status | Notes |
 | --- | --- | --- |
 | Buyer MCP App | Complete | React widget using MCP Apps bridge |
-| Local plugin packaging | Complete | Repo marketplace, bundled stdio MCP and verified install guide |
+| Local plugin packaging | Complete | Repo marketplace, cache-safe stdio launcher, real Codex CLI install, fresh-host six-tool smoke test, and verified guide |
 | Browser fallback | Complete | `/demo`; simulated chat-host rehearsal, same domain behavior over HTTP (`?instant` skips animations) |
 | Merchant desk | Complete | `/merchant`; inventory, scenarios, orders, audit, reset |
 | Cart engine | Complete for canonical mission | Four required categories; one location per cart |
@@ -101,6 +101,7 @@ live demo through the implemented review-and-confirm flow only.
 | Visa rail | Simulated only | Approval, decline, failure, and reversal semantics |
 | Automated verification | Green | Eight tests, TypeScript/build gate, GitHub CI |
 | README and gallery | Complete | Best-README structure and eight 1600×900 Devpost assets |
+| Stage fallback assets | Complete | Five numbered 1600×900 frames with editable SVG sources and explicit simulator boundaries |
 | Judge pitch deck | Complete | Seven-slide story plus four backups; presenter notes and source blocks included |
 | Agent context | Current | `AGENTS.md` is canonical; Claude and Copilot use thin pointers to it |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
@@ -171,6 +172,7 @@ and domain rules. Do not split it into services without a measured reason.
 | `docs/Woven-Devpost-Visuals.pptx` | Editable three-slide source deck for user flow, architecture, and trust visuals |
 | `docs/assets/brand/woven-cover.{png,svg}` | Product-led repository/social cover using the working buyer UI |
 | `docs/assets/devpost/woven-{user-flow,architecture,trust-boundary}.png` | Verified 1600×900 submission visuals |
+| `docs/assets/demo/*.{png,svg}` | Numbered 1600×900 stage fallback sequence and recording close card |
 | `script.md` | Authoritative three-minute narration, stage cues, fallback, judge Q&A, and identity implementation gate |
 
 ## Interfaces and runtime
@@ -285,13 +287,13 @@ qualify.
 ## Submission handover
 
 The README, product-led cover, Woven brand system, user-flow slide,
-authorization-boundary slide, architecture slide, product screenshots, Devpost
-story, captions, judge Q&A, three-minute script, and eleven-slide pitch deck are
-complete. The main deck story is: friction → complete cart → live request →
-human authorization → merchant control → takeaway. The pitch deck includes
-identity only as the next integration. Regenerate the identity and checkout
-evidence after identity is implemented rather than presenting the current
-planned state as live.
+authorization-boundary slide, architecture slide, product screenshots, numbered
+stage fallback sequence, Devpost story, captions, judge Q&A, three-minute script,
+and eleven-slide pitch deck are complete. The main deck story is: friction →
+complete cart → live request → human authorization → merchant control →
+takeaway. The pitch deck includes identity only as the next integration.
+Regenerate the identity and checkout evidence after identity is implemented
+rather than presenting the current planned state as live.
 
 The existing LifeHack Devpost draft is saved at
 <https://devpost.com/software/woven-wzefyv>. Its rendered preview has been

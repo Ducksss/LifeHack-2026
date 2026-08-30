@@ -1,7 +1,7 @@
 {
   "woven": {
-    "command": "./node_modules/.bin/tsx",
-    "args": ["src/server.ts", "--stdio"],
+    "command": "node",
+    "args": ["./node_modules/tsx/dist/cli.mjs", "src/server.ts", "--stdio"],
     "cwd": ".",
     "env": {
       "PORT": "8788",

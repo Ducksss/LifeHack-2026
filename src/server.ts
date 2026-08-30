@@ -20,7 +20,7 @@ import {
 } from "./domain.js";
 import { WovenStore } from "./store.js";
 
-const VERSION = "0.1.0";
+const VERSION = "0.1.1";
 const WIDGET_URI = "ui://woven/mission-v1.html";
 const port = Number(process.env.PORT || 8787);
 const baseUrl = (process.env.BASE_URL || `http://localhost:${port}`).replace(/\/$/, "");

@@ -96,11 +96,17 @@ confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 | `docs/assets/devpost/woven-architecture.png` | Detailed technical architecture |
 | `docs/Woven-Devpost-Visuals.pptx` | Presentation-ready source deck for the three slides |
 | `docs/assets/screenshots/*.png` | Verified product gallery |
+| `docs/assets/slides/*.png` | Text-free editorial backgrounds for friction, the complete kit, and explicit human confirmation |
+| `docs/assets/demo/*.{png,svg}` | Numbered 16:9 stage fallback sequence and closing card built from verified product screens |
 | `script.md` | Authoritative three-minute narration and language guardrails |
 | `docs/Woven-Hackathon-Pitch.pptx` | Eleven-slide judge deck; the identity slide is explicitly labeled as planned |
 
 All Devpost gallery images are 1600 × 900. Upload them uncropped in the order
 listed in `docs/DEVPOST_SUBMISSION.md`.
+
+The demo fallback PNGs are also 1600 × 900. Their editable SVG sources reference
+the canonical logo and raw product screenshots, so update the source screenshots
+first whenever the buyer or merchant UI changes.
 
 ## Campaign image brief
 
@@ -110,3 +116,19 @@ Signal Lime cable forms a loose route through the objects, with Route Ink and
 Route Mist details. The quiet left side is intentionally reserved for copy. Keep
 people, logos, shopping-cart icons, AI sparkles, and purple gradients out of this
 system.
+
+## Slide asset pack
+
+The optional editorial backgrounds in `docs/assets/slides/` are composed for a
+left-aligned title and copy block. Use them uncropped or crop only from the outer
+right edge so the negative-space rhythm remains intact.
+
+| Asset | Best fit | Meaning |
+| --- | --- | --- |
+| `woven-friction.png` | Slide 2 | Tangled, incompatible choices make the user rebuild the cart |
+| `woven-complete-kit.png` | Slides 3–4 | One calm, complete charging kit resolves the whole request |
+| `woven-human-confirmation.png` | Slides 5 or 7 | The route remains incomplete until the person makes the final connection |
+
+These are editorial metaphors, not product evidence. Keep the verified buyer,
+checkout, receipt, and merchant screenshots wherever the deck makes a live
+product claim.

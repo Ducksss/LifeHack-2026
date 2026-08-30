@@ -215,6 +215,14 @@ reversal paths can be tested without changing code.
 merchant actions and a reviewable checkout without asking the user to start
 again. Ask once. Review once. Confirm once.”
 
+### Recording and stage fallback assets
+
+Use `docs/assets/devpost/cover.png` as the opening card. If a live capture fails,
+the numbered `docs/assets/demo/01-ask-once.png` through
+`04-merchant-control.png` sequence preserves the same truthful product story.
+Finish with `docs/assets/demo/05-close.png`. Every frame is 1600 × 900 and keeps
+the seeded-inventory and simulated-authorization boundaries visible.
+
 ## 30-second pitch
 
 Search gives links; Woven gives you a complete cart. Inside ChatGPT or Codex, it
