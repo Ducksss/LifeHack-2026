@@ -60,7 +60,7 @@ working product evidence, or the conclusion.
 | Beat | Primary screen | What the judge must notice |
 | --- | --- | --- |
 | Slides 1–3 | Full-screen deck | The problem, complete-cart promise, and concrete S$133 proof |
-| Slide 4 → buyer demo | Prompt slide, then MCP App or `/demo` | One natural-language request becomes three complete carts |
+| Slide 4 → buyer demo | Prompt slide, then MCP App or `/demo` | One request opens five complete choices with comparison and pickup planning |
 | Slide 5 → checkout demo | Trust-boundary slide, then buyer checkout | The exact terms are visible and only the user can confirm |
 | Slide 6 → Merchant Desk | Merchant-control slide, then `/merchant` if time permits | Stock, scenarios, orders, and audit are controllable |
 | Slide 7 | Full-screen deck | Why the product belongs inside ChatGPT/Codex |
@@ -147,8 +147,8 @@ fits your budget, is available today.”
 - Runway Paper background with the claim across the top.
 - Left 28%: three oversized proof points stacked vertically—**1 merchant and
   pickup point**, **4 compatible components**, **S$133 under budget**.
-- Right 62%: a large verified buyer-results screenshot showing the three complete
-  carts. Crop closely enough that the cards and total are legible.
+- Right 62%: a large verified Choice Center screenshot showing the five complete
+  carts. Crop closely enough that the comparison and totals are legible.
 - Signal Lime marks completeness; Alert Clay may emphasize the S$133 total.
 
 **Presenter cue:** Point in order to **1**, **4**, then **S$133**. End by moving
@@ -172,7 +172,7 @@ your hand toward the product screenshot and say, “Let me show you.”
 - Left 68%: the canonical request as one large quotation.
 - Right 24%: a thin constraint rail listing **Tokyo**, **MacBook + iPhone +
   AirPods**, **S$150 hard cap**, and **Pickup today**.
-- Bottom-left: **3 complete carts. 1 natural sentence.** in Signal Lime.
+- Bottom-left: **5 complete carts. 1 natural sentence.** in Signal Lime.
 - Keep this slide up only long enough for the judges to read the request, then
   cut directly to the live buyer surface.
 
@@ -189,10 +189,12 @@ Then:
 1. Show the host header so the environment is honest: real ChatGPT/Codex when
    connected, or the clearly labeled **Simulated** host in `/demo`.
 2. Let the `start_mission` tool call appear; do not narrate the protocol details.
-3. When the widget loads, pause on the three ranked one-merchant carts.
-4. Select **ByteRoute**.
-5. Point to the charger wattage and voltage, both cables, Japan adapter, pickup
-   location, seeded demo stock, and **S$133.00** total.
+3. When the widget loads, pause on the **Choice Center** with five complete carts
+   across Central, Airport, and East pickup areas.
+4. Open **Compare carts**, briefly rerank by **Pick up sooner**, then return to
+   **Best match** and select **ByteRoute**.
+5. Use **Swap item** once to show a merchant-approved compatible cable, then
+   point to the pickup planner, seeded stock, and exact total.
 
 **Screen priority:** Keep the widget large enough that the product names,
 compatibility proof, pickup location, and total are readable. Browser chrome and
@@ -202,10 +204,10 @@ developer tools are never part of the shot.
 
 **Say**
 
-> “Woven returned three complete options—not loose product links. This S$133 cart
-> includes the charger, both required cables, and the Japan adapter. Everything
-> is compatible, under budget, available in our demo inventory, and ready at one
-> pickup location.”
+> “Woven returned five complete options—not loose product links. I can compare
+> value, speed, power, and pickup area, or use a merchant-approved swap without
+> breaking compatibility. This cart remains complete, under budget, and ready at
+> one pickup location.”
 
 Do not explain the ranking algorithm unless a judge asks. The visible result is
 the proof.
@@ -232,11 +234,11 @@ the proof.
    that order.
 4. Rest the cursor beside, not on, **Confirm S$133.00** while explaining that the
    AI cannot approve the purchase.
-5. Pause for one beat, click **Confirm S$133.00**, and show the blue simulated
-   Visa result and pickup receipt.
+5. Pause for one beat, click the exact **Confirm** amount, and show the blue
+   simulated Visa result plus the signed receipt's **Signature valid** state.
 
 **What must remain visible:** the full amount on the confirmation button, the
-expiry, the **simulated** payment label, and the receipt state after the click.
+expiry, the **simulated** payment label, and the signed receipt state after the click.
 
 **Fallback frames:** `docs/assets/demo/02-review-once.png` followed by
 `docs/assets/demo/03-confirm-once.png`.
@@ -248,8 +250,9 @@ expiry, the **simulated** payment label, and the receipt state after the click.
 > the merchant, every item, the pickup location, and the S$133 total before one
 > direct confirmation.”
 >
-> “Only after that click does Woven produce a simulated Visa authorization and
-> pickup receipt. No card details enter Woven, and no live charge occurs.”
+> “Only after that click does Woven produce a simulated Visa authorization and a
+> server-signed receipt that detects tampering. No card details enter Woven, and
+> no live charge occurs.”
 
 #### Target identity block — use only after implementation
 
@@ -278,19 +281,19 @@ This replaces the working checkout block; it is not an extra slide.
 > and total. The AI cannot approve this screen—the user must click confirm.”
 >
 > “Only after that confirmation does Woven produce a simulated Visa authorization
-> and pickup receipt. No real charge occurs.”
+> and signed pickup receipt. No real charge occurs.”
 
 Authentication and purchase confirmation must remain two separate user actions.
 Do not describe the planned flow as KYC, a real Visa login, or Visa OAuth.
 
 ### 2:15–2:35 — Slide 6 → Merchant Desk: merchants control what the AI can sell
 
-Show the Merchant Desk with inventory, orders, scenario controls, and audit.
+Show the Merchant Desk with approved alternatives, inventory, orders, scenario controls, and audit.
 
 **Visible copy**
 
-> Import inventory · Update price and availability · Receive exact orders · Audit
-> every action
+> Publish alternatives · Update price and availability · Receive exact orders ·
+> Audit every action
 
 **Layout and what to show**
 
@@ -298,19 +301,21 @@ Show the Merchant Desk with inventory, orders, scenario controls, and audit.
 - Left 28%: four short merchant actions stacked vertically—**Import validated
   inventory**, **Update availability in seconds**, **Receive exact confirmed
   orders**, **Inspect every action**.
-- Right 62%: a large verified Merchant Desk screenshot with inventory, scenario
-  controls, and recent activity visible.
+- Right 62%: a large verified Merchant Desk screenshot with approved alternatives,
+  scenario controls, inventory, and recent activity visible.
 - If the live tab is already prepared, cut to `/merchant` after two seconds and
-  point to **Normal**, the ByteRoute stock row, the confirmed order, and the audit
-  event. Otherwise remain on the verified screenshot; do not waste time loading.
+  withdraw one approved cable alternative, then point to **Normal**, the
+  confirmed order, and the audit event. Otherwise remain on the verified
+  screenshot; do not waste time loading.
 
 **Fallback frame:** `docs/assets/demo/04-merchant-control.png`.
 
 **Say**
 
-> “On the merchant side, Woven already supports inventory import, price and stock
-> controls, orders, and an audit trail. Merchants can simulate a price change,
-> stockout, authorization decline, or reversal without changing code.”
+> “On the merchant side, Woven publishes only approved alternatives and already
+> supports inventory import, price and stock controls, orders, and an audit
+> trail. Merchants can withdraw a swap or simulate a price change, stockout,
+> authorization decline, or reversal without changing code.”
 
 Do not call the current CSV workflow a production merchant integration or claim
 that Woven reads live merchant inventory.

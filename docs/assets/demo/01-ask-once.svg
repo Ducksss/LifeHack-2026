@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
   <title id="title">Woven demo fallback — Ask once</title>
-  <desc id="desc">The canonical Tokyo charging mission and three complete one-merchant carts.</desc>
+  <desc id="desc">The canonical Tokyo charging mission in a five-choice comparison workspace.</desc>
   <defs>
     <clipPath id="screen"><rect x="288" y="72" width="1280" height="720" rx="18"/></clipPath>
   </defs>
@@ -12,15 +12,15 @@
   <text x="32" y="206" fill="#b7f522" font-family="Iowan Old Style, Georgia, serif" font-size="76" font-weight="700">01</text>
   <text x="32" y="258" fill="#fcfaf5" font-family="Avenir Next, Arial, sans-serif" font-size="17" font-weight="800" letter-spacing="2.6">ASK ONCE</text>
   <text x="32" y="310" fill="#dcece5" font-family="Iowan Old Style, Georgia, serif" font-size="28" font-weight="700">One request.</text>
-  <text x="32" y="344" fill="#dcece5" font-family="Iowan Old Style, Georgia, serif" font-size="28" font-weight="700">Three complete</text>
-  <text x="32" y="378" fill="#dcece5" font-family="Iowan Old Style, Georgia, serif" font-size="28" font-weight="700">carts.</text>
+  <text x="32" y="344" fill="#dcece5" font-family="Iowan Old Style, Georgia, serif" font-size="28" font-weight="700">Five complete</text>
+  <text x="32" y="378" fill="#dcece5" font-family="Iowan Old Style, Georgia, serif" font-size="28" font-weight="700">choices.</text>
   <line x1="32" y1="422" x2="224" y2="422" stroke="#547c70"/>
   <text x="32" y="462" fill="#fcfaf5" font-family="Avenir Next, Arial, sans-serif" font-size="15" font-weight="700">ONE MERCHANT</text>
   <text x="32" y="501" fill="#fcfaf5" font-family="Avenir Next, Arial, sans-serif" font-size="15" font-weight="700">COMPATIBLE KIT</text>
   <text x="32" y="540" fill="#fcfaf5" font-family="Avenir Next, Arial, sans-serif" font-size="15" font-weight="700">UNDER S$150</text>
   <text x="32" y="579" fill="#fcfaf5" font-family="Avenir Next, Arial, sans-serif" font-size="15" font-weight="700">PICKUP TODAY</text>
   <text x="32" y="842" fill="#b7f522" font-family="SFMono-Regular, Menlo, monospace" font-size="10" font-weight="700" letter-spacing="1.5">SEEDED DEMO INVENTORY</text>
-  <text x="288" y="43" fill="#0e4b3b" font-family="Avenir Next, Arial, sans-serif" font-size="21" font-weight="800">Three ways it comes together</text>
+  <text x="288" y="43" fill="#0e4b3b" font-family="Avenir Next, Arial, sans-serif" font-size="21" font-weight="800">Compare complete carts in the Choice Center</text>
   <rect x="288" y="72" width="1280" height="720" rx="18" fill="#fcfaf5" stroke="#c8d2cd"/>
   <image href="../screenshots/buyer-overview.png" x="288" y="72" width="1280" height="720" preserveAspectRatio="xMidYMid meet" clip-path="url(#screen)"/>
   <circle cx="300" cy="840" r="6" fill="#b7f522"/>
