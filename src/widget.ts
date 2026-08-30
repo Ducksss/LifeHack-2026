@@ -1,3 +1,6 @@
+export const WIDGET_URI = "ui://woven/mission-v3.html";
+export const WIDGET_REFRESH_META = { "openai/widgetAccessible": true } as const;
+
 const localAsset = (url: string) => {
   const path = url.replace(/^\.?\//, "");
   return path.startsWith("assets/") ? path : null;

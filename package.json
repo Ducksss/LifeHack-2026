@@ -1,6 +1,6 @@
 {
   "name": "woven",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "type": "module",
   "description": "Woven turns one request in ChatGPT or Codex into a complete compatible cart and one exact confirmation.",

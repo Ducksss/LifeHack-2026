@@ -54,6 +54,8 @@ seeded; every price is in SGD.
   `state`, PKCE, and a single-use authorization code.
 - Keep identity secrets out of MCP arguments and model-visible content.
 - Reject missing, expired, reused, or mismatched identity sessions.
+- Refresh pending identity status inside the current widget and reopen the
+  authorization handoff when verification is still incomplete.
 - Bind the verified identity session to the exact checkout preview.
 - Require a direct user click for confirmation.
 - Bind confirmation to exact immutable terms with expiry and one-time nonce.
@@ -111,6 +113,8 @@ satisfy this contract.
 - Identity-session secrets never appear in model-visible mission or preview data.
 - The checkout nonce never appears in public mission view data.
 - Missing identity cannot create a checkout preview.
+- A pending identity status click either renders the verified server state in
+  the same widget or reopens the authorization handoff.
 - Expired, reused, or replaced identity sessions cannot confirm a purchase.
 - Identity session IDs and subjects never appear in the public mission view.
 - A wrong nonce is rejected.

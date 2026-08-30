@@ -322,7 +322,8 @@ is:
 2. Compare carts, tune a priority or pickup area, then select a kit and inspect
    its compatibility proof and pickup plan.
 3. Click **Review checkout**, then **Verify demo identity**.
-4. On `/identity`, click **Continue as Chai**; return and check the result.
+4. On `/identity`, click **Continue as Chai**; return and check the result. If
+   authorization is still pending, the same status action reopens the handoff.
 5. Review the exact, expiring mandate and click **Confirm S$231.00**.
 6. Show the simulated Visa result and signed receipt.
 

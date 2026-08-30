@@ -160,6 +160,11 @@ server-side and never enter MCP tool arguments or model-visible
 `structuredContent`. Missing, expired, reused, or mismatched identity sessions
 must fail before preview creation.
 
+The widget refreshes pending identity state through the data-only `build_carts`
+tool. That tool deliberately has no UI resource metadata, so ChatGPT and Codex
+update the active iframe instead of remounting it. If the refreshed state is
+still pending, the same action starts and opens a fresh private handoff URL.
+
 This remains one-service functionality. `demo_identity_requests` holds the
 server-only state, PKCE verifier, hashed authorization code, callback, and
 expiry; `demo_identity_sessions` holds the opaque subject and 15-minute session.

@@ -80,7 +80,7 @@ function HostedWidget() {
   };
 
   const { app, error } = useApp({
-    appInfo: { name: "Woven", version: "0.2.1" },
+    appInfo: { name: "Woven", version: "0.2.2" },
     capabilities: {},
     onAppCreated: (created: McpApp) => {
       created.ontoolresult = (result) => {
@@ -525,7 +525,7 @@ function Woven({
     try {
       const payload = await invoke(name, arguments_);
       if (payload.view) setView(payload.view);
-      return true;
+      return payload;
     } catch (caught) {
       if (caught instanceof WovenError && caught.retryable && (label === "preview" || label === "confirm")) {
         try {
@@ -539,7 +539,7 @@ function Woven({
       } else {
         setError(caught instanceof Error ? caught.message : "Something went wrong.");
       }
-      return false;
+      return null;
     } finally {
       setBusy(null);
     }
@@ -575,6 +575,11 @@ function Woven({
     } finally {
       setBusy(null);
     }
+  };
+
+  const checkIdentity = async () => {
+    const payload = await act("identity-check", "build_carts", { missionId: view.mission.id });
+    if (payload && payload.view?.identity.status !== "verified") await beginIdentity();
   };
 
   const reviewCheckout = () => {
@@ -818,7 +823,7 @@ function Woven({
                 <Button
                   className="mt-4 w-full"
                   disabled={busy !== null}
-                  onClick={() => void act("identity-check", "build_carts", { missionId: view.mission.id })}
+                  onClick={() => void checkIdentity()}
                 >
                   {busy === "identity-check" ? "Checking…" : "I’ve verified · check status"}
                 </Button>

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { initialToolResult, inlineWidgetAssets } from "../src/widget.js";
+import { initialToolResult, inlineWidgetAssets, WIDGET_REFRESH_META, WIDGET_URI } from "../src/widget.js";
 
 test("browser demo and hosted MCP App use explicit entry points", () => {
   assert.match(readFileSync("web/demo.html", "utf8"), /data-surface="demo"/);
@@ -34,4 +34,9 @@ test("hosted widget hydrates from ChatGPT's initial tool snapshot", () => {
     },
   );
   assert.equal(initialToolResult({}), null);
+});
+
+test("cart refresh updates the current widget without remount metadata", () => {
+  assert.equal(WIDGET_URI, "ui://woven/mission-v3.html");
+  assert.deepEqual(WIDGET_REFRESH_META, { "openai/widgetAccessible": true });
 });

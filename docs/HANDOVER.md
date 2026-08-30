@@ -95,7 +95,7 @@ Its identity step is implemented and must remain labeled simulated.
 | Area | Status | Notes |
 | --- | --- | --- |
 | Buyer MCP App | Complete | React widget using a self-contained hosted entry point, first-result snapshot fallback, and the MCP Apps bridge |
-| Local plugin packaging | Complete | Repo marketplace, branded install-page assets, self-contained widget bundle, cache-safe stdio launcher, real Codex CLI install, nine-tool smoke test, and verified guide |
+| Local plugin packaging | Complete | v0.2.2 repo marketplace package with a fresh widget resource URI, in-place identity status refresh, branded install-page assets, cache-safe stdio launcher, real Codex CLI install, nine-tool smoke test, and verified guide |
 | Browser fallback | Complete | `/demo`; simulated chat-host rehearsal, same domain behavior over HTTP (`?instant` skips animations) |
 | Demo identity page | Complete | `/identity`; working provider-style handoff with a prominent simulator boundary and no credential fields |
 | Install guide page | Complete | `/install`; Woven-branded guide styled after the ChatGPT Plugins tab (clearly labeled preview, three install paths, verification checklist); linked from the landing page and demo host headers |
@@ -104,7 +104,7 @@ Its identity step is implemented and must remain labeled simulated.
 | Checkout safety | Complete for prototype | Identity-session binding, expiry, hash, private nonce, exact terms, idempotency, signed receipt verification |
 | Demo identity check | Complete for prototype | Server-enforced state + PKCE + allowlisted callback + one-time code + 15-minute session; never call it Visa OAuth, KYC, or a real Visa login |
 | Visa rail | Simulated only | Approval, decline, failure, and reversal semantics |
-| Automated verification | Green | Fourteen tests, TypeScript/build gate, GitHub CI |
+| Automated verification | Green | Fifteen tests, TypeScript/build gate, GitHub CI |
 | README and gallery | Complete | Best-README structure and nine 1600×900 Devpost assets |
 | Stage fallback assets | Complete | Five numbered 1600×900 frames with editable SVG sources and explicit simulator boundaries |
 | Judge pitch deck | Complete | Ten-slide camping story; presenter notes and source blocks included |

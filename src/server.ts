@@ -19,10 +19,9 @@ import {
   type Scenario,
 } from "./domain.js";
 import { WovenStore } from "./store.js";
-import { inlineWidgetAssets } from "./widget.js";
+import { inlineWidgetAssets, WIDGET_REFRESH_META, WIDGET_URI } from "./widget.js";
 
-const VERSION = "0.2.1";
-const WIDGET_URI = "ui://woven/mission-v2.html";
+const VERSION = "0.2.2";
 const port = Number(process.env.PORT || 8787);
 const baseUrl = (process.env.BASE_URL || `http://localhost:${port}`).replace(/\/$/, "");
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -123,7 +122,7 @@ function createMcpServer(): McpServer {
       description: "Refresh ranked carts for an existing Woven mission after price or inventory changes.",
       inputSchema: { missionId: z.string().min(5).max(80) },
       annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
-      _meta: { ui: { resourceUri: WIDGET_URI }, "openai/outputTemplate": WIDGET_URI, "openai/widgetAccessible": true },
+      _meta: WIDGET_REFRESH_META,
     },
     async ({ missionId }) =>
       attempt(() => {
