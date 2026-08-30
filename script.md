@@ -48,6 +48,8 @@ Before judges arrive:
 Use the real MCP App when the host and network are dependable. Use `/demo` as the
 stage fallback; it clearly labels itself **Simulated**, rehearses the same
 backend, and surfaces each tool call without presenting itself as real ChatGPT.
+For repeated rehearsals, `/demo?loop=true` reloads five seconds after the
+confirmed sign-off; it does not automate either user trust gate.
 
 ## Visual system and screen choreography
 

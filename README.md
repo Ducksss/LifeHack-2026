@@ -291,6 +291,9 @@ The verified public deployment is available at
 in Vercel's temporary filesystem, so demo state may reset after a cold start or
 redeployment.
 
+Add `?loop=true` to `/demo` to replay it five seconds after a confirmed sign-off.
+The loop preserves the user-controlled identity and purchase confirmations.
+
 ### Connect the ChatGPT app
 
 Follow the [ChatGPT connection guide](docs/INSTALLATION.md#3-connect-woven-to-chatgpt).

@@ -4,9 +4,12 @@ import test from "node:test";
 import { initialToolResult, inlineWidgetAssets, WIDGET_REFRESH_META, WIDGET_URI } from "../src/widget.js";
 
 test("browser demo and hosted MCP App use explicit entry points", () => {
+  const widget = readFileSync("web/widget.tsx", "utf8");
   assert.match(readFileSync("web/demo.html", "utf8"), /data-surface="demo"/);
   assert.match(readFileSync("web/widget.html", "utf8"), /data-surface="hosted"/);
-  assert.doesNotMatch(readFileSync("web/widget.tsx", "utf8"), /window\.self\s*===\s*window\.top/);
+  assert.doesNotMatch(widget, /window\.self\s*===\s*window\.top/);
+  assert.match(widget, /\.get\("loop"\) === "true"/);
+  assert.match(widget, /if \(!loop \|\| !epilogueDone\) return;/);
 });
 
 test("hosted widget assets are self-contained", () => {

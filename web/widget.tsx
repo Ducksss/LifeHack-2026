@@ -135,6 +135,7 @@ const thanksMessage = "Perfect — that’s exactly what I needed. Thanks!";
 
 function StandaloneDemo() {
   const instant = useMemo(() => new URLSearchParams(window.location.search).has("instant"), []);
+  const loop = useMemo(() => new URLSearchParams(window.location.search).get("loop") === "true", []);
   const [phase, setPhase] = useState<ChatPhase>("typing");
   const [typed, setTyped] = useState("");
   const [stage, setStage] = useState(-1);
@@ -289,6 +290,12 @@ function StandaloneDemo() {
       cancelled = true;
     };
   }, [order?.status, instant]);
+
+  useEffect(() => {
+    if (!loop || !epilogueDone) return;
+    const timeout = window.setTimeout(() => window.location.reload(), 5_000);
+    return () => window.clearTimeout(timeout);
+  }, [epilogueDone, loop]);
 
   const invoke: Invoke = async (name, arguments_) => {
     const payload = await track(name, () => post(`/api/tools/${name}`, arguments_));
