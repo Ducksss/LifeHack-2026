@@ -60,13 +60,12 @@ stronger, more defensible demo:
 - judges can test success and failure paths live.
 
 The primary artifact is therefore an actual MCP App/plugin, not a speculative
-browser extension. The browser UI at `/demo` is a reliable stage rehearsal of
-that experience: a clearly labeled simulated chat host (marked “Simulated” in
-its header and footer) that types the canonical request, plays a staged
-`start_mission` activity, renders the real widget inline, surfaces every MCP
-tool call live, and closes with a scripted thank-you after a confirmed
-simulated payment. It drives the same backend behavior and never impersonates a
-real host.
+browser extension. The browser UI at `/demo` is a reliable stage fallback for
+that experience: it starts the canonical mission over HTTP and renders the real
+buyer widget directly, with a labeled “Browser fallback” header linking to the
+merchant desk and a restart control. The former simulated chat-host wrapper
+(typed request, staged activity, scripted thank-you) has been removed. `/demo`
+drives the same backend behavior and never impersonates a real host.
 
 ## Canonical demo story
 
@@ -93,7 +92,7 @@ live demo through the implemented review-and-confirm flow only.
 | --- | --- | --- |
 | Buyer MCP App | Complete | React widget using MCP Apps bridge |
 | Local plugin packaging | Complete | Repo marketplace, cache-safe stdio launcher, real Codex CLI install, fresh-host six-tool smoke test, and verified guide |
-| Browser fallback | Complete | `/demo`; simulated chat-host rehearsal, same domain behavior over HTTP (`?instant` skips animations) |
+| Browser fallback | Complete | `/demo`; renders the buyer widget directly, same domain behavior over HTTP |
 | Merchant desk | Complete | `/merchant`; inventory, scenarios, orders, audit, reset |
 | Cart engine | Complete for canonical mission | Four required categories; one location per cart |
 | Checkout safety | Complete for prototype | Expiry, hash, private nonce, exact terms, idempotency |
@@ -106,7 +105,7 @@ live demo through the implemented review-and-confirm flow only.
 | Agent context | Current | `AGENTS.md` is canonical; Claude and Copilot use thin pointers to it |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
 | Public HTTPS deployment | Not done | Required for a shareable ChatGPT connection |
-| Devpost submission | Text ready — media blocked | Draft story includes the current simulated-host UI and planned identity boundary; 13 technology tags, repository, Visa prize and Digital Payments are saved; uploads and submission remain outstanding |
+| Devpost submission | Text ready — media blocked | The saved Devpost draft still describes the removed simulated chat-host UI and must be re-synced before publishing; 13 technology tags, repository, Visa prize and Digital Payments are saved; uploads and submission remain outstanding |
 | Real merchant/Visa integrations | Not started | Explicitly outside current prototype scope |
 
 ## Product vocabulary
@@ -152,7 +151,7 @@ and domain rules. Do not split it into services without a measured reason.
 | `src/store.ts` | SQLite schema/state, transactions, confirmation, idempotency, scenarios, CSV and audit |
 | `src/payment.ts` | Simulated authorization adapter and the future real-payment replacement seam |
 | `src/server.ts` | MCP tools/transports, HTTP APIs, static UI, validation and process startup |
-| `web/widget.tsx` | Buyer MCP App plus the simulated chat-host rehearsal (`/demo`) |
+| `web/widget.tsx` | Buyer MCP App plus the direct-widget browser fallback (`/demo`) |
 | `web/merchant.tsx` | Merchant operations desk |
 | `web/woven-mark.tsx` | Shared Flightpath brand mark: one route from request to verified destination |
 | `web/components/ui/` | Vendored shadcn/ui primitives (button, card, badge, table, input, separator, skeleton) |
@@ -269,14 +268,13 @@ the currently working product flow.
 
 1. Run `npm run check`, then `npm start`.
 2. Open `/merchant` and click **Reset demo data**.
-3. Keep `/demo` and `/merchant` open in separate tabs (`/demo?instant` skips
-   the intro animation if time is short).
-4. Let `/demo` play: the canonical request types itself, the staged `start_mission`
-   activity runs, and the widget renders three complete carts.
+3. Keep `/demo` and `/merchant` open in separate tabs.
+4. Open `/demo`: it starts the canonical mission immediately and the widget
+   renders three complete carts.
 5. Select ByteRoute and show the compatibility proof.
 6. Click **Review checkout** and emphasize the price/stock recheck.
 7. Read the exact S$133 mandate, then click **Confirm**.
-8. Show the simulated result, pickup receipt, and the scripted thank-you close.
+8. Show the simulated result and pickup receipt.
 9. If time permits, select **Price change** in `/merchant` and show stale-preview
    rejection.
 
@@ -322,10 +320,10 @@ Do not invent these fields. Use the checklist in `docs/DEVPOST_SUBMISSION.md`.
 exist only to preserve old experiments; they are not sources of truth and should
 not be merged into `main` by default. Recover individual assets or patterns only
 after translating them to Woven and rechecking every trust and transport
-invariant. The Woven-branded shadcn interface and clearly labeled simulated
-chat-host rehearsal are merged into `main`; `/demo`'s labeled chat-host behavior
-is current product, not an archive. Before changing branches or worktrees,
-inspect
+invariant. The Woven-branded shadcn interface and direct-widget `/demo` browser
+fallback are merged into `main`; the former simulated chat-host wrapper has been
+removed and should not be restored from archives. Before changing branches or
+worktrees, inspect
 `git worktree list` and preserve dirty state on a branch.
 
 ## Highest-value next work

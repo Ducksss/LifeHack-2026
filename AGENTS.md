@@ -45,9 +45,9 @@ feature real.
 ## Product and trust invariants
 
 - The primary experience is an MCP App inside ChatGPT or Codex.
-- `/demo` is a stage-safe rehearsal over the same backend: a clearly labeled
-  simulated chat host (marked “Simulated” on screen) that surfaces real MCP tool
-  calls. It never impersonates a real host and is not the primary product.
+- `/demo` is a stage-safe browser fallback over the same backend: it renders the
+  real buyer widget directly over HTTP with no simulated chat host. It never
+  impersonates a real host and is not the primary product.
 - Recommendations are complete, compatible carts from one merchant/location.
 - The AI may recommend; only a direct user action may confirm exact terms.
 - Every checkout remains bound to merchant, cart version, amount, expiry, nonce,
@@ -88,8 +88,9 @@ feature real.
 - Historical pre-Woven archive branches are not sources of truth. Do not merge
   them into `main` by default: they contain obsolete branding and pre-rename
   copy.
-- The Woven shadcn interface and labeled simulated chat-host demo are already in
-  `main`; historical source branches are not current product dependencies.
+- The Woven shadcn interface and direct-widget `/demo` browser fallback are
+  already in `main`; historical source branches are not current product
+  dependencies.
 - Do not commit `data/`, `dist/`, `.env`, `.playwright-cli/`, secrets, logs, or
   local tool metadata unless the user explicitly requests it.
 - Do not deploy, publish Devpost, change repository visibility, integrate live

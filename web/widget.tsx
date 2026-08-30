@@ -2,7 +2,6 @@ import { useApp } from "@modelcontextprotocol/ext-apps/react";
 import type { App as McpApp } from "@modelcontextprotocol/ext-apps";
 import {
   ArrowRight,
-  ArrowUp,
   ArrowUpRight,
   BatteryCharging,
   Cable,
@@ -10,17 +9,15 @@ import {
   ChevronDown,
   Clock3,
   CreditCard,
-  Loader2,
   MapPin,
   Plane,
   Plug,
   RotateCcw,
   ShieldCheck,
   Store,
-  Terminal,
   TriangleAlert,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import type { Category, MissionView, RankedCart } from "../src/domain";
 import { Badge } from "@/components/ui/badge";
@@ -37,9 +34,6 @@ interface Payload {
 }
 
 type Invoke = (name: string, arguments_: Record<string, unknown>) => Promise<Payload>;
-
-const canonicalRequest =
-  "I fly to Tokyo tonight. Build a charging kit for my MacBook Air, iPhone and AirPods under S$150, with pickup today.";
 
 function HostedWidget() {
   const [view, setView] = useState<MissionView | null>(null);
@@ -78,202 +72,41 @@ function HostedWidget() {
   return <Woven view={view} setView={setView} nonce={nonce} invoke={invoke} />;
 }
 
-type ChatPhase = "typing" | "sent" | "ready" | "failed";
-interface ToolCall {
-  id: number;
-  name: string;
-  status: "running" | "done" | "error";
-}
-
-const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
-
-const activityStages = [
-  "Reading your request…",
-  "Recalling device profile…",
-  "Calling start_mission…",
-  "Checking live stock across merchants…",
-  "Weaving compatible carts…",
-];
-
-const narrationText =
-  "Three complete carts fit your request — one pickup location each, every thread checked for compatibility, all under budget. Review the kit below; nothing is charged without your explicit confirmation.";
-
-const thanksMessage = "Perfect — that’s exactly what I needed. Thanks!";
-
-function StandaloneDemo() {
-  const instant = useMemo(() => new URLSearchParams(window.location.search).has("instant"), []);
-  const [phase, setPhase] = useState<ChatPhase>("typing");
-  const [typed, setTyped] = useState("");
-  const [stage, setStage] = useState(-1);
-  const [narration, setNarration] = useState("");
-  const [showWidget, setShowWidget] = useState(false);
-  const [thanks, setThanks] = useState(false);
-  const [farewell, setFarewell] = useState("");
-  const [epilogueDone, setEpilogueDone] = useState(false);
+function BrowserFallback() {
   const [view, setView] = useState<MissionView | null>(null);
   const [nonce, setNonce] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [calls, setCalls] = useState<ToolCall[]>([]);
-  const callId = useRef(0);
-  const skipTyping = useRef(false);
-  const epilogueStarted = useRef(false);
-  const threadRef = useRef<HTMLDivElement>(null);
-
-  const scrollToEnd = () => {
-    requestAnimationFrame(() => {
-      const thread = threadRef.current;
-      thread?.scrollTo({ top: thread.scrollHeight, behavior: "smooth" });
-    });
-  };
-
-  // Timers throttle in background tabs, so both writers pace by wall clock instead of one tick per character.
-  const typeInComposer = async (text: string, isCancelled: () => boolean) => {
-    skipTyping.current = false;
-    const startedAt = performance.now();
-    while (!isCancelled() && !skipTyping.current) {
-      const visible = Math.floor((performance.now() - startedAt) / 13);
-      setTyped(text.slice(0, Math.min(visible, text.length)));
-      if (visible >= text.length) break;
-      await sleep(16);
-    }
-    if (isCancelled()) return;
-    setTyped(text);
-    if (!skipTyping.current) await sleep(450);
-    setTyped("");
-  };
-
-  const streamText = async (text: string, write: (value: string) => void, isCancelled: () => boolean) => {
-    const startedAt = performance.now();
-    while (!isCancelled()) {
-      const visible = Math.floor((performance.now() - startedAt) / 8);
-      write(text.slice(0, Math.min(visible, text.length)));
-      if (visible >= text.length) break;
-      await sleep(24);
-    }
-    if (!isCancelled()) write(text);
-  };
-
-  const track = async <T,>(name: string, work: () => Promise<T>): Promise<T> => {
-    const id = ++callId.current;
-    setCalls((current) => [...current, { id, name, status: "running" }]);
-    try {
-      const result = await work();
-      setCalls((current) => current.map((call) => (call.id === id ? { ...call, status: "done" } : call)));
-      return result;
-    } catch (caught) {
-      setCalls((current) => current.map((call) => (call.id === id ? { ...call, status: "error" } : call)));
-      throw caught;
-    }
-  };
 
   useEffect(() => {
     let cancelled = false;
-    const isCancelled = () => cancelled;
-    const finish = (outcome: { payload?: Payload; failure?: unknown }) => {
-      const id = ++callId.current;
-      setCalls((current) => [...current, { id, name: "start_mission", status: outcome.payload ? "done" : "error" }]);
-      if (!outcome.payload) {
-        setError(outcome.failure instanceof Error ? outcome.failure.message : "Demo failed to start.");
-        setPhase("failed");
-        return false;
-      }
-      setView(outcome.payload.view!);
-      setPhase("ready");
-      return true;
-    };
-    const startWork = () =>
-      post("/api/demo/start", { request: canonicalRequest })
-        .then((payload) => ({ payload }))
-        .catch((failure: unknown) => ({ failure }));
-
-    const run = async () => {
-      if (instant) {
-        setPhase("sent");
-        if (!finish(await startWork())) return;
-        setNarration(narrationText);
-        setShowWidget(true);
-        return;
-      }
-      await sleep(700);
-      await typeInComposer(canonicalRequest, isCancelled);
-      if (cancelled) return;
-      setPhase("sent");
-      await sleep(500);
-      // Play the staged activity while the real tool call runs underneath.
-      let work: Promise<{ payload?: Payload; failure?: unknown }> | null = null;
-      for (let index = 0; index < activityStages.length; index++) {
-        if (cancelled) return;
-        setStage(index);
-        if (index === 2) work = startWork();
-        await sleep(950);
-      }
-      const outcome = await (work || startWork());
-      if (cancelled) return;
-      setStage(-1);
-      if (!finish(outcome)) return;
-      await sleep(300);
-      await streamText(narrationText, setNarration, isCancelled);
-      if (cancelled) return;
-      await sleep(350);
-      setShowWidget(true);
-    };
-    void run();
+    post("/api/demo/start", {})
+      .then((payload) => {
+        if (!cancelled && payload.view) setView(payload.view);
+      })
+      .catch((caught: unknown) => {
+        if (!cancelled) setError(caught instanceof Error ? caught.message : "Could not reach the Woven backend.");
+      });
     return () => {
       cancelled = true;
     };
-  }, [instant]);
-
-  // Closing beat: once the simulated payment confirms, the user says thanks and the host signs off.
-  const order = view?.order;
-  useEffect(() => {
-    if (order?.status !== "confirmed" || epilogueStarted.current) return;
-    epilogueStarted.current = true;
-    let cancelled = false;
-    const isCancelled = () => cancelled;
-    const reply =
-      `You’re all set — receipt ${order.receiptNumber} is saved and the kit is being packed at ${order.pickupLocation}. ` +
-      "That was the only charge, and it was simulated. Safe travels to Tokyo ✈️";
-    const run = async () => {
-      if (instant) {
-        setThanks(true);
-        setFarewell(reply);
-        setEpilogueDone(true);
-        return;
-      }
-      await sleep(1500);
-      await typeInComposer(thanksMessage, isCancelled);
-      if (cancelled) return;
-      setThanks(true);
-      scrollToEnd();
-      await sleep(650);
-      await streamText(reply, setFarewell, isCancelled);
-      if (cancelled) return;
-      setEpilogueDone(true);
-      scrollToEnd();
-    };
-    void run();
-    return () => {
-      cancelled = true;
-    };
-  }, [order?.status, instant]);
+  }, []);
 
   const invoke: Invoke = async (name, arguments_) => {
-    const payload = await track(name, () => post(`/api/tools/${name}`, arguments_));
+    const payload = await post(`/api/tools/${name}`, arguments_);
     if (payload.view) setView(payload.view);
     if (typeof payload._meta?.confirmationNonce === "string") setNonce(payload._meta.confirmationNonce);
     return payload;
   };
 
-  const startCall = calls[0];
-  const laterCalls = calls.slice(1).slice(-8);
-
   return (
-    <div className="flex h-dvh flex-col bg-background">
+    <div className="flex min-h-dvh flex-col bg-background">
       <header className="flex h-12 flex-none items-center justify-between border-b px-4">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold tracking-tight">Woven Demo Host</span>
-          <ChevronDown className="size-3.5 text-muted-foreground" />
-          <Badge variant="secondary" className="font-mono text-[10px] uppercase tracking-[0.1em]">Simulated</Badge>
+          <span className="grid size-6 place-items-center rounded-md bg-zinc-950">
+            <WovenMark className="size-4" />
+          </span>
+          <span className="text-sm font-semibold tracking-tight">Woven</span>
+          <Badge variant="secondary" className="hidden font-mono text-[10px] uppercase tracking-[0.1em] sm:inline-flex">Browser fallback</Badge>
         </div>
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="sm" asChild>
@@ -281,133 +114,33 @@ function StandaloneDemo() {
               Merchant desk <ArrowUpRight className="size-3.5" />
             </a>
           </Button>
-          <Button variant="ghost" size="icon-sm" title="Replay demo" onClick={() => window.location.reload()}>
+          <Button variant="ghost" size="icon-sm" title="Restart demo" onClick={() => window.location.reload()}>
             <RotateCcw className="size-4" />
           </Button>
         </div>
       </header>
 
-      <div ref={threadRef} data-thread className="flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-3xl px-4 pb-10 pt-8">
-          {phase === "typing" ? (
-            <div className="flex h-full min-h-[40vh] items-center justify-center">
-              <h1 className="text-2xl font-semibold tracking-tight text-center">What do you need?</h1>
-            </div>
+      <div className="flex-1 overflow-y-auto">
+        <div className="mx-auto w-full max-w-[1072px] px-4 pb-6 pt-6">
+          {error ? (
+            <main className="mx-auto grid min-h-[280px] w-full max-w-[1040px] place-items-center content-center gap-2 rounded-2xl border bg-background p-10 text-center shadow-sm">
+              <TriangleAlert className="size-8 text-destructive" />
+              <h1 className="mt-2 text-lg font-semibold tracking-tight">Could not reach the Woven backend</h1>
+              <p className="text-sm text-muted-foreground">{error}</p>
+              <Button variant="outline" size="sm" className="mt-3" onClick={() => window.location.reload()}>
+                <RotateCcw className="size-3.5" /> Retry
+              </Button>
+            </main>
+          ) : !view ? (
+            <Loading message="Building compatible kits…" />
           ) : (
-            <>
-              <div className="flex justify-end">
-                <div className="max-w-[85%] rounded-3xl bg-muted px-4 py-2.5 text-[15px] leading-6">
-                  {canonicalRequest}
-                </div>
-              </div>
-
-              {stage >= 0 && (
-                <div className="mt-6 flex items-center gap-2.5 text-[15px]">
-                  <Loader2 className="size-3.5 flex-none animate-spin text-muted-foreground" />
-                  <span className="shimmer-text">{activityStages[Math.min(stage, activityStages.length - 1)]}</span>
-                </div>
-              )}
-
-              {stage < 0 && startCall && (
-                <div className="rise-in mt-6">
-                  <ToolChip call={startCall} />
-                </div>
-              )}
-
-              {phase === "failed" && (
-                <div className="mt-4 text-[15px] leading-7">
-                  <p>I couldn’t reach the Woven backend: {error}</p>
-                  <Button variant="outline" size="sm" className="mt-3" onClick={() => window.location.reload()}>
-                    <RotateCcw className="size-3.5" /> Retry
-                  </Button>
-                </div>
-              )}
-
-              {phase === "ready" && view && (
-                <>
-                  {narration && <p className="mt-4 text-[15px] leading-7">{narration}</p>}
-                  {showWidget && (
-                    <div className="rise-in mt-6">
-                      <Woven view={view} setView={setView} nonce={nonce} invoke={invoke} />
-                    </div>
-                  )}
-                  {laterCalls.length > 0 && (
-                    <div className="mt-5 flex flex-wrap items-center gap-2">
-                      <span className="microlabel text-muted-foreground">Live MCP calls</span>
-                      {laterCalls.map((call) => <ToolChip key={call.id} call={call} />)}
-                    </div>
-                  )}
-                  {thanks && (
-                    <div className="rise-in mt-8 flex justify-end">
-                      <div className="max-w-[85%] rounded-3xl bg-muted px-4 py-2.5 text-[15px] leading-6">
-                        {thanksMessage}
-                      </div>
-                    </div>
-                  )}
-                  {farewell && <p className="mt-5 text-[15px] leading-7">{farewell}</p>}
-                  {epilogueDone && (
-                    <div className="rise-in mt-6">
-                      <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
-                        <RotateCcw className="size-3.5" /> Replay the demo
-                      </Button>
-                    </div>
-                  )}
-                </>
-              )}
-            </>
+            <Woven view={view} setView={setView} nonce={nonce} invoke={invoke} />
           )}
-        </div>
-      </div>
-
-      <div className="flex-none px-4 pb-4">
-        <div className="mx-auto w-full max-w-3xl">
-          <div className="flex items-center gap-3 rounded-[28px] border bg-background px-5 py-3 shadow-sm">
-            <div className="min-h-6 flex-1 text-[15px]">
-              {typed ? (
-                <span>
-                  {typed}
-                  <span className="ml-px inline-block h-4 w-px translate-y-0.5 animate-pulse bg-foreground" />
-                </span>
-              ) : (
-                <span className="text-muted-foreground">
-                  {phase === "typing"
-                    ? "Message the demo host…"
-                    : epilogueDone
-                      ? "All wrapped up — replay from the header anytime."
-                      : "Your request is running above…"}
-                </span>
-              )}
-            </div>
-            <button
-              className={cn(
-                "grid size-8 flex-none cursor-pointer place-items-center rounded-full transition-colors",
-                typed ? "bg-foreground text-background" : "bg-muted text-muted-foreground",
-              )}
-              title="Send"
-              onClick={() => {
-                skipTyping.current = true;
-              }}
-            >
-              <ArrowUp className="size-4" />
-            </button>
-          </div>
-          <p className="mt-2 text-center text-xs text-muted-foreground">
-            Simulated rehearsal of the ChatGPT/Codex MCP experience — same server, real tool calls, no live charge.
+          <p className="mt-3 text-center text-xs text-muted-foreground">
+            Browser fallback for the ChatGPT/Codex MCP App — same server, real tool calls, no live charge.
           </p>
         </div>
       </div>
-    </div>
-  );
-}
-
-function ToolChip({ call }: { call: ToolCall }) {
-  return (
-    <div className="inline-flex items-center gap-1.5 rounded-full bg-muted/60 py-1.5 pl-2.5 pr-3">
-      <Terminal className="size-3 text-muted-foreground" />
-      <code className="font-mono text-[11px]">{call.name}</code>
-      {call.status === "running" && <Loader2 className="size-3 animate-spin text-muted-foreground" />}
-      {call.status === "done" && <Check className="size-3 text-emerald-600" />}
-      {call.status === "error" && <TriangleAlert className="size-3 text-destructive" />}
     </div>
   );
 }
@@ -841,4 +574,4 @@ function formatTime(value: string) {
 }
 
 const root = document.getElementById("root");
-if (root) createRoot(root).render(window.self === window.top ? <StandaloneDemo /> : <HostedWidget />);
+if (root) createRoot(root).render(window.self === window.top ? <BrowserFallback /> : <HostedWidget />);

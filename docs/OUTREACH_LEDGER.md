@@ -4,7 +4,7 @@
 
 | Target | State | Last checked | Draft | Next action | Notes |
 | --- | --- | --- | --- | --- | --- |
-| LifeHack 2026 Devpost | Text ready — media blocked | 30 August 2026 | [Woven draft](https://devpost.com/software/woven-wzefyv) | Add thumbnail/gallery, demo video URL, and project PDF; verify repository access and links; review before submission | Name, pitch, script-aligned story, 13 technology tags, GitHub link, Visa prize, and Digital Payments are saved. The simulated host is current; identity remains planned. Existing teammates were preserved. |
+| LifeHack 2026 Devpost | Text ready — story stale, media blocked | 30 August 2026 | [Woven draft](https://devpost.com/software/woven-wzefyv) | Re-sync the story (the simulated chat host was removed from `/demo`); add thumbnail/gallery, demo video URL, and project PDF; verify repository access and links; review before submission | Name, pitch, 13 technology tags, GitHub link, Visa prize, and Digital Payments are saved. The saved story still describes the removed simulated chat host; identity remains planned. Existing teammates were preserved. |
 
 ## Events
 

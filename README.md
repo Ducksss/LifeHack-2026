@@ -107,10 +107,10 @@ merchant actions and return a structured checkout for review.
 
 The primary product is a real MCP App/plugin inside ChatGPT or Codex. The model
 can ask Woven to build carts, but app-only tools and a direct user click protect
-checkout. The `/demo` browser route is a stage-safe rehearsal of that
-experience: a clearly labeled simulated chat host that types the canonical
-request, shows every MCP tool call live, and drives the same backend. It is
-marked “Simulated” on screen and is not a second product.
+checkout. The `/demo` browser route is a stage-safe fallback for that
+experience: it starts the canonical mission over HTTP and renders the real
+buyer widget directly, driving the same backend. It is labeled “Browser
+fallback” on screen and is not a second product.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -164,11 +164,11 @@ path, and the identity insert that becomes usable only after implementation.
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/assets/screenshots/buyer-overview.png" alt="Woven running inside a simulated chat host with a visible start_mission tool call"></td>
+    <td width="50%"><img src="docs/assets/screenshots/buyer-overview.png" alt="Woven buyer widget showing the canonical mission and three complete carts"></td>
     <td width="50%"><img src="docs/assets/screenshots/checkout-confirmation.png" alt="Woven exact checkout mandate and explicit confirm button"></td>
   </tr>
   <tr>
-    <td><strong>Born inside the chat.</strong><br>One message becomes a live MCP app — visible tool calls, then three complete carts.</td>
+    <td><strong>One request, three complete carts.</strong><br>The live MCP app turns the mission into ranked, one-merchant kits.</td>
     <td><strong>A visible authorization boundary.</strong><br>The exact merchant, pickup, items, and total are bound before confirmation.</td>
   </tr>
   <tr>
@@ -266,8 +266,8 @@ server serves widget assets on port `8788`, separate from the HTTP demo.
 Use the complete [three-minute stage script](script.md). The working happy path
 is:
 
-1. Open `/demo` — the simulated chat host types the canonical request, plays the
-   `start_mission` activity, and renders the widget with three ranked carts.
+1. Open `/demo` — it starts the canonical mission immediately and renders the
+   widget with three ranked carts.
 2. Select a kit and inspect its compatibility proof.
 3. Click **Review checkout** to force a stock and price recheck.
 4. Call out the exact, expiring mandate and click **Confirm S$133.00**.
@@ -354,7 +354,7 @@ the full test and production-build gate on every push and pull request.
 ## Roadmap
 
 - [x] Complete one-merchant cart construction and compatibility proof
-- [x] ChatGPT/Codex MCP App widget plus HTTP rehearsal fallback
+- [x] ChatGPT/Codex MCP App widget plus HTTP browser fallback
 - [x] Exact, expiring, one-time checkout mandate
 - [x] Merchant inventory, scenario controls, CSV update, and audit trail
 - [x] Simulated authorization, decline, order failure, and reversal paths

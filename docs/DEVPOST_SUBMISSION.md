@@ -99,7 +99,7 @@ with the wrong cable or destination adapter. We modelled the mission as a comple
 constraint set and made every compatibility decision explainable in the UI.
 
 **Making an MCP demo stage-safe.** The production story lives inside ChatGPT or
-Codex, while the browser transport calls the same domain functions for rehearsals
+Codex, while the browser transport calls the same domain functions as a fallback
 when public networking or host configuration is unreliable.
 
 ### Accomplishments that we're proud of
@@ -112,7 +112,7 @@ when public networking or host configuration is unreliable.
 - A live merchant operations desk with CSV updates and audit events
 - Automated coverage for domain, security, failure, idempotency, and CSV behavior
 - A polished desktop and mobile experience, including a clearly labeled
-  simulated chat host that rehearses the in-ChatGPT flow with live tool calls
+  browser fallback that runs the same widget and backend outside ChatGPT
 
 ### What we learned
 
@@ -187,8 +187,8 @@ compatible, under budget, pickup today.”
 
 **0:48–1:30 — Ask once**
 
-Run the canonical prompt in ChatGPT/Codex or open `/demo`, where the simulated
-chat host types the canonical request and plays the `start_mission` activity live. Point
+Run the canonical prompt in ChatGPT/Codex or open `/demo`, which starts the
+canonical mission immediately and renders the live widget. Point
 out the three complete one-merchant carts. Select ByteRoute and show the
 compatibility proof, demo stock, pickup location, and S$133 total.
 
@@ -236,8 +236,8 @@ decline, and reversal paths.
 **Is this a browser extension?**
 
 No. The primary experience is an MCP App rendered inside ChatGPT or Codex. The
-browser route is a clearly labeled simulated chat host that rehearses the same
-experience — same backend, real MCP tool calls shown live, no live charge.
+browser route is a clearly labeled fallback that renders the same widget —
+same backend, real tool calls, no live charge.
 
 **Does it make real Visa payments?**
 

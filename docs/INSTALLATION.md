@@ -158,7 +158,7 @@ three-cart widget and confirmation flow described in the Codex result. If the
 server's tool metadata or UI changes, refresh the plugin connection before
 retesting.
 
-## 4. Browser-only rehearsal
+## 4. Browser-only fallback
 
 This verifies the product without installing a plugin:
 
@@ -178,8 +178,9 @@ Open:
 - merchant desk: <http://localhost:8787/merchant>
 - health check: <http://localhost:8787/healthz>
 
-The browser fallback uses the same store, domain rules, and payment simulator as
-the MCP App. It is a rehearsal transport, not the primary product.
+The browser fallback renders the buyer widget directly and uses the same store,
+domain rules, and payment simulator as the MCP App. It is a fallback transport,
+not the primary product.
 
 ## Troubleshooting
 
