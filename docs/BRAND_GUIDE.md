@@ -88,8 +88,8 @@ confirms, and reverses. Avoid generic AI claims such as “revolutionary,”
 | `docs/assets/brand/woven-hero-flightpath.png` | Text-free campaign hero |
 | `docs/assets/brand/woven-cover.{png,svg}` | Product statement beside the working buyer UI |
 | `docs/assets/brand/concepts/*.png` | Archived identity explorations; not production marks |
-| `docs/assets/devpost/cover.png` | Devpost thumbnail and gallery cover |
-| `docs/assets/devpost/cover.svg` | Editable cover source |
+| `docs/assets/devpost/cover.png` | Devpost thumbnail and gallery cover (product-led chat-host composition) |
+| `docs/assets/devpost/cover.html` | Editable cover source; render at 1600 × 900 after refreshing `buyer-overview.png` |
 | `docs/assets/devpost/architecture.{png,svg}` | Concise system-story slide |
 | `docs/assets/devpost/woven-user-flow.png` | Six-step product flow with real product screens |
 | `docs/assets/devpost/woven-trust-boundary.png` | Human authorization and simulator boundary |
