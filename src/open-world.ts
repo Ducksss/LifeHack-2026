@@ -4,7 +4,7 @@ import OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import { DomainError } from "./domain.js";
-import type { CatalogItem } from "./domain.js";
+import type { CatalogItem, CommercePlatform } from "./domain.js";
 
 const MAX_DISCOVERY_PASSES = 2;
 const MAX_OFFERS_PER_REQUIREMENT = 8;
@@ -42,6 +42,7 @@ export const missionSpecSchema = z.object({
   currency: z.literal("SGD"),
   budgetCents: z.number().int().min(1_000).max(2_000_000),
   pickupDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  maxPackedLiters: z.number().positive().max(10_000).optional(),
   requirements: z.array(requirementSchema).min(1).max(12),
   compatibility: z.array(compatibilitySchema).max(12),
   preferences: z.array(z.string().min(1).max(120)).max(8),
@@ -82,6 +83,7 @@ export interface EvidenceSource {
   kind: "connected" | "web";
   title: string;
   url?: string;
+  platform?: CommercePlatform;
 }
 
 const evidenceSourceSchema = z.object({
@@ -109,6 +111,12 @@ export interface ConnectedOffer {
   stock: number;
   attributes: Record<string, AttributeValue>;
   source: EvidenceSource & { kind: "connected" };
+  platform?: CommercePlatform;
+  externalStoreId?: string;
+  externalProductId?: string;
+  externalVariantId?: string;
+  sourceUrl?: string;
+  lastVerifiedAt?: string;
 }
 
 const connectedOfferSchema: z.ZodType<ConnectedOffer> = z.object({
@@ -129,6 +137,12 @@ const connectedOfferSchema: z.ZodType<ConnectedOffer> = z.object({
   stock: z.number().int().min(0).max(1_000_000),
   attributes: z.record(z.string(), attributeValueSchema),
   source: evidenceSourceSchema.extend({ kind: z.literal("connected") }),
+  platform: z.enum(["demo", "shopify", "woocommerce"]).optional(),
+  externalStoreId: z.string().min(1).max(240).optional(),
+  externalProductId: z.string().min(1).max(240).optional(),
+  externalVariantId: z.string().min(1).max(240).optional(),
+  sourceUrl: z.string().url().max(2_000).optional(),
+  lastVerifiedAt: z.string().datetime().optional(),
 }).strict();
 
 export interface ResearchLead {
@@ -174,6 +188,12 @@ export interface GenericCartLine {
   priceCents: number;
   quantity: number;
   compatibility: string;
+  platform?: CommercePlatform;
+  externalStoreId?: string;
+  externalProductId?: string;
+  externalVariantId?: string;
+  sourceUrl?: string;
+  lastVerifiedAt?: string;
 }
 
 export interface GenericCart {
@@ -199,6 +219,10 @@ export interface GenericCart {
   checkoutEligible: true;
   rankingBreakdown: { evidence: number; pickup: number; budget: number };
   inventoryCheckedAt: string;
+  platform?: CommercePlatform;
+  externalStoreId?: string;
+  sourceUrl?: string;
+  lastVerifiedAt?: string;
 }
 
 export interface AgentEvent {
@@ -265,6 +289,11 @@ export function connectedOffersForSpec(specInput: MissionSpec, catalog: CatalogI
       stock: item.stock,
       attributes: catalogAttributes(item),
       source: { id: `catalog:${item.offerId}`, kind: "connected" as const, title: `${item.merchantName} connected catalog` },
+      platform: "demo" as const,
+      externalStoreId: item.merchantId,
+      externalProductId: item.offerId,
+      externalVariantId: item.offerId,
+      lastVerifiedAt: new Date().toISOString(),
     }];
   }));
 }
@@ -361,10 +390,18 @@ export function buildGenericCarts(specInput: MissionSpec, offersInput: Connected
       const evidence = cartEvidence(spec, chosen);
       if (!evidence) continue;
       const first = chosen[0]!;
+      const platform = first.platform || "demo";
+      if (chosen.some((offer) => (offer.platform || "demo") !== platform)) continue;
       const totalCents = chosen.reduce((sum, offer) => {
         const quantity = spec.requirements.find((requirement) => requirement.id === offer.requirementId)!.quantity;
         return sum + offer.priceCents * quantity;
       }, 0);
+      const packedLiters = chosen.reduce((sum, offer) => {
+        const quantity = spec.requirements.find((requirement) => requirement.id === offer.requirementId)!.quantity;
+        const packed = offer.attributes.packedLiters;
+        return typeof packed === "number" ? sum + packed * quantity : Number.POSITIVE_INFINITY;
+      }, 0);
+      if (spec.maxPackedLiters !== undefined && packedLiters > spec.maxPackedLiters) continue;
       const identity = { merchantId: first.merchantId, locationId: first.locationId, offerIds: chosen.map((offer) => offer.offerId) };
       const id = `cart_${sha256(identity).slice(0, 12)}`;
       const budgetScore = Math.round(20 * (1 - totalCents / spec.budgetCents) * 10) / 10;
@@ -397,6 +434,12 @@ export function buildGenericCarts(specInput: MissionSpec, offersInput: Connected
             priceCents: offer.priceCents,
             quantity: requirement.quantity,
             compatibility: `${requirement.label} verified from the connected ${offer.source.title}.`,
+            platform: offer.platform || "demo",
+            externalStoreId: offer.externalStoreId,
+            externalProductId: offer.externalProductId,
+            externalVariantId: offer.externalVariantId,
+            sourceUrl: offer.sourceUrl,
+            lastVerifiedAt: offer.lastVerifiedAt,
           };
         }),
         checks: evidence.map((check) => check.detail),
@@ -405,6 +448,10 @@ export function buildGenericCarts(specInput: MissionSpec, offersInput: Connected
         checkoutEligible: true,
         rankingBreakdown: { evidence: evidenceScore, pickup: pickupScore, budget: budgetScore },
         inventoryCheckedAt: now.toISOString(),
+        platform,
+        externalStoreId: first.externalStoreId,
+        sourceUrl: first.sourceUrl,
+        lastVerifiedAt: chosen.map((offer) => offer.lastVerifiedAt).filter(Boolean).toSorted().at(0) || now.toISOString(),
       });
     }
   }

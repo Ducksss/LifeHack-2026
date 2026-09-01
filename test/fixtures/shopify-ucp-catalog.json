@@ -1,0 +1,51 @@
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "structuredContent": {
+      "catalog": {
+        "products": [
+          {
+            "id": "gid://shopify/Product/1001",
+            "handle": "stormweave-2p-tent",
+            "title": "StormWeave 2-Person Rain Tent",
+            "url": "https://woven-trail-shop.myshopify.com/products/stormweave-2p-tent",
+            "variants": [{ "id": "gid://shopify/ProductVariant/2001", "sku": "WV-TENT-2P", "availability": { "available": true, "quantity": 20 }, "tags": ["woven:category=tent;capacity=2;waterproofMm=3000;packedLiters=42;locationName=Woven Trail Counter;address=Singapore;pickupMinutes=120;transitMinutes=30;closesAt=21:00;area=Central"], "price": { "amount": "18900", "currency": "SGD" } }]
+          },
+          {
+            "id": "gid://shopify/Product/1002",
+            "handle": "drynest-synthetic-sleeping-bag",
+            "title": "DryNest Synthetic Sleeping Bag",
+            "url": "https://woven-trail-shop.myshopify.com/products/drynest-synthetic-sleeping-bag",
+            "tags": ["woven:category=sleeping_bag;dampReady=true;packedLiters=12;locationName=Woven Trail Counter;address=Singapore;pickupMinutes=120;transitMinutes=30;closesAt=21:00;area=Central"],
+            "variants": [{ "id": "gid://shopify/ProductVariant/2002", "sku": "WV-BAG-SYN", "available_for_sale": true, "quantity_available": 20, "price": { "amount": "7900", "currency": "SGD" } }]
+          },
+          {
+            "id": "gid://shopify/Product/1003",
+            "handle": "trailrest-r2-sleeping-mat",
+            "title": "TrailRest R2 Sleeping Mat",
+            "url": "https://woven-trail-shop.myshopify.com/products/trailrest-r2-sleeping-mat",
+            "tags": ["woven:category=sleeping_mat;rValue=2;packedLiters=8;locationName=Woven Trail Counter;address=Singapore;pickupMinutes=120;transitMinutes=30;closesAt=21:00;area=Central"],
+            "variants": [{ "id": "gid://shopify/ProductVariant/2003", "sku": "WV-MAT-R2", "available_for_sale": true, "quantity_available": 20, "price": { "amount": "5500", "currency": "SGD" } }]
+          },
+          {
+            "id": "gid://shopify/Product/1004",
+            "handle": "rainbeam-ipx4-lantern",
+            "title": "RainBeam 250 IPX4 Lantern",
+            "url": "https://woven-trail-shop.myshopify.com/products/rainbeam-ipx4-lantern",
+            "tags": ["woven:category=lantern;lumens=250;ipRating=IPX4;packedLiters=3;locationName=Woven Trail Counter;address=Singapore;pickupMinutes=120;transitMinutes=30;closesAt=21:00;area=Central"],
+            "variants": [{ "id": "gid://shopify/ProductVariant/2004", "sku": "WV-LANTERN-250", "available_for_sale": true, "quantity_available": 20, "price": { "amount": "4900", "currency": "SGD" } }]
+          },
+          {
+            "id": "gid://shopify/Product/1005",
+            "handle": "trailguard-first-aid-kit",
+            "title": "TrailGuard Water-Resistant First-Aid Kit",
+            "url": "https://woven-trail-shop.myshopify.com/products/trailguard-first-aid-kit",
+            "tags": ["woven:category=first_aid;peopleCovered=4;waterResistant=true;packedLiters=4;locationName=Woven Trail Counter;address=Singapore;pickupMinutes=120;transitMinutes=30;closesAt=21:00;area=Central"],
+            "variants": [{ "id": "gid://shopify/ProductVariant/2005", "sku": "WV-AID-4", "available_for_sale": true, "quantity_available": 20, "price": { "amount": "3900", "currency": "SGD" } }]
+          }
+        ]
+      }
+    }
+  }
+}

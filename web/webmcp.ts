@@ -64,6 +64,7 @@ export function createWebMcpTools(adapter: WebMcpAdapter): WebMcpTool[] {
           budgetCents: { type: "integer", minimum: 1_000, maximum: 100_000, description: "Optional maximum budget in SGD cents." },
           campers: { type: "integer", minimum: 1, maximum: 6, description: "Optional camper count for camping missions." },
           pickupDate: { type: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$", description: "Optional pickup date in YYYY-MM-DD format." },
+          sourceMode: { type: "string", enum: ["demo", "live"], description: "Use live storefronts or the seeded demo catalog." },
         },
         required: ["request"],
         additionalProperties: false,
@@ -100,7 +101,6 @@ export function createWebMcpTools(adapter: WebMcpAdapter): WebMcpTool[] {
       annotations: { untrustedContentHint: true },
       execute: async (input) => {
         const view = currentView(adapter);
-        if (view.mission.engine === "open-world") throw new Error("The visual Choice Center is available for the camping demo mission.");
         adapter.compare(input as Parameters<WebMcpAdapter["compare"]>[0]);
         return result("Opened the Choice Center on the shared page.", view, { applied: input });
       },

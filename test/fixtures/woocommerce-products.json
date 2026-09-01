@@ -1,0 +1,63 @@
+[
+  {
+    "id": 101,
+    "name": "StormWeave 2-Person Rain Tent",
+    "sku": "WV-TENT-2P",
+    "permalink": "https://woo.example/products/stormweave-2p-tent",
+    "is_in_stock": true,
+    "is_purchasable": true,
+    "prices": { "price": "18900", "currency_code": "SGD", "currency_minor_unit": 2 },
+    "attributes": [
+      { "name": "category", "terms": [{ "name": "tent" }] },
+      { "name": "capacity", "terms": [{ "name": "2" }] },
+      { "name": "waterproofMm", "terms": [{ "name": "3000" }] },
+      { "name": "packedLiters", "terms": [{ "name": "42" }] },
+      { "name": "locationName", "terms": [{ "name": "Woven Trail Counter" }] },
+      { "name": "address", "terms": [{ "name": "Singapore" }] },
+      { "name": "pickupMinutes", "terms": [{ "name": "120" }] },
+      { "name": "transitMinutes", "terms": [{ "name": "30" }] },
+      { "name": "closesAt", "terms": [{ "name": "21:00" }] },
+      { "name": "area", "terms": [{ "name": "Central" }] }
+    ]
+  },
+  {
+    "id": 102,
+    "name": "DryNest Synthetic Sleeping Bag",
+    "sku": "WV-BAG-SYN",
+    "permalink": "https://woo.example/products/drynest-synthetic-sleeping-bag",
+    "is_in_stock": true,
+    "is_purchasable": true,
+    "prices": { "price": "7900", "currency_code": "SGD", "currency_minor_unit": 2 },
+    "attributes": [{ "name": "category", "terms": [{ "name": "sleeping_bag" }] }, { "name": "dampReady", "terms": [{ "name": "true" }] }, { "name": "packedLiters", "terms": [{ "name": "12" }] }]
+  },
+  {
+    "id": 103,
+    "name": "TrailRest R2 Sleeping Mat",
+    "sku": "WV-MAT-R2",
+    "permalink": "https://woo.example/products/trailrest-r2-sleeping-mat",
+    "is_in_stock": true,
+    "is_purchasable": true,
+    "prices": { "price": "5500", "currency_code": "SGD", "currency_minor_unit": 2 },
+    "attributes": [{ "name": "category", "terms": [{ "name": "sleeping_mat" }] }, { "name": "rValue", "terms": [{ "name": "2" }] }, { "name": "packedLiters", "terms": [{ "name": "8" }] }]
+  },
+  {
+    "id": 104,
+    "name": "RainBeam 250 IPX4 Lantern",
+    "sku": "WV-LANTERN-250",
+    "permalink": "https://woo.example/products/rainbeam-ipx4-lantern",
+    "is_in_stock": true,
+    "is_purchasable": true,
+    "prices": { "price": "4900", "currency_code": "SGD", "currency_minor_unit": 2 },
+    "attributes": [{ "name": "category", "terms": [{ "name": "lantern" }] }, { "name": "lumens", "terms": [{ "name": "250" }] }, { "name": "ipRating", "terms": [{ "name": "IPX4" }] }, { "name": "packedLiters", "terms": [{ "name": "3" }] }]
+  },
+  {
+    "id": 105,
+    "name": "TrailGuard Water-Resistant First-Aid Kit",
+    "sku": "WV-AID-4",
+    "permalink": "https://woo.example/products/trailguard-first-aid-kit",
+    "is_in_stock": true,
+    "is_purchasable": true,
+    "prices": { "price": "3900", "currency_code": "SGD", "currency_minor_unit": 2 },
+    "attributes": [{ "name": "category", "terms": [{ "name": "first_aid" }] }, { "name": "peopleCovered", "terms": [{ "name": "4" }] }, { "name": "waterResistant", "terms": [{ "name": "true" }] }, { "name": "packedLiters", "terms": [{ "name": "4" }] }]
+  }
+]

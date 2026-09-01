@@ -68,6 +68,8 @@ type Invoke = (name: string, arguments_: Record<string, unknown>) => Promise<Pay
 
 const canonicalRequest =
   "I need a complete rainy-weekend camping kit for 2 first-time campers. Keep it under S$300, fit it in one car boot, and make it pickup-ready today.";
+const liveCanonicalRequest =
+  "I need a complete rainy-weekend camping kit for 2 first-time campers. Keep it under S$900, fit it in one car boot, and make it pickup-ready today. Compare Shopify and WooCommerce.";
 
 function HostedWidget() {
   const initialResult = initialToolResult((window as Window & { openai?: unknown }).openai);
@@ -149,6 +151,7 @@ function StandaloneDemo() {
   const webmcpMode = useMemo(() => window.location.pathname === "/webmcp", []);
   const instant = useMemo(() => webmcpMode || new URLSearchParams(window.location.search).has("instant"), [webmcpMode]);
   const loop = useMemo(() => new URLSearchParams(window.location.search).get("loop") === "true", []);
+  const [sourceMode, setSourceMode] = useState<"demo" | "live">(webmcpMode ? "live" : "demo");
   const [phase, setPhase] = useState<ChatPhase>("typing");
   const [typed, setTyped] = useState("");
   const [stage, setStage] = useState(-1);
@@ -172,6 +175,7 @@ function StandaloneDemo() {
   const threadRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<MissionView | null>(null);
   viewRef.current = view;
+  const activeRequest = sourceMode === "live" ? liveCanonicalRequest : canonicalRequest;
 
   const scrollToEnd = () => {
     requestAnimationFrame(() => {
@@ -230,7 +234,9 @@ function StandaloneDemo() {
   const siteToolAdapter: WebMcpAdapter = {
     getView: () => viewRef.current,
     startMission: async (input, signal) => {
-      const payload = await track("start_mission", () => post("/api/demo/start", { ...input }, signal));
+      const selectedMode = webmcpMode ? input.sourceMode || sourceMode : "demo";
+      const endpoint = webmcpMode ? "/api/missions/start" : "/api/demo/start";
+      const payload = await track("start_mission", () => post(endpoint, { ...input, sourceMode: selectedMode }, signal));
       if (!payload.view) throw new Error("Woven did not return a mission.");
       setView(payload.view);
       setError(null);
@@ -287,7 +293,7 @@ function StandaloneDemo() {
       return true;
     };
     const startWork = () =>
-      post("/api/demo/start", { request: canonicalRequest })
+      post(webmcpMode ? "/api/missions/start" : "/api/demo/start", { request: activeRequest, sourceMode })
         .then((payload) => ({ payload }))
         .catch((failure: unknown) => ({ failure }));
 
@@ -295,12 +301,14 @@ function StandaloneDemo() {
       if (instant) {
         setPhase("sent");
         if (!finish(await startWork())) return;
-        setNarration(narrationText);
+        setNarration(sourceMode === "live"
+          ? "Woven checked both dedicated storefronts and returned only complete, compatible live carts. Payment remains on the selected merchant site."
+          : narrationText);
         setShowWidget(true);
         return;
       }
       await sleep(700);
-      await typeInComposer(canonicalRequest, isCancelled);
+      await typeInComposer(activeRequest, isCancelled);
       if (cancelled) return;
       setPhase("sent");
       await sleep(500);
@@ -327,6 +335,30 @@ function StandaloneDemo() {
       cancelled = true;
     };
   }, [instant]);
+
+  const switchSourceMode = async (nextMode: "demo" | "live") => {
+    if (!webmcpMode || nextMode === sourceMode) return;
+    setSourceMode(nextMode);
+    setPhase("sent");
+    setShowWidget(false);
+    setError(null);
+    setNarration("");
+    setCalls([]);
+    try {
+      const request = nextMode === "live" ? liveCanonicalRequest : canonicalRequest;
+      const payload = await track("start_mission", () => post("/api/missions/start", { request, sourceMode: nextMode }));
+      if (!payload.view) throw new Error("Woven did not return a mission.");
+      setView(payload.view);
+      setNarration(nextMode === "live"
+        ? "Woven checked both dedicated storefronts and returned only complete, compatible live carts. Payment remains on the selected merchant site."
+        : narrationText);
+      setShowWidget(true);
+      setPhase("ready");
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not switch commerce sources.");
+      setPhase("failed");
+    }
+  };
 
   // Closing beat: once the simulated payment confirms, the user says thanks and the host signs off.
   const order = view?.order;
@@ -394,7 +426,9 @@ function StandaloneDemo() {
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold tracking-tight">{webmcpMode ? "Woven WebMCP Workspace" : "Woven Demo Host"}</span>
           <ChevronDown className="size-3.5 text-muted-foreground" />
-          <Badge variant="secondary" className="font-mono text-[10px] uppercase tracking-[0.1em]">Simulated</Badge>
+          <Badge variant="secondary" className="font-mono text-[10px] uppercase tracking-[0.1em]">
+            {webmcpMode && sourceMode === "live" ? "Live stores" : "Simulated"}
+          </Badge>
           {webmcpMode && (
             <Badge variant="outline" className="hidden items-center gap-1 font-mono text-[10px] uppercase tracking-[0.08em] sm:inline-flex">
               <Globe2 className="size-3" />
@@ -403,6 +437,21 @@ function StandaloneDemo() {
           )}
         </div>
         <div className="flex items-center gap-1">
+          {webmcpMode && (
+            <div className="mr-1 flex rounded-lg border bg-muted p-0.5" aria-label="Commerce source">
+              {(["live", "demo"] as const).map((mode) => (
+                <button
+                  type="button"
+                  key={mode}
+                  className={cn("rounded-md px-2.5 py-1 text-xs font-medium capitalize", sourceMode === mode && "bg-background shadow-xs")}
+                  aria-pressed={sourceMode === mode}
+                  onClick={() => void switchSourceMode(mode)}
+                >
+                  {mode}
+                </button>
+              ))}
+            </div>
+          )}
           <Button variant="ghost" size="sm" className="hidden sm:inline-flex" asChild>
             <a href="/install" target="_blank" rel="noreferrer">
               How to install <ArrowUpRight className="size-3.5" />
@@ -429,7 +478,7 @@ function StandaloneDemo() {
             <>
               <div className="flex justify-end">
                 <div className="max-w-[85%] rounded-3xl bg-muted px-4 py-2.5 text-[15px] leading-6">
-                  {canonicalRequest}
+                  {activeRequest}
                 </div>
               </div>
 
@@ -559,7 +608,9 @@ function StandaloneDemo() {
           </div>
           <p className="mt-2 text-center text-xs text-muted-foreground">
             {webmcpMode
-              ? "WebMCP and the human share this live page — same server rules, human-only confirmation, no live charge."
+              ? sourceMode === "live"
+                ? "WebMCP and the human share this page — live catalog facts, human-only identity and checkout, payment on the merchant site."
+                : "WebMCP demo sources are simulated — same server rules, human-only confirmation, no live charge."
               : "Simulated rehearsal of the ChatGPT/Codex MCP experience — same server, real tool calls, no live charge."}
           </p>
         </div>
@@ -612,8 +663,13 @@ function Woven(props: WovenProps) {
 function OpenWorldWoven({ view, setView, nonce, invoke, openUrl }: WovenProps) {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
+  const liveMode = view.mission.sourceMode === "live";
   const activeCart = view.carts.find((cart) => cart.id === view.selectedCartId) || view.carts[0] || null;
   const preview = view.preview?.status === "pending" && view.preview.mandate.cartId === activeCart?.id ? view.preview : undefined;
+  const externalPreview = view.externalCheckout?.status === "pending" && view.externalCheckout.cartId === activeCart?.id
+    ? view.externalCheckout
+    : undefined;
   const sources = new Map((view.sources || []).map((source) => [source.id, source]));
 
   const act = async (label: string, name: string, arguments_: Record<string, unknown>) => {
@@ -641,13 +697,18 @@ function OpenWorldWoven({ view, setView, nonce, invoke, openUrl }: WovenProps) {
     const payload = await act("refresh", "build_carts", { missionId: view.mission.id });
     if (payload?.view?.identity.status !== "verified") await beginIdentity();
   };
-  const review = () => {
+  const review = async () => {
     if (!activeCart) return;
     if (view.identity.status !== "verified") {
       void beginIdentity();
       return;
     }
-    void act("preview", "create_checkout_preview", { missionId: view.mission.id, cartId: activeCart.id });
+    const payload = await act("preview", "create_checkout_preview", { missionId: view.mission.id, cartId: activeCart.id });
+    if (liveMode && payload) {
+      const privateUrl = payload._meta?.checkoutUrl;
+      if (typeof privateUrl === "string") setCheckoutUrl(privateUrl);
+      else setError("The merchant checkout link is missing. Revalidate the cart again.");
+    }
   };
   const confirm = () => {
     if (!preview || !nonce) {
@@ -665,16 +726,40 @@ function OpenWorldWoven({ view, setView, nonce, invoke, openUrl }: WovenProps) {
   return (
     <main className="mx-auto w-full max-w-[1040px] overflow-hidden rounded-2xl border bg-background shadow-sm">
       <header className="bg-zinc-950 px-6 py-8 text-white sm:px-10">
-        <div className="flex items-center gap-2.5"><WovenMark className="size-5" /><strong>Woven</strong><Badge variant="outline" className="border-white/25 font-mono text-[9px] uppercase text-white/70">Open-world POC</Badge></div>
+        <div className="flex flex-wrap items-center gap-2.5"><WovenMark className="size-5" /><strong>Woven</strong><Badge variant="outline" className="border-white/25 font-mono text-[9px] uppercase text-white/70">{liveMode ? "Live commerce" : "Open-world POC"}</Badge>{liveMode && <Badge variant="outline" className="border-emerald-400/40 font-mono text-[9px] uppercase text-emerald-200">Merchant checkout</Badge>}</div>
         <h1 className="mt-8 max-w-2xl text-3xl font-semibold tracking-tight">{view.mission.openWorld?.spec.goal || "Complete cart research"}</h1>
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/60">“{view.mission.request}”</p>
         <div className="mt-7 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-4">
           <Constraint label="Budget" value={formatMoney(view.mission.budgetCents)} />
           <Constraint label="Market" value="Singapore" />
           <Constraint label="Pickup" value={view.mission.pickupDate} />
-          <Constraint label="Discovery" value={`${view.agentEvents?.filter((event) => event.node === "verify").length || 1} pass${view.agentEvents?.filter((event) => event.node === "verify").length === 1 ? "" : "es"}`} />
+          <Constraint label="Source" value={liveMode ? "Live stores" : `${view.agentEvents?.filter((event) => event.node === "verify").length || 1} pass${view.agentEvents?.filter((event) => event.node === "verify").length === 1 ? "" : "es"}`} />
         </div>
       </header>
+
+      {liveMode && (
+        <section className="border-b bg-muted/30 px-6 py-5 sm:px-10" aria-labelledby="source-status-heading">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <span className="microlabel text-muted-foreground">Live source health</span>
+              <h2 id="source-status-heading" className="mt-1 text-base font-semibold">Platform verification status</h2>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {(view.connectorStatuses || []).map((status) => (
+                <Badge key={status.platform} variant={status.status === "healthy" ? "secondary" : "outline"} className="gap-1.5 font-mono text-[9px] uppercase">
+                  <span className={cn("size-1.5 rounded-full", status.status === "healthy" ? "bg-emerald-600" : status.status === "failed" ? "bg-amber-600" : "bg-zinc-400")} />
+                  {status.platform} · {status.status}
+                </Badge>
+              ))}
+            </div>
+          </div>
+          {(view.connectorStatuses || []).some((status) => status.status !== "healthy") && (
+            <ul className="mt-3 space-y-1 text-xs text-muted-foreground">
+              {(view.connectorStatuses || []).filter((status) => status.status !== "healthy").map((status) => <li key={status.platform}>{status.platform}: {status.message}</li>)}
+            </ul>
+          )}
+        </section>
+      )}
 
       <section className="px-6 py-8 sm:px-10" aria-labelledby="requirements-heading">
         <Kicker number="01" label="Structured mission" />
@@ -692,9 +777,9 @@ function OpenWorldWoven({ view, setView, nonce, invoke, openUrl }: WovenProps) {
         <section className="border-t px-6 py-8 sm:px-10" aria-labelledby="connected-heading">
           <Kicker number="02" label="Connected catalog" />
           <h2 id="connected-heading" className="mt-3 text-xl font-semibold">Verified one-location carts</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Only current connected-catalog facts can unlock checkout.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Only current connected-catalog facts can unlock checkout. Live carts never mix platforms.</p>
           <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {view.carts.map((cart) => <article key={cart.id} className={cn("rounded-xl border p-5", activeCart?.id === cart.id && "border-zinc-950 ring-1 ring-zinc-950")}><div className="flex items-center justify-between gap-2"><Badge className="font-mono text-[9px] uppercase">{cart.badge}</Badge><span className="text-xs text-emerald-700"><Check className="mr-1 inline size-3" />Checkout eligible</span></div><h3 className="mt-4 font-semibold">{cart.merchantName}</h3><p className="text-xs text-muted-foreground">{cart.locationName} · ready ~{cart.pickupMinutes} min</p><div className="mt-4 divide-y rounded-lg border">{cart.lines.map((line) => <div key={line.offerId} className="flex items-start justify-between gap-3 px-3 py-2.5 text-xs"><span>{line.quantity > 1 ? `${line.quantity} × ` : ""}{line.name}</span><strong>{formatMoney(line.priceCents * line.quantity)}</strong></div>)}</div><div className="mt-4 flex items-end justify-between"><span className="text-xs text-muted-foreground">Verified total</span><strong className="text-xl">{formatMoney(cart.totalCents)}</strong></div><Button className="mt-4 w-full" variant={activeCart?.id === cart.id ? "secondary" : "default"} disabled={busy !== null} onClick={() => void act("select", "select_cart", { missionId: view.mission.id, cartId: cart.id })}>{activeCart?.id === cart.id ? "Selected" : "Select cart"}</Button></article>)}
+            {view.carts.map((cart) => <article key={cart.id} className={cn("rounded-xl border p-5", activeCart?.id === cart.id && "border-zinc-950 ring-1 ring-zinc-950")}><div className="flex items-center justify-between gap-2"><div className="flex flex-wrap gap-1.5"><Badge className="font-mono text-[9px] uppercase">{cart.badge}</Badge>{liveMode && <Badge variant="outline" className="font-mono text-[9px] uppercase">{cart.platform}</Badge>}</div><span className="text-xs text-emerald-700"><Check className="mr-1 inline size-3" />Verified</span></div><h3 className="mt-4 font-semibold">{cart.merchantName}</h3><p className="text-xs text-muted-foreground">{cart.locationName} · ready ~{cart.pickupMinutes} min</p>{liveMode && <p className="mt-1 text-[11px] text-muted-foreground">Verified {formatTime(cart.lastVerifiedAt || cart.inventoryCheckedAt)}</p>}<div className="mt-4 divide-y rounded-lg border">{cart.lines.map((line) => <div key={line.offerId} className="flex items-start justify-between gap-3 px-3 py-2.5 text-xs"><span>{line.quantity > 1 ? `${line.quantity} × ` : ""}{line.name}</span><strong>{formatMoney(line.priceCents * line.quantity)}</strong></div>)}</div><div className="mt-4 flex items-end justify-between"><span className="text-xs text-muted-foreground">Exact total</span><strong className="text-xl">{formatMoney(cart.totalCents)}</strong></div>{liveMode && cart.sourceUrl && <Button asChild variant="ghost" size="sm" className="mt-2 w-full"><a href={cart.sourceUrl} rel="noreferrer" onClick={(event) => { event.preventDefault(); void openUrl(cart.sourceUrl!); }}>View merchant catalog <ArrowUpRight className="size-3.5" /></a></Button>}<Button className="mt-2 w-full" variant={activeCart?.id === cart.id ? "secondary" : "default"} disabled={busy !== null} onClick={() => { setCheckoutUrl(null); void act("select", "select_cart", { missionId: view.mission.id, cartId: cart.id }); }}>{activeCart?.id === cart.id ? "Selected" : "Select cart"}</Button></article>)}
           </div>
         </section>
       )}
@@ -711,13 +796,13 @@ function OpenWorldWoven({ view, setView, nonce, invoke, openUrl }: WovenProps) {
       {activeCart?.checkoutEligible === true && !view.order && (
         <section className="border-t px-6 py-8 sm:px-10">
           <Kicker number={view.researchLeads?.length ? "04" : "03"} label="Existing checkout boundary" />
-          <div className="mt-5 grid gap-5 rounded-xl border p-6 sm:grid-cols-[1fr_auto] sm:items-center"><div><h2 className="text-lg font-semibold">{preview ? "Review exact terms" : view.identity.status === "verified" ? "Ready for exact review" : "Verify demo identity first"}</h2><p className="mt-1 text-sm text-muted-foreground">Price and stock are rebuilt from SQLite before preview and confirmation. Payment remains simulated.</p>{preview && <dl className="mt-4"><MandateRow label="Merchant" value={preview.mandate.merchantName} /><MandateRow label="Pickup" value={preview.mandate.pickupLocation} /><MandateRow label="Authorized total" value={formatMoney(preview.mandate.amountCents)} /></dl>}</div>{preview ? <Button disabled={busy !== null || !nonce} onClick={confirm}>{busy === "confirm" ? "Authorizing…" : `Confirm ${formatMoney(preview.mandate.amountCents)}`}</Button> : view.identity.status === "pending" ? <Button disabled={busy !== null} onClick={() => void checkIdentity()}>{busy ? "Checking…" : "I verified · check status"}</Button> : <Button disabled={busy !== null} onClick={review}>{busy ? "Working…" : view.identity.status === "verified" ? "Review checkout" : "Verify demo identity"}</Button>}</div>
+          <div className="mt-5 grid gap-5 rounded-xl border p-6 sm:grid-cols-[1fr_auto] sm:items-center"><div><h2 className="text-lg font-semibold">{preview || externalPreview ? "Review exact terms" : view.identity.status === "verified" ? "Ready for exact review" : "Verify demo identity first"}</h2><p className="mt-1 text-sm text-muted-foreground">{liveMode ? "Every selected variant is revalidated before Woven creates a private handoff. Payment occurs on the merchant site." : "Price and stock are rebuilt from SQLite before preview and confirmation. Payment remains simulated."}</p>{preview && <dl className="mt-4"><MandateRow label="Merchant" value={preview.mandate.merchantName} /><MandateRow label="Pickup" value={preview.mandate.pickupLocation} /><MandateRow label="Authorized total" value={formatMoney(preview.mandate.amountCents)} /></dl>}{externalPreview && <dl className="mt-4"><MandateRow label="Merchant" value={externalPreview.merchantName} /><MandateRow label="Platform" value={externalPreview.platform === "shopify" ? "Shopify" : "WooCommerce"} /><MandateRow label="Exact total" value={formatMoney(externalPreview.amountCents)} /><MandateRow label="Handoff expires" value={formatTime(externalPreview.expiresAt)} /></dl>}</div>{externalPreview ? <div className="min-w-48"><Button className="w-full" disabled={busy !== null || !checkoutUrl} onClick={() => checkoutUrl && void openUrl(checkoutUrl)}>{checkoutUrl ? `Continue at ${externalPreview.platform === "shopify" ? "Shopify" : "WooCommerce"}` : "Recreate handoff"}<ArrowUpRight className="size-3.5" /></Button><p className="mt-2 max-w-52 text-center text-[11px] leading-relaxed text-muted-foreground">Payment occurs on the merchant site. Woven has not placed an order.</p>{!checkoutUrl && <Button variant="ghost" size="sm" className="mt-1 w-full" onClick={() => void review()}>Revalidate again</Button>}</div> : preview ? <Button disabled={busy !== null || !nonce} onClick={confirm}>{busy === "confirm" ? "Authorizing…" : `Confirm ${formatMoney(preview.mandate.amountCents)}`}</Button> : view.identity.status === "pending" ? <Button disabled={busy !== null} onClick={() => void checkIdentity()}>{busy ? "Checking…" : "I verified · check status"}</Button> : <Button disabled={busy !== null} onClick={() => void review()}>{busy ? "Working…" : view.identity.status === "verified" ? liveMode ? `Review & continue at ${activeCart.platform === "shopify" ? "Shopify" : "WooCommerce"}` : "Review checkout" : "Verify demo identity"}</Button>}</div>
         </section>
       )}
 
       {view.order && <OrderResult view={view} />}
       {error && <div className="m-4 rounded-lg bg-destructive px-4 py-3 text-sm text-white" role="alert">{error}</div>}
-      <footer className="microlabel flex flex-col gap-1 border-t bg-muted/40 px-6 py-4 text-muted-foreground sm:flex-row sm:justify-between sm:px-10"><span>Woven / Open-world cart POC</span><span>Web is research-only · checkout stays fail-closed</span></footer>
+      <footer className="microlabel flex flex-col gap-1 border-t bg-muted/40 px-6 py-4 text-muted-foreground sm:flex-row sm:justify-between sm:px-10"><span>Woven / {liveMode ? "Cross-platform live commerce" : "Open-world cart POC"}</span><span>{liveMode ? "Merchant-owned checkout · Woven never handles payment credentials" : "Web is research-only · checkout stays fail-closed"}</span></footer>
     </main>
   );
 }

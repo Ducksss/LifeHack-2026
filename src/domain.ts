@@ -13,11 +13,23 @@ export type Scenario =
 
 export type Category = string;
 
+export type SourceMode = "demo" | "live";
+export type CommercePlatform = "demo" | "shopify" | "woocommerce";
+
+export interface ConnectorStatus {
+  platform: Exclude<CommercePlatform, "demo">;
+  status: "healthy" | "failed" | "unconfigured";
+  message: string;
+  checkedAt: string;
+  retryable: boolean;
+}
+
 export interface MissionInput {
   request: string;
   budgetCents?: number;
   campers?: number;
   pickupDate?: string;
+  sourceMode?: SourceMode;
 }
 
 export interface Mission {
@@ -33,6 +45,10 @@ export interface Mission {
   assumptions: string[];
   createdAt: string;
   engine?: "camping" | "open-world";
+  sourceMode?: SourceMode;
+  liveCommerce?: {
+    connectorStatuses: ConnectorStatus[];
+  };
   openWorld?: {
     spec: MissionSpec;
     researchLeads: ResearchLead[];
@@ -79,6 +95,12 @@ export interface CartLine {
   priceCents: number;
   quantity: number;
   compatibility: string;
+  platform?: CommercePlatform;
+  externalStoreId?: string;
+  externalProductId?: string;
+  externalVariantId?: string;
+  sourceUrl?: string;
+  lastVerifiedAt?: string;
 }
 
 export interface RankedCart {
@@ -105,6 +127,10 @@ export interface RankedCart {
   sources?: EvidenceSource[];
   checkoutEligible?: boolean;
   rankingBreakdown?: { evidence: number; pickup: number; budget: number };
+  platform?: CommercePlatform;
+  externalStoreId?: string;
+  sourceUrl?: string;
+  lastVerifiedAt?: string;
 }
 
 export interface CartAlternative {
@@ -139,6 +165,7 @@ export interface MissionView {
   selectedCartId: string | null;
   identity: DemoIdentityStatus;
   preview?: PublicPreview;
+  externalCheckout?: ExternalCheckoutPreview;
   order?: Order;
   receiptVerification?: ReceiptVerification;
   scenario: Scenario;
@@ -148,6 +175,22 @@ export interface MissionView {
   agentEvents?: AgentEvent[];
   evidenceChecks?: EvidenceCheck[];
   checkoutEligible: boolean;
+  connectorStatuses?: ConnectorStatus[];
+}
+
+export interface ExternalCheckoutPreview {
+  id: string;
+  missionId: string;
+  cartId: string;
+  cartVersion: string;
+  platform: Exclude<CommercePlatform, "demo">;
+  merchantName: string;
+  currency: "SGD";
+  amountCents: number;
+  lines: Array<{ offerId: string; name: string; quantity: number; priceCents: number }>;
+  expiresAt: string;
+  status: "pending" | "expired" | "invalidated";
+  createdAt: string;
 }
 
 export interface DemoIdentityStatus {
@@ -373,6 +416,7 @@ export function createMission(input: MissionInput, now = new Date()): Mission {
     ],
     createdAt: now.toISOString(),
     engine: "camping",
+    sourceMode: input.sourceMode || "demo",
   };
 }
 
@@ -486,6 +530,8 @@ function createRankedCart(
     alternatives: [],
     inventoryCheckedAt: now.toISOString(),
     checkoutEligible: true,
+    platform: "demo",
+    lastVerifiedAt: now.toISOString(),
   };
 }
 

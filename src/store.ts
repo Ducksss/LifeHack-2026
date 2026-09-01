@@ -13,12 +13,14 @@ import {
   publicPreview,
   seedCatalog,
   type CatalogItem,
+  type ConnectorStatus,
   type CheckoutPreview,
   type ApprovedAlternative,
   type MerchantAlternative,
   type Mission,
   type MissionInput,
   type MissionView,
+  type ExternalCheckoutPreview,
   type Order,
   type RankedCart,
   type Receipt,
@@ -30,7 +32,9 @@ import {
   connectedOffersForSpec,
   missionSpecSchema,
   type OpenWorldResult,
+  type ConnectedOffer,
 } from "./open-world.js";
+import type { PrivateCheckoutHandoff } from "./live-commerce.js";
 import { authorizePayment } from "./payment.js";
 
 interface AuditEvent {
@@ -92,6 +96,13 @@ export class WovenStore {
         mission_id TEXT NOT NULL REFERENCES missions(id),
         offer_ids TEXT NOT NULL
       );
+      CREATE TABLE IF NOT EXISTS live_offer_snapshots (
+        mission_id TEXT NOT NULL REFERENCES missions(id),
+        offer_id TEXT NOT NULL,
+        requirement_id TEXT NOT NULL,
+        data TEXT NOT NULL,
+        PRIMARY KEY (mission_id, offer_id, requirement_id)
+      );
       CREATE TABLE IF NOT EXISTS merchant_alternatives (
         from_offer_id TEXT NOT NULL REFERENCES catalog(offer_id),
         to_offer_id TEXT NOT NULL REFERENCES catalog(offer_id),
@@ -103,6 +114,14 @@ export class WovenStore {
         mission_id TEXT NOT NULL REFERENCES missions(id),
         data TEXT NOT NULL,
         nonce TEXT NOT NULL,
+        status TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS external_checkout_previews (
+        id TEXT PRIMARY KEY,
+        mission_id TEXT NOT NULL REFERENCES missions(id),
+        data TEXT NOT NULL,
+        private_url TEXT NOT NULL,
+        external_cart_id TEXT NOT NULL,
         status TEXT NOT NULL
       );
       CREATE TABLE IF NOT EXISTS demo_identity_requests (
@@ -220,6 +239,13 @@ export class WovenStore {
   private cartsForMission(mission: Mission): RankedCart[] {
     const catalog = this.getCatalog();
     const scenario = this.getScenario();
+    if (mission.sourceMode === "live" && mission.openWorld) {
+      const offers = this.db
+        .prepare("SELECT data FROM live_offer_snapshots WHERE mission_id = ? ORDER BY offer_id, requirement_id")
+        .all(mission.id)
+        .map((row) => JSON.parse(String(row.data)) as ConnectedOffer);
+      return buildGenericCarts(mission.openWorld.spec, offers).map((cart) => ({ ...cart, alternatives: [] }));
+    }
     if (mission.engine === "open-world" && mission.openWorld) {
       return this.db
         .prepare("SELECT offer_ids FROM mission_carts WHERE mission_id = ? ORDER BY rowid")
@@ -298,6 +324,7 @@ export class WovenStore {
       assumptions: spec.assumptions,
       createdAt: now.toISOString(),
       engine: "open-world",
+      sourceMode: "demo",
       openWorld: {
         spec,
         researchLeads: result.researchLeads,
@@ -327,10 +354,171 @@ export class WovenStore {
     return this.view(mission.id, now);
   }
 
+  startLiveMission(
+    request: string,
+    result: OpenWorldResult,
+    offers: ConnectedOffer[],
+    connectorStatuses: ConnectorStatus[],
+    now = new Date(),
+  ): MissionView {
+    const spec = missionSpecSchema.parse(result.spec);
+    const mission: Mission = {
+      id: `mis_${randomBytes(6).toString("hex")}`,
+      request: request.trim(),
+      budgetCents: spec.budgetCents,
+      campers: spec.requirements.find((requirement) => requirement.id === "sleeping_bag")?.quantity || 0,
+      weather: /rain|wet/i.test(request) ? "Rainy" : "Fair",
+      maxPackedLiters: spec.maxPackedLiters || 0,
+      minTentWaterproofMm: 2_000,
+      pickupDate: spec.pickupDate,
+      currency: "SGD",
+      assumptions: spec.assumptions,
+      createdAt: now.toISOString(),
+      engine: "open-world",
+      sourceMode: "live",
+      liveCommerce: { connectorStatuses },
+      openWorld: {
+        spec,
+        researchLeads: result.researchLeads,
+        sources: result.sources,
+        events: result.events,
+        evidenceChecks: result.evidenceChecks,
+      },
+    };
+    this.db.exec("BEGIN IMMEDIATE");
+    try {
+      this.db.prepare("INSERT INTO missions(id, data) VALUES (?, ?)").run(mission.id, JSON.stringify(mission));
+      const insert = this.db.prepare(`
+        INSERT INTO live_offer_snapshots(mission_id, offer_id, requirement_id, data)
+        VALUES (?, ?, ?, ?)
+      `);
+      for (const offer of offers) insert.run(mission.id, offer.offerId, offer.requirementId, JSON.stringify(offer));
+      this.audit("mission.started", { missionId: mission.id, request: mission.request, engine: mission.engine, sourceMode: "live" });
+      for (const status of connectorStatuses) this.audit("connector.checked", { missionId: mission.id, ...status });
+      this.db.exec("COMMIT");
+    } catch (error) {
+      this.db.exec("ROLLBACK");
+      throw error;
+    }
+    return this.view(mission.id, now);
+  }
+
   private getMission(missionId: string): Mission {
     const row = this.db.prepare("SELECT data FROM missions WHERE id = ?").get(missionId);
     if (!row) throw new DomainError("MISSION_NOT_FOUND", "Mission not found. Start a new mission.");
     return JSON.parse(String(row.data)) as Mission;
+  }
+
+  mission(missionId: string): Mission {
+    return this.getMission(missionId);
+  }
+
+  liveOffers(missionId: string): ConnectedOffer[] {
+    const mission = this.getMission(missionId);
+    if (mission.sourceMode !== "live") throw new DomainError("SOURCE_MODE_MISMATCH", "This mission does not use live commerce.");
+    return this.db
+      .prepare("SELECT data FROM live_offer_snapshots WHERE mission_id = ? ORDER BY offer_id, requirement_id")
+      .all(missionId)
+      .map((row) => JSON.parse(String(row.data)) as ConnectedOffer);
+  }
+
+  replaceLiveOffers(
+    missionId: string,
+    offers: ConnectedOffer[],
+    connectorStatuses: ConnectorStatus[],
+    now = new Date(),
+  ): { view: MissionView; selectionInvalidated: boolean } {
+    const mission = this.getMission(missionId);
+    if (mission.sourceMode !== "live" || !mission.openWorld) {
+      throw new DomainError("SOURCE_MODE_MISMATCH", "This mission does not use live commerce.");
+    }
+    const previous = this.view(missionId, now);
+    const previousSelected = previous.carts.find((cart) => cart.id === previous.selectedCartId);
+    const updatedMission: Mission = { ...mission, liveCommerce: { connectorStatuses } };
+    this.db.exec("BEGIN IMMEDIATE");
+    try {
+      this.db.prepare("UPDATE missions SET data = ? WHERE id = ?").run(JSON.stringify(updatedMission), missionId);
+      this.db.prepare("DELETE FROM live_offer_snapshots WHERE mission_id = ?").run(missionId);
+      const insert = this.db.prepare(`
+        INSERT INTO live_offer_snapshots(mission_id, offer_id, requirement_id, data)
+        VALUES (?, ?, ?, ?)
+      `);
+      for (const offer of offers) insert.run(missionId, offer.offerId, offer.requirementId, JSON.stringify(offer));
+      const currentCarts = buildGenericCarts(mission.openWorld.spec, offers, now);
+      const currentSelected = previousSelected && currentCarts.find((cart) => cart.id === previousSelected.id);
+      const selectionInvalidated = Boolean(previousSelected && (!currentSelected || currentSelected.version !== previousSelected.version));
+      if (selectionInvalidated) {
+        this.db.prepare("UPDATE missions SET selected_cart_id = NULL WHERE id = ?").run(missionId);
+        this.db.prepare("UPDATE external_checkout_previews SET status = 'invalidated' WHERE mission_id = ? AND status = 'pending'").run(missionId);
+      }
+      for (const status of connectorStatuses) this.audit("connector.checked", { missionId, ...status });
+      this.audit("live.snapshots_replaced", { missionId, offers: offers.length, selectionInvalidated });
+      this.db.exec("COMMIT");
+      return { view: this.view(missionId, now), selectionInvalidated };
+    } catch (error) {
+      this.db.exec("ROLLBACK");
+      throw error;
+    }
+  }
+
+  requireLiveIdentity(missionId: string, now = new Date()): void {
+    const mission = this.getMission(missionId);
+    if (mission.sourceMode !== "live") throw new DomainError("SOURCE_MODE_MISMATCH", "This mission does not use live commerce.");
+    this.requireIdentitySession(missionId, now);
+  }
+
+  createExternalCheckoutPreview(
+    missionId: string,
+    cartId: string,
+    handoff: PrivateCheckoutHandoff,
+    now = new Date(),
+  ): { view: MissionView; checkoutUrl: string } {
+    const mission = this.getMission(missionId);
+    if (mission.sourceMode !== "live") throw new DomainError("SOURCE_MODE_MISMATCH", "This mission does not use live commerce.");
+    this.requireIdentitySession(missionId, now);
+    const cart = this.cartsForMission(mission).find((candidate) => candidate.id === cartId);
+    if (!cart || cart.checkoutEligible !== true) throw new DomainError("CART_STALE", "The live cart changed. Review refreshed choices.", true);
+    if (cart.platform !== handoff.platform) throw new DomainError("MIXED_PLATFORM_CART", "The checkout handoff does not match the selected platform.");
+    const preview: ExternalCheckoutPreview = {
+      id: `ext_${randomBytes(8).toString("hex")}`,
+      missionId,
+      cartId: cart.id,
+      cartVersion: cart.version,
+      platform: handoff.platform,
+      merchantName: cart.merchantName,
+      currency: "SGD",
+      amountCents: cart.totalCents,
+      lines: cart.lines.map((line) => ({
+        offerId: line.offerId,
+        name: line.name,
+        quantity: line.quantity,
+        priceCents: line.priceCents,
+      })),
+      expiresAt: handoff.expiresAt,
+      status: "pending",
+      createdAt: now.toISOString(),
+    };
+    this.db.exec("BEGIN IMMEDIATE");
+    try {
+      this.db.prepare("UPDATE external_checkout_previews SET status = 'invalidated' WHERE mission_id = ? AND status = 'pending'").run(missionId);
+      this.db.prepare(`
+        INSERT INTO external_checkout_previews(id, mission_id, data, private_url, external_cart_id, status)
+        VALUES (?, ?, ?, ?, ?, 'pending')
+      `).run(preview.id, missionId, JSON.stringify(preview), handoff.checkoutUrl, handoff.externalCartId);
+      this.db.prepare("UPDATE missions SET selected_cart_id = ? WHERE id = ?").run(cart.id, missionId);
+      this.audit("checkout.external_handoff_created", {
+        missionId,
+        previewId: preview.id,
+        platform: preview.platform,
+        cartVersion: preview.cartVersion,
+        amountCents: preview.amountCents,
+      });
+      this.db.exec("COMMIT");
+    } catch (error) {
+      this.db.exec("ROLLBACK");
+      throw error;
+    }
+    return { view: this.view(missionId, now), checkoutUrl: handoff.checkoutUrl };
   }
 
   identityStatus(missionId: string, now = new Date()): MissionView["identity"] {
@@ -521,9 +709,22 @@ export class WovenStore {
     const orderRow = this.db
       .prepare("SELECT data FROM orders WHERE mission_id = ? ORDER BY rowid DESC LIMIT 1")
       .get(missionId);
+    const externalRow = this.db
+      .prepare("SELECT data, status FROM external_checkout_previews WHERE mission_id = ? ORDER BY rowid DESC LIMIT 1")
+      .get(missionId);
     let preview = previewRow ? (JSON.parse(String(previewRow.data)) as CheckoutPreview) : undefined;
     if (preview) preview = { ...preview, status: String(previewRow!.status) as CheckoutPreview["status"] };
     const order = orderRow ? JSON.parse(String(orderRow.data)) as Order : undefined;
+    let externalCheckout = externalRow ? JSON.parse(String(externalRow.data)) as ExternalCheckoutPreview : undefined;
+    if (externalCheckout) {
+      const storedStatus = String(externalRow!.status) as ExternalCheckoutPreview["status"];
+      externalCheckout = {
+        ...externalCheckout,
+        status: storedStatus === "pending" && new Date(externalCheckout.expiresAt).getTime() <= now.getTime()
+          ? "expired"
+          : storedStatus,
+      };
+    }
     const selectedCartId = missionRow.selected_cart_id && carts.some((cart) => cart.id === missionRow.selected_cart_id)
       ? String(missionRow.selected_cart_id)
       : null;
@@ -533,6 +734,7 @@ export class WovenStore {
       selectedCartId,
       identity: this.identityStatus(missionId, now),
       ...(preview ? { preview: publicPreview(preview) } : {}),
+      ...(externalCheckout ? { externalCheckout } : {}),
       ...(order ? { order } : {}),
       ...(order?.receipt ? { receiptVerification: this.verifyReceipt(order.receipt.receiptNumber, order.receipt.signature) } : {}),
       scenario: this.getScenario(),
@@ -549,6 +751,7 @@ export class WovenStore {
         evidenceChecks: mission.openWorld.evidenceChecks,
       } : {}),
       checkoutEligible: carts.some((cart) => cart.checkoutEligible === true),
+      ...(mission.liveCommerce ? { connectorStatuses: mission.liveCommerce.connectorStatuses } : {}),
     };
   }
 
@@ -559,7 +762,17 @@ export class WovenStore {
       throw new DomainError("CART_NOT_FOUND", "That cart is no longer available. Refresh the mission.", true);
     }
     if (cart.checkoutEligible !== true) throw new DomainError("CHECKOUT_INELIGIBLE", "That result is research-only and cannot be selected for checkout.");
-    this.db.prepare("UPDATE missions SET selected_cart_id = ? WHERE id = ?").run(cartId, missionId);
+    this.db.exec("BEGIN IMMEDIATE");
+    try {
+      this.db.prepare("UPDATE missions SET selected_cart_id = ? WHERE id = ?").run(cartId, missionId);
+      if (view.mission.sourceMode === "live") {
+        this.db.prepare("UPDATE external_checkout_previews SET status = 'invalidated' WHERE mission_id = ? AND status = 'pending'").run(missionId);
+      }
+      this.db.exec("COMMIT");
+    } catch (error) {
+      this.db.exec("ROLLBACK");
+      throw error;
+    }
     this.audit("cart.selected", { missionId, cartId });
     return this.view(missionId);
   }
@@ -590,6 +803,9 @@ export class WovenStore {
 
   checkoutPreview(missionId: string, cartId: string, now = new Date()): { view: MissionView; nonce: string } {
     const mission = this.getMission(missionId);
+    if (mission.sourceMode === "live") {
+      throw new DomainError("EXTERNAL_CHECKOUT_REQUIRED", "Live carts continue at the merchant checkout and cannot use Woven's simulated payment path.");
+    }
     const identity = this.requireIdentitySession(missionId, now);
     const carts = this.cartsForMission(mission);
     const cart = carts.find((candidate) => candidate.id === cartId);
@@ -871,8 +1087,10 @@ export class WovenStore {
     try {
       this.db.exec(`
         DELETE FROM orders;
-        DELETE FROM previews;
-        DELETE FROM mission_carts;
+      DELETE FROM previews;
+        DELETE FROM external_checkout_previews;
+      DELETE FROM mission_carts;
+        DELETE FROM live_offer_snapshots;
         DELETE FROM demo_identity_sessions;
         DELETE FROM demo_identity_requests;
         DELETE FROM missions;

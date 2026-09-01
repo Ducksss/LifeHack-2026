@@ -7,6 +7,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import express, { type Response } from "express";
+import { randomUUID } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -15,6 +16,9 @@ import {
   CANONICAL_REQUEST,
   DomainError,
   money,
+  type CartLine,
+  type ConnectorStatus,
+  type MissionInput,
   type MissionView,
   type Scenario,
 } from "./domain.js";
@@ -24,7 +28,16 @@ import {
   createOpenAIDependencies,
   missionSpecSchema,
   runOpenWorldMission,
+  type ConnectedOffer,
+  type OpenWorldDependencies,
 } from "./open-world.js";
+import {
+  campingMissionSpec,
+  isCampingRequest,
+  LiveConnectorRegistry,
+  liveConnectorsFromEnv,
+  type LivePlatform,
+} from "./live-commerce.js";
 import { inlineWidgetAssets, WIDGET_REFRESH_META, WIDGET_URI } from "./widget.js";
 
 const VERSION = "0.3.0";
@@ -34,6 +47,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const webRoot = path.join(root, "dist", "web");
 const widgetRoot = path.join(root, "dist", "widget");
 const store = new WovenStore();
+const liveConnectors = new LiveConnectorRegistry(liveConnectorsFromEnv(baseUrl));
 
 type ToolResult = {
   content: Array<{ type: "text"; text: string }>;
@@ -94,10 +108,11 @@ async function attemptAsync(work: () => Promise<ToolResult>): Promise<ToolResult
 }
 
 function usesCampingEngine(input: { request: string; campers?: number }): boolean {
-  return input.campers !== undefined || /\b(?:camp(?:ing|ers?)?|tent|sleeping\s+(?:bag|mat))\b/i.test(input.request);
+  return input.campers !== undefined || isCampingRequest(input.request);
 }
 
-async function startMission(input: { request: string; budgetCents?: number; campers?: number; pickupDate?: string }): Promise<MissionView> {
+async function startMission(input: MissionInput): Promise<MissionView> {
+  if (input.sourceMode === "live") return startLiveMission(input);
   if (usesCampingEngine(input)) return store.startMission(input);
   const catalog = store.getCatalog();
   const connectedCatalogFields = Object.fromEntries(
@@ -122,6 +137,157 @@ async function startMission(input: { request: string; budgetCents?: number; camp
   return store.startOpenWorldMission(input.request, result);
 }
 
+async function startLiveMission(input: MissionInput): Promise<MissionView> {
+  let latestOffers: ConnectedOffer[] = [];
+  let latestStatuses: ConnectorStatus[] = [];
+  const camping = usesCampingEngine(input);
+  let dependencies: OpenWorldDependencies;
+  if (camping) {
+    dependencies = {
+      interpret: async () => campingMissionSpec(input),
+      discoverConnected: async (spec, pass, signal) => {
+        const discovery = await liveConnectors.discoverWithStatuses(spec, pass, signal);
+        latestOffers = discovery.offers;
+        latestStatuses = discovery.statuses;
+        return latestOffers;
+      },
+      discoverWeb: async () => ({ leads: [], sources: [] }),
+    };
+  } else {
+    const openai = createOpenAIDependencies();
+    dependencies = {
+      ...openai,
+      interpret: async (request, signal) => {
+        const interpreted = await openai.interpret(request, signal);
+        return missionSpecSchema.parse({
+          ...interpreted,
+          ...(input.budgetCents === undefined ? {} : { budgetCents: input.budgetCents }),
+          ...(input.pickupDate === undefined ? {} : { pickupDate: input.pickupDate }),
+        });
+      },
+      discoverConnected: async (spec, pass, signal) => {
+        const discovery = await liveConnectors.discoverWithStatuses(spec, pass, signal);
+        latestOffers = discovery.offers;
+        latestStatuses = discovery.statuses;
+        return latestOffers;
+      },
+    };
+  }
+  const result = await runOpenWorldMission({ request: input.request, connectedOffers: [], dependencies, timeoutMs: 25_000 });
+  const statuses = latestStatuses;
+  if (!result.carts.length) {
+    const detail = statuses.map((status) => `${status.platform}: ${status.message}`).join(" ");
+    throw new DomainError(
+      "LIVE_CARTS_UNAVAILABLE",
+      `No live platform produced a complete, compatible SGD cart under budget. ${detail}`,
+      true,
+    );
+  }
+  return store.startLiveMission(input.request, result, latestOffers, statuses);
+}
+
+async function refreshMission(missionId: string): Promise<MissionView> {
+  const mission = store.mission(missionId);
+  if (mission.sourceMode !== "live" || !mission.openWorld) return store.view(missionId);
+  const discovery = await withNetworkTimeout("Live storefront refresh", 25_000, (signal) =>
+    liveConnectors.discoverWithStatuses(mission.openWorld!.spec, 0, signal));
+  const replaced = store.replaceLiveOffers(missionId, discovery.offers, discovery.statuses);
+  if (!replaced.view.carts.length) {
+    throw new DomainError("LIVE_CARTS_UNAVAILABLE", "No live platform currently has a complete compatible cart. Try again after the stores recover.", true);
+  }
+  return replaced.view;
+}
+
+async function withNetworkTimeout<T>(label: string, timeoutMs: number, work: (signal: AbortSignal) => Promise<T>): Promise<T> {
+  const controller = new AbortController();
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      work(controller.signal),
+      new Promise<never>((_resolve, reject) => {
+        timer = setTimeout(() => {
+          controller.abort();
+          reject(new DomainError("CONNECTOR_TIMEOUT", `${label} timed out. Try again.`, true));
+        }, timeoutMs);
+      }),
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
+function sameLiveLine(line: CartLine, offer: ConnectedOffer): boolean {
+  return offer.platform === line.platform &&
+    offer.externalStoreId === line.externalStoreId &&
+    offer.externalProductId === line.externalProductId &&
+    offer.externalVariantId === line.externalVariantId &&
+    offer.priceCents === line.priceCents &&
+    offer.stock >= line.quantity;
+}
+
+function statusForRevalidation(statuses: ConnectorStatus[], platform: LivePlatform, healthy: boolean, detail: string): ConnectorStatus[] {
+  const checkedAt = new Date().toISOString();
+  return [
+    ...statuses.filter((status) => status.platform !== platform),
+    { platform, status: healthy ? "healthy" : "failed", message: detail, checkedAt, retryable: !healthy } as ConnectorStatus,
+  ].toSorted((left, right) => left.platform.localeCompare(right.platform));
+}
+
+async function createCheckoutPreview(missionId: string, cartId: string): Promise<{ view: MissionView; meta: Record<string, unknown>; text: string }> {
+  const mission = store.mission(missionId);
+  if (mission.sourceMode !== "live") {
+    const { view, nonce } = store.checkoutPreview(missionId, cartId);
+    return {
+      view,
+      meta: { confirmationNonce: nonce },
+      text: "Checkout preview created. No purchase has occurred; the user must explicitly confirm the exact merchant and amount.",
+    };
+  }
+  store.requireLiveIdentity(missionId);
+  const before = store.view(missionId);
+  const cart = before.carts.find((candidate) => candidate.id === cartId);
+  if (!cart || (cart.platform !== "shopify" && cart.platform !== "woocommerce")) {
+    throw new DomainError("CART_STALE", "The selected live cart is no longer available. Refresh and choose again.", true);
+  }
+  const connector = liveConnectors.connector(cart.platform);
+  let revalidated: ConnectedOffer[];
+  try {
+    revalidated = await withNetworkTimeout(`${cart.platform} revalidation`, 12_000, (signal) => connector.revalidate(cart.lines, signal));
+  } catch (error) {
+    const statuses = statusForRevalidation(before.connectorStatuses || [], cart.platform, false, messageForError(error));
+    store.replaceLiveOffers(missionId, store.liveOffers(missionId), statuses);
+    throw error;
+  }
+  const currentByLine = new Map(revalidated.map((offer) => [`${offer.offerId}:${offer.requirementId}`, offer]));
+  const unchanged = cart.lines.every((line) => {
+    const offer = currentByLine.get(`${line.offerId}:${line.category}`);
+    return Boolean(offer && sameLiveLine(line, offer));
+  });
+  const selectedKeys = new Set(cart.lines.map((line) => `${line.offerId}:${line.category}`));
+  const merged = [
+    ...store.liveOffers(missionId).filter((offer) => !selectedKeys.has(`${offer.offerId}:${offer.requirementId}`)),
+    ...revalidated,
+  ];
+  const statuses = statusForRevalidation(before.connectorStatuses || [], cart.platform, true, `${cart.lines.length} selected variants revalidated.`);
+  const refreshed = store.replaceLiveOffers(missionId, merged, statuses);
+  const currentCart = refreshed.view.carts.find((candidate) => candidate.id === cart.id);
+  if (!unchanged || refreshed.selectionInvalidated || !currentCart || currentCart.version !== cart.version) {
+    throw new DomainError("CART_STALE", "Live price, stock, or variant identity changed. Review the refreshed cart before continuing.", true);
+  }
+  const handoff = await withNetworkTimeout(`${cart.platform} cart creation`, 12_000, (signal) =>
+    connector.createCart(currentCart.lines, randomUUID(), signal));
+  const created = store.createExternalCheckoutPreview(missionId, currentCart.id, handoff);
+  return {
+    view: created.view,
+    meta: { checkoutUrl: created.checkoutUrl },
+    text: `Exact ${cart.platform === "shopify" ? "Shopify" : "WooCommerce"} terms revalidated. Payment occurs on the merchant site; Woven has not placed an order or charged anything.`,
+  };
+}
+
+function messageForError(error: unknown): string {
+  return error instanceof Error ? error.message : "Live revalidation failed.";
+}
+
 function createMcpServer(): McpServer {
   const server = new McpServer({ name: "woven", version: VERSION });
 
@@ -137,6 +303,7 @@ function createMcpServer(): McpServer {
         budgetCents: z.number().int().min(1_000).max(2_000_000).optional(),
         campers: z.number().int().min(1).max(6).optional(),
         pickupDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+        sourceMode: z.enum(["demo", "live"]).default("demo"),
       },
       annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
       _meta: {
@@ -170,8 +337,8 @@ function createMcpServer(): McpServer {
       _meta: WIDGET_REFRESH_META,
     },
     async ({ missionId }) =>
-      attempt(() => {
-        const view = store.view(missionId);
+      attemptAsync(async () => {
+        const view = await refreshMission(missionId);
         return viewResult(view, `Refreshed ${view.carts.length} compatible carts.`);
       }),
   );
@@ -243,13 +410,9 @@ function createMcpServer(): McpServer {
       _meta: { ui: { visibility: ["app"] } },
     },
     async ({ missionId, cartId }) =>
-      attempt(() => {
-        const { view, nonce } = store.checkoutPreview(missionId, cartId);
-        return viewResult(
-          view,
-          "Checkout preview created. No purchase has occurred; the user must explicitly confirm the exact merchant and amount.",
-          { confirmationNonce: nonce },
-        );
+      attemptAsync(async () => {
+        const result = await createCheckoutPreview(missionId, cartId);
+        return viewResult(result.view, result.text, result.meta);
       }),
   );
 
@@ -362,6 +525,7 @@ const missionInputSchema = z.object({
   budgetCents: z.number().int().min(1_000).max(100_000).optional(),
   campers: z.number().int().min(1).max(6).optional(),
   pickupDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  sourceMode: z.enum(["demo", "live"]).optional(),
 });
 const cartActionSchema = z.object({
   missionId: z.string().min(5).max(80),
@@ -401,15 +565,31 @@ app.get("/merchant", (_req, res) => res.sendFile("merchant.html", { root: webRoo
 app.get("/install", (_req, res) => res.sendFile("install.html", { root: webRoot }));
 app.get("/identity", (_req, res) => res.sendFile("identity.html", { root: webRoot }));
 app.get("/architecture", (_req, res) => res.sendFile("architecture.html", { root: webRoot }));
+const ucpAgentProfile = {
+  ucp: {
+    version: "2026-04-08",
+    capabilities: {
+      "dev.ucp.shopping.catalog.search": [{ version: "2026-04-08" }],
+      "dev.ucp.shopping.catalog.lookup": [{ version: "2026-04-08" }],
+      "dev.ucp.shopping.cart": [{ version: "2026-04-08" }],
+      "dev.shopify.catalog": [{ version: "2026-04-08" }],
+    },
+  },
+};
+app.get(["/.well-known/ucp", "/.well-known/ucp-agent-profile.json"], (_req, res) => res.json(ucpAgentProfile));
 
 app.post("/api/demo/start", async (req, res) => apiAsync(res, async () => {
   const input = missionInputSchema.parse(req.body);
-  return { view: await startMission({ ...input, request: input.request || CANONICAL_REQUEST }) };
+  return { view: await startMission({ ...input, request: input.request || CANONICAL_REQUEST, sourceMode: "demo" }) };
+}));
+app.post("/api/missions/start", async (req, res) => apiAsync(res, async () => {
+  const input = missionInputSchema.parse(req.body);
+  return { view: await startMission({ ...input, request: input.request || CANONICAL_REQUEST, sourceMode: input.sourceMode || "demo" }) };
 }));
 app.get("/api/missions/:missionId", (req, res) => api(res, () => ({ view: store.view(req.params.missionId) })));
-app.post("/api/tools/build_carts", (req, res) => api(res, () => {
+app.post("/api/tools/build_carts", (req, res) => apiAsync(res, async () => {
   const missionId = z.string().min(5).max(80).parse(req.body.missionId);
-  return { view: store.view(missionId) };
+  return { view: await refreshMission(missionId) };
 }));
 app.post("/api/tools/select_cart", (req, res) => api(res, () => {
   const input = cartActionSchema.parse(req.body);
@@ -425,10 +605,10 @@ app.post("/api/tools/start_demo_identity", (req, res) => api(res, () => {
   return { view: result.view, _meta: { authorizationUrl: result.authorizationUrl } };
 }));
 app.post("/api/tools/create_checkout_preview", (req, res) =>
-  api(res, () => {
+  apiAsync(res, async () => {
     const input = cartActionSchema.parse(req.body);
-    const result = store.checkoutPreview(input.missionId, input.cartId);
-    return { view: result.view, _meta: { confirmationNonce: result.nonce } };
+    const result = await createCheckoutPreview(input.missionId, input.cartId);
+    return { view: result.view, _meta: result.meta };
   }),
 );
 app.post("/api/tools/confirm_purchase", (req, res) => api(res, () => store.confirmPurchase(confirmSchema.parse(req.body))));

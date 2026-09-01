@@ -60,3 +60,14 @@ test("cart refresh updates the current widget without remount metadata", () => {
   assert.equal(WIDGET_URI, "ui://woven/mission-v4.html");
   assert.deepEqual(WIDGET_REFRESH_META, { "openai/widgetAccessible": true });
 });
+
+test("WebMCP defaults visibly to live sources while the demo endpoint is forced to demo", () => {
+  const widget = readFileSync("web/widget.tsx", "utf8");
+  const server = readFileSync("src/server.ts", "utf8");
+  assert.match(widget, /webmcpMode \? "live" : "demo"/);
+  assert.match(widget, /\["live", "demo"\] as const/);
+  assert.match(widget, /Live stores/);
+  assert.match(widget, /Payment occurs on the merchant site/);
+  assert.match(server, /app\.post\("\/api\/demo\/start"[^]*sourceMode: "demo"/);
+  assert.match(server, /sourceMode: z\.enum\(\["demo", "live"\]\)\.default\("demo"\)/);
+});

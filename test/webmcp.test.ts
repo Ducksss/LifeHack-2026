@@ -93,6 +93,9 @@ test("WebMCP exposes a useful site-tool surface without identity or purchase aut
   assert.equal(tools.find((tool) => tool.name === "get_mission")?.annotations?.readOnlyHint, true);
   assert.equal(tools.find((tool) => tool.name === "verify_receipt")?.annotations?.readOnlyHint, true);
   assert.ok(tools.every((tool) => !/identity|checkout|confirm|purchase/i.test(tool.name)));
+  assert.deepEqual(tools.map((tool) => tool.name), WEBMCP_TOOL_NAMES);
+  const start = tools.find((tool) => tool.name === "start_mission")!;
+  assert.deepEqual((start.inputSchema.properties as Record<string, { enum?: string[] }>).sourceMode?.enum, ["demo", "live"]);
 });
 
 test("WebMCP actions reuse the current mission and update the visible page", async () => {

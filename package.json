@@ -19,6 +19,7 @@
     "start": "tsx src/server.ts",
     "mcp": "tsx src/server.ts --stdio",
     "eval:agent": "tsx scripts/eval-open-world.ts",
+    "commerce:generate": "node scripts/generate-commerce-imports.mjs",
     "test": "node --import tsx --test test/*.test.ts",
     "check": "npm run test && npm run build"
   },

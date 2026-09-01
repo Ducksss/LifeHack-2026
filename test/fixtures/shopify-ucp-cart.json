@@ -1,0 +1,14 @@
+{
+  "jsonrpc": "2.0",
+  "id": 9,
+  "result": {
+    "structuredContent": {
+      "cart": {
+        "id": "gid://shopify/Cart/woven-test-cart",
+        "currency": "SGD",
+        "continue_url": "https://woven-trail-shop.myshopify.com/cart/c/woven-private-token?key=private-query-token",
+        "expires_at": "2026-09-01T12:10:00.000Z"
+      }
+    }
+  }
+}

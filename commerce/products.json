@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "currency": "SGD",
+  "inventory": 20,
+  "pickup": {
+    "locationName": "Woven Trail Counter · Singapore",
+    "address": "Singapore",
+    "pickupMinutes": 120,
+    "transitMinutes": 30,
+    "closesAt": "21:00",
+    "area": "Central"
+  },
+  "products": [
+    {
+      "handle": "stormweave-2p-tent",
+      "sku": "WV-TENT-2P",
+      "title": "StormWeave 2-Person Rain Tent",
+      "description": "Compact two-person shelter for wet-weather weekend camping.",
+      "priceCents": 18900,
+      "attributes": {
+        "category": "tent",
+        "capacity": 2,
+        "waterproofMm": 3000,
+        "packedLiters": 42
+      }
+    },
+    {
+      "handle": "drynest-synthetic-sleeping-bag",
+      "sku": "WV-BAG-SYN",
+      "title": "DryNest Synthetic Sleeping Bag",
+      "description": "Damp-ready synthetic sleeping bag for warm Singapore nights.",
+      "priceCents": 7900,
+      "attributes": {
+        "category": "sleeping_bag",
+        "dampReady": true,
+        "packedLiters": 12
+      }
+    },
+    {
+      "handle": "trailrest-r2-sleeping-mat",
+      "sku": "WV-MAT-R2",
+      "title": "TrailRest R2 Sleeping Mat",
+      "description": "Compact insulated mat that keeps a camper off wet ground.",
+      "priceCents": 5500,
+      "attributes": {
+        "category": "sleeping_mat",
+        "rValue": 2,
+        "packedLiters": 8
+      }
+    },
+    {
+      "handle": "rainbeam-ipx4-lantern",
+      "sku": "WV-LANTERN-250",
+      "title": "RainBeam 250 IPX4 Lantern",
+      "description": "Shared campsite lantern with rain-ready enclosure.",
+      "priceCents": 4900,
+      "attributes": {
+        "category": "lantern",
+        "lumens": 250,
+        "ipRating": "IPX4",
+        "packedLiters": 3
+      }
+    },
+    {
+      "handle": "trailguard-first-aid-kit",
+      "sku": "WV-AID-4",
+      "title": "TrailGuard Water-Resistant First-Aid Kit",
+      "description": "Water-resistant first-aid essentials covering up to four people.",
+      "priceCents": 3900,
+      "attributes": {
+        "category": "first_aid",
+        "peopleCovered": 4,
+        "waterResistant": true,
+        "packedLiters": 4
+      }
+    }
+  ]
+}
