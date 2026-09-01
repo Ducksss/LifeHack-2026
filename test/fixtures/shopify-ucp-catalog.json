@@ -17,7 +17,7 @@
             "handle": "drynest-synthetic-sleeping-bag",
             "title": "DryNest Synthetic Sleeping Bag",
             "url": "https://woven-trail-shop.myshopify.com/products/drynest-synthetic-sleeping-bag",
-            "tags": ["woven:category=sleeping_bag;dampReady=true;packedLiters=12;locationName=Woven Trail Counter;address=Singapore;pickupMinutes=120;transitMinutes=30;closesAt=21:00;area=Central"],
+            "description": { "plain": "[Woven] category=sleeping_bag;dampReady=true;packedLiters=12;locationName=Woven Trail Counter;address=Singapore;pickupMinutes=120;transitMinutes=30;closesAt=21:00;area=Central" },
             "variants": [{ "id": "gid://shopify/ProductVariant/2002", "sku": "WV-BAG-SYN", "available_for_sale": true, "quantity_available": 20, "price": { "amount": "7900", "currency": "SGD" } }]
           },
           {

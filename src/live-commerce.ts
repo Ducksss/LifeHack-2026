@@ -242,7 +242,8 @@ function addAttribute(target: Record<string, AttributeValue>, name: unknown, val
 function parsePairs(target: Record<string, AttributeValue>, value: unknown): void {
   if (typeof value !== "string") return;
   for (const pair of value.split(/[;|\n]/)) {
-    const match = pair.match(/^\s*(?:woven[.:_-])?([a-zA-Z][a-zA-Z0-9 _.-]{0,60})\s*[:=]\s*(.+?)\s*$/);
+    const normalized = pair.replace(/^\s*\[woven\]\s*/i, "");
+    const match = normalized.match(/^\s*(?:woven[.:_-])?([a-zA-Z][a-zA-Z0-9 _.-]{0,60})\s*[:=]\s*(.+?)\s*$/);
     if (match) addAttribute(target, match[1], match[2]);
   }
 }
