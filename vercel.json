@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "express",
+  "functions": {
+    "src/server.ts": { "includeFiles": "dist/web/**" }
+  },
+  "routes": [
+    { "src": "/(.*)", "dest": "/" }
+  ]
+}

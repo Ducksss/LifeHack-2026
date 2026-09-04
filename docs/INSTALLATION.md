@@ -110,6 +110,18 @@ Codex CLI.
 ChatGPT cannot connect to `localhost`. This path needs Woven at a public HTTPS
 origin or behind the OpenAI Secure MCP Tunnel.
 
+The current public deployment is reachable at:
+
+- MCP endpoint: <https://woven-pi.vercel.app/mcp>
+- buyer rehearsal: <https://woven-pi.vercel.app/demo>
+- merchant desk: <https://woven-pi.vercel.app/merchant>
+- health check: <https://woven-pi.vercel.app/healthz>
+
+The hosted deployment uses SQLite at `/tmp/woven.db`. Vercel can route
+consecutive requests to different function instances, so the mission may be
+missing at checkout. Treat these URLs as deployment diagnostics, not a reliable
+multi-step demo or ChatGPT connection, until persistent storage is selected.
+
 ### Start and verify the server
 
 Set `BASE_URL` to the exact public origin that forwards to local port `8787`:
@@ -141,10 +153,11 @@ Expected JSON:
 1. In ChatGPT, open **Settings → Security and login** and enable
    **Developer mode**.
 2. Open **Plugins** and select the plus button.
-3. Create a plugin named **Woven** with this MCP endpoint:
+3. After persistent public storage is configured, create a plugin named
+   **Woven** with this MCP endpoint:
 
    ```text
-   https://your-public-origin.example/mcp
+   https://woven-pi.vercel.app/mcp
    ```
 
 4. Review the discovered tools and create the connection.

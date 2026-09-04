@@ -240,6 +240,7 @@ function createMcpServer(): McpServer {
 }
 
 const app = express();
+export default app;
 const missionInputSchema = z.object({
   request: z.string().min(1).max(1_000).optional(),
   budgetCents: z.number().int().min(1_000).max(100_000).optional(),

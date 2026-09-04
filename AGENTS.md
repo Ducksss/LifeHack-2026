@@ -39,8 +39,11 @@ feature real.
   Use the working checkout block in `script.md`; never show identity as live.
 - The eleven-slide judge deck contains a seven-slide main story and four backup
   slides. Its identity slide is explicitly labeled planned.
-- Public HTTPS deployment, a shareable ChatGPT connection, real merchant/Visa
-  integrations, the demo video, and final Devpost publication remain outstanding.
+- Public HTTPS is reachable at `https://woven-pi.vercel.app`, but Vercel's
+  ephemeral filesystem cannot preserve the SQLite mission across function
+  instances. Durable public state, a shareable ChatGPT connection, real
+  merchant/Visa integrations, the demo video, and final Devpost publication
+  remain outstanding.
 
 ## Product and trust invariants
 

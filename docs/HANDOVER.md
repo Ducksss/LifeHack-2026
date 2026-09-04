@@ -6,8 +6,9 @@
 
 **Product:** Woven
 
-**Current phase:** Working, submission-ready prototype; public deployment and
-Devpost publishing are still outstanding.
+**Current phase:** Working, submission-ready local prototype with reachable
+public routes; persistent public state, ChatGPT connection testing, and Devpost
+publishing are outstanding.
 
 **Repository synchronization:** The primary checkout should be clean and aligned
 with `origin/main` after handoff. Worktree paths and counts are ephemeral; always
@@ -105,7 +106,7 @@ live demo through the implemented review-and-confirm flow only.
 | Judge pitch deck | Complete | Seven-slide story plus four backups; presenter notes and source blocks included |
 | Agent context | Current | `AGENTS.md` is canonical; Claude and Copilot use thin pointers to it |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
-| Public HTTPS deployment | Not done | Required for a shareable ChatGPT connection |
+| Public HTTPS deployment | Routes live; state blocked | Vercel production at `https://woven-pi.vercel.app`; routes and MCP initialization pass, but `/tmp` SQLite loses missions across function instances |
 | Devpost submission | Text ready — media blocked | Draft story includes the current simulated-host UI and planned identity boundary; 13 technology tags, repository, Visa prize and Digital Payments are saved; uploads and submission remain outstanding |
 | Real merchant/Visa integrations | Not started | Explicitly outside current prototype scope |
 
@@ -200,6 +201,9 @@ model-visible `structuredContent`.
 | MCP endpoint | `http://localhost:8787/mcp` |
 | Health check | `http://localhost:8787/healthz` |
 
+The active public deployment is `https://woven-pi.vercel.app`; append `/demo`,
+`/merchant`, `/mcp`, or `/healthz` for each surface.
+
 ### Configuration
 
 | Variable | Default | Constraint |
@@ -208,6 +212,13 @@ model-visible `structuredContent`.
 | `BASE_URL` | `http://localhost:8787` | Must be the public HTTPS origin for ChatGPT |
 | `WOVEN_DB` | `./data/woven.db` | Local demo state; ignored by Git |
 | `PAYMENT_MODE` | `simulated` | Every other value fails closed |
+
+Vercel production sets `BASE_URL=https://woven-pi.vercel.app`,
+`PAYMENT_MODE=simulated`, and `WOVEN_DB=/tmp/woven.db`. Route, asset, API-start,
+and MCP-initialize checks pass. An actual browser checkout fails with
+`MISSION_NOT_FOUND` when the next request reaches another function instance.
+Vercel does not support writable SQLite as shared storage, so this is not yet a
+reliable public demo or durable order store.
 
 ## Non-negotiable trust boundaries
 
@@ -304,9 +315,10 @@ connector-style identity check appears only as planned roadmap work.
 Thumbnail/gallery uploads, the demo video URL, and the required project PDF were
 left empty at the user's request.
 
+The public HTTPS demo URL is `https://woven-pi.vercel.app/demo`.
+
 Before publishing Devpost, a human must provide or confirm:
 
-- public HTTPS demo URL;
 - demo video URL;
 - team member names and roles;
 - project-description PDF;
@@ -335,9 +347,8 @@ Unless the user changes direction, prioritize in this order:
 1. **Simulated identity check:** add the connector-style demo authorization flow,
    bind its opaque subject to checkout, reject missing/expired/mismatched
    sessions, and keep final purchase confirmation separate.
-2. **Public deployment:** deploy the single service behind HTTPS, set `BASE_URL`,
-   preserve SQLite expectations or deliberately choose persistent storage, and
-   verify `/healthz`, `/demo`, `/merchant`, and `/mcp`.
+2. **Persistent public state:** choose an approved Vercel-compatible database,
+   preserve checkout transactions and idempotency, then repeat the browser flow.
 3. **Real ChatGPT connection:** connect the deployed `/mcp` endpoint in Developer
    Mode and verify the widget, private metadata, CSP and tool calls.
 4. **Demo recording:** capture the three-minute happy path plus one stale-cart

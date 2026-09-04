@@ -241,6 +241,20 @@ Open the local surfaces:
 | MCP endpoint | <http://localhost:8787/mcp> |
 | Health check | <http://localhost:8787/healthz> |
 
+The current Vercel deployment is reachable at:
+
+| Surface | URL |
+| --- | --- |
+| Buyer fallback | <https://woven-pi.vercel.app/demo> |
+| Merchant desk | <https://woven-pi.vercel.app/merchant> |
+| MCP endpoint | <https://woven-pi.vercel.app/mcp> |
+| Health check | <https://woven-pi.vercel.app/healthz> |
+
+The hosted SQLite database currently lives in Vercel's temporary filesystem.
+Routes and the first screen work, but state can disappear between consecutive
+function invocations, so the multi-step checkout is not yet a reliable public
+demo. Use the local/Codex flow until a persistent database is explicitly chosen.
+
 ### Connect the ChatGPT app
 
 Follow the [ChatGPT connection guide](docs/INSTALLATION.md#3-connect-woven-to-chatgpt).
@@ -360,7 +374,9 @@ the full test and production-build gate on every push and pull request.
 - [x] Simulated authorization, decline, order failure, and reversal paths
 - [x] End-to-end tests and submission-ready gallery
 - [ ] Simulated connector-style identity check, enforced before checkout
-- [ ] Public HTTPS deployment and shareable ChatGPT app connection
+- [x] Public HTTPS deployment
+- [ ] Persistent public demo state across Vercel function invocations
+- [ ] Shareable ChatGPT app connection and end-to-end host verification
 - [ ] Real merchant inventory/fulfilment connectors
 - [ ] Exact Visa sandbox product adapter after credentials and product approval
 - [ ] Generalized missions beyond the Tokyo charging-kit vertical
