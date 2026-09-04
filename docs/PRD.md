@@ -43,8 +43,12 @@ seeded; every price is in SGD.
 
 - Run as a current MCP App with a React widget in ChatGPT/Codex.
 - Expose a top-level `/webmcp` workspace with imperative WebMCP tools registered
-  through `navigator.modelContext.registerTool` and removed through an abort-bound
-  lifecycle.
+  through `document.modelContext.registerTool` (falling back to Chrome's early
+  `navigator.modelContext`) and removed through an abort-bound lifecycle.
+- Return compact, model-sized tool results that carry cart ids, human-readable
+  totals, and the next human-only step; accept merchant, location, and item
+  names as well as ids; and mirror every agent call in a visible shared
+  activity rail beside the person's own actions.
 - Let WebMCP agents start or inspect missions, compare/select carts, apply only
   approved swaps, refresh current carts, and verify receipts; never expose demo
   identity, checkout-preview, or purchase-confirmation tools to the agent.
@@ -150,6 +154,11 @@ satisfy this contract.
 - `/webmcp` registers exactly seven discoverable site tools with closed JSON
   schemas, updates the shared visible Choice Center, and preserves human-only
   identity and exact purchase confirmation.
+- WebMCP results never include the confirmation nonce, identity session data,
+  or receipt signatures; `select_cart` resolves merchant and location names and
+  rejects ambiguous matches with the candidate cart ids; `refresh_carts`
+  reports per-location price, stock, and rebuild changes; and every call is
+  reported to the page as running, then done or failed.
 - Every returned cart is within S$300 and contains a tent, two sleeping bags,
   two sleeping mats, a rain-ready lantern, and a first-aid kit from one pickup
   location.

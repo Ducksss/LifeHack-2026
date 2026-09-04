@@ -13,9 +13,12 @@ import {
   CreditCard,
   Fingerprint,
   GitCompareArrows,
-  Globe2,
+  Bot,
+  Copy,
   Loader2,
+  Lock,
   MapPin,
+  UserRound,
   Navigation,
   PackageSearch,
   CloudRain,
@@ -41,11 +44,16 @@ import { cn } from "@/lib/utils";
 import { WovenMark } from "./woven-mark";
 import {
   WEBMCP_COMPARE_EVENT,
+  WEBMCP_HUMAN_ONLY_ACTIONS,
+  WEBMCP_PROMPTS,
+  WEBMCP_READ_ONLY_TOOLS,
   WEBMCP_TOOL_NAMES,
   registerWebMcpTools,
+  resolveModelContext,
+  type WebMcpActivity,
   type WebMcpAdapter,
-  type WebMcpContext,
 } from "./webmcp";
+import { cartTraits, cartWaterproof, formatMoney, rankCarts, type PickupArea, type RankingPriority } from "./ranking";
 import "./styles.css";
 
 interface Payload {
@@ -60,9 +68,6 @@ class WovenError extends Error {
     super(message);
   }
 }
-
-type RankingPriority = "balanced" | "value" | "speed" | "weather";
-type PickupArea = "Any" | RankedCart["area"];
 
 type Invoke = (name: string, arguments_: Record<string, unknown>) => Promise<Payload>;
 
@@ -121,10 +126,27 @@ function HostedWidget() {
 }
 
 type ChatPhase = "typing" | "sent" | "ready" | "failed";
+type ToolSource = "agent" | "person" | "page";
 interface ToolCall {
-  id: number;
+  id: string;
   name: string;
   status: "running" | "done" | "error";
+  source: ToolSource;
+  message?: string;
+  at: number;
+}
+
+function describePersonCall(name: string, payload: Payload): string | undefined {
+  const view = payload.view;
+  const selected = view?.carts.find((cart) => cart.id === view.selectedCartId);
+  if (name === "select_cart" && selected) return `You chose ${selected.merchantName} · ${selected.locationName} · ${formatMoney(selected.totalCents)}`;
+  if (name === "swap_cart_item" && selected) return `You applied an approved swap · now ${formatMoney(selected.totalCents)}`;
+  if (name === "build_carts") return "Rechecked current price and stock";
+  if (name === "start_demo_identity") return "Started the simulated identity handoff (human-only)";
+  if (name === "create_checkout_preview" && view?.preview) return `Exact terms shown · ${formatMoney(view.preview.mandate.amountCents)} (human-only)`;
+  if (name === "confirm_purchase" && view?.order) return `You confirmed ${formatMoney(view.order.amountCents)} · simulated ${view.order.status.replaceAll("_", " ")}`;
+  if (name === "verify_receipt") return "Checked the receipt signature";
+  return undefined;
 }
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
@@ -165,6 +187,8 @@ function StandaloneDemo() {
   const [calls, setCalls] = useState<ToolCall[]>([]);
   const [webMcpStatus, setWebMcpStatus] = useState<"unavailable" | "registering" | "ready" | "error">("unavailable");
   const [webMcpError, setWebMcpError] = useState<string | null>(null);
+  const [agentNotice, setAgentNotice] = useState<string | null>(null);
+  const [detectionAttempt, setDetectionAttempt] = useState(0);
   const callId = useRef(0);
   const skipTyping = useRef(false);
   const identityReplyStarted = useRef(false);
@@ -207,12 +231,13 @@ function StandaloneDemo() {
     if (!isCancelled()) write(text);
   };
 
-  const track = async <T,>(name: string, work: () => Promise<T>): Promise<T> => {
-    const id = ++callId.current;
-    setCalls((current) => [...current, { id, name, status: "running" }]);
+  const track = async <T,>(name: string, work: () => Promise<T>, describe?: (result: T) => string | undefined): Promise<T> => {
+    const id = `person-${++callId.current}`;
+    setCalls((current) => [...current, { id, name, status: "running", source: "person", at: Date.now() }]);
     try {
       const result = await work();
-      setCalls((current) => current.map((call) => (call.id === id ? { ...call, status: "done" } : call)));
+      const message = describe?.(result);
+      setCalls((current) => current.map((call) => (call.id === id ? { ...call, status: "done", message } : call)));
       return result;
     } catch (caught) {
       setCalls((current) => current.map((call) => (call.id === id ? { ...call, status: "error" } : call)));
@@ -221,62 +246,97 @@ function StandaloneDemo() {
   };
 
   const invoke: Invoke = async (name, arguments_) => {
-    const payload = await track(name, () => post(`/api/tools/${name}`, arguments_));
+    const payload = await track(name, () => post(`/api/tools/${name}`, arguments_), (result) => describePersonCall(name, result));
     if (payload.view) setView(payload.view);
     if (typeof payload._meta?.confirmationNonce === "string") setNonce(payload._meta.confirmationNonce);
     return payload;
   };
 
+  // Agent calls arrive through the site-tool wrapper, so the shared activity rail shows both sides of the page.
+  const recordAgentActivity = (activity: WebMcpActivity) => {
+    const entry: ToolCall = {
+      id: activity.id,
+      name: activity.tool,
+      status: activity.status,
+      source: "agent",
+      message: activity.message,
+      at: Date.parse(activity.at),
+    };
+    setCalls((current) => (current.some((call) => call.id === entry.id)
+      ? current.map((call) => (call.id === entry.id ? entry : call))
+      : [...current, entry]));
+    if (activity.status === "done" && activity.message) setAgentNotice(activity.message);
+  };
+
   const siteToolAdapter: WebMcpAdapter = {
     getView: () => viewRef.current,
+    onActivity: recordAgentActivity,
     startMission: async (input, signal) => {
-      const payload = await track("start_mission", () => post("/api/demo/start", { ...input }, signal));
+      const payload = await post("/api/demo/start", { ...input }, signal);
       if (!payload.view) throw new Error("Woven did not return a mission.");
+      viewRef.current = payload.view; // keep back-to-back agent calls consistent before React re-renders
       setView(payload.view);
       setError(null);
       setPhase("ready");
       setNarration(narrationText);
       setShowWidget(true);
-      scrollToEnd();
       return payload.view;
     },
     invoke: async (name, arguments_, signal) => {
-      const payload = await track(name, () => post(`/api/tools/${name}`, arguments_, signal));
+      const payload = await post(`/api/tools/${name}`, arguments_, signal);
       if (!payload.view) throw new Error(`Woven did not return an updated mission after ${name}.`);
+      viewRef.current = payload.view;
       setView(payload.view);
-      scrollToEnd();
       return payload.view;
     },
     compare: (options) => window.dispatchEvent(new CustomEvent(WEBMCP_COMPARE_EVENT, { detail: options })),
     verifyReceipt: async (receiptNumber, signature, signal) => {
-      const payload = await track("verify_receipt", () => post("/api/tools/verify_receipt", { receiptNumber, signature }, signal));
+      const payload = await post("/api/tools/verify_receipt", { receiptNumber, signature }, signal);
       return payload.verification;
     },
   };
 
   useEffect(() => {
+    if (!agentNotice) return;
+    const timer = window.setTimeout(() => setAgentNotice(null), 7_000);
+    return () => window.clearTimeout(timer);
+  }, [agentNotice]);
+
+  useEffect(() => {
     if (webmcpMode) document.title = "Woven WebMCP Workspace";
-    const context = (document as Document & { modelContext?: WebMcpContext }).modelContext;
-    if (typeof context?.registerTool !== "function") return;
+    const context = resolveModelContext(window);
+    if (!context) {
+      setWebMcpStatus("unavailable");
+      return;
+    }
     const controller = new AbortController();
     setWebMcpStatus("registering");
     setWebMcpError(null);
     void registerWebMcpTools(context, siteToolAdapter, controller.signal)
-      .then(() => setWebMcpStatus("ready"))
+      .then(() => {
+        if (!controller.signal.aborted) setWebMcpStatus("ready");
+      })
       .catch((caught) => {
         controller.abort();
         setWebMcpStatus("error");
         setWebMcpError(caught instanceof Error ? caught.message : "Site-tool registration failed.");
       });
     return () => controller.abort();
-  }, []);
+  }, [detectionAttempt]);
 
   useEffect(() => {
     let cancelled = false;
     const isCancelled = () => cancelled;
     const finish = (outcome: { payload?: Payload; failure?: unknown }) => {
-      const id = ++callId.current;
-      setCalls((current) => [...current, { id, name: "start_mission", status: outcome.payload ? "done" : "error" }]);
+      const id = `page-${++callId.current}`;
+      setCalls((current) => [...current, {
+        id,
+        name: "start_mission",
+        status: outcome.payload ? "done" : "error",
+        source: "page",
+        at: Date.now(),
+        message: outcome.payload ? `Loaded the canonical mission · ${outcome.payload.view?.carts.length ?? 0} complete carts` : undefined,
+      }]);
       if (!outcome.payload) {
         setError(outcome.failure instanceof Error ? outcome.failure.message : "Demo failed to start.");
         setPhase("failed");
@@ -391,15 +451,20 @@ function StandaloneDemo() {
   return (
     <div className={cn("flex h-dvh flex-col bg-background transition-opacity duration-700 motion-reduce:transition-none", resetting && "opacity-0")}>
       <header className="flex h-12 flex-none items-center justify-between border-b px-4">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold tracking-tight">{webmcpMode ? "Woven WebMCP Workspace" : "Woven Demo Host"}</span>
-          <ChevronDown className="size-3.5 text-muted-foreground" />
-          <Badge variant="secondary" className="font-mono text-[10px] uppercase tracking-[0.1em]">Simulated</Badge>
-          {webmcpMode && (
-            <Badge variant="outline" className="hidden items-center gap-1 font-mono text-[10px] uppercase tracking-[0.08em] sm:inline-flex">
-              <Globe2 className="size-3" />
-              {webMcpStatus === "ready" ? `${WEBMCP_TOOL_NAMES.length} site tools` : webMcpStatus}
-            </Badge>
+        <div className="flex min-w-0 items-center gap-2">
+          {webmcpMode ? (
+            <>
+              <span className="grid size-6 flex-none place-items-center rounded-md bg-zinc-950"><WovenMark className="size-3.5" /></span>
+              <span className="text-sm font-semibold tracking-tight">Woven</span>
+              <span className="hidden text-sm text-muted-foreground md:inline">WebMCP workspace</span>
+              <WebMcpStatusBadge status={webMcpStatus} />
+            </>
+          ) : (
+            <>
+              <span className="text-sm font-semibold tracking-tight">Woven Demo Host</span>
+              <ChevronDown className="size-3.5 text-muted-foreground" />
+              <Badge variant="secondary" className="font-mono text-[10px] uppercase tracking-[0.1em]">Simulated</Badge>
+            </>
           )}
         </div>
         <div className="flex items-center gap-1">
@@ -427,11 +492,19 @@ function StandaloneDemo() {
             </div>
           ) : (
             <>
-              <div className="flex justify-end">
-                <div className="max-w-[85%] rounded-3xl bg-muted px-4 py-2.5 text-[15px] leading-6">
-                  {canonicalRequest}
+              {webmcpMode ? (
+                <WorkspacePanel
+                  status={webMcpStatus}
+                  error={webMcpError}
+                  onRedetect={() => setDetectionAttempt((attempt) => attempt + 1)}
+                />
+              ) : (
+                <div className="flex justify-end">
+                  <div className="max-w-[85%] rounded-3xl bg-muted px-4 py-2.5 text-[15px] leading-6">
+                    {canonicalRequest}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {stage >= 0 && (
                 <div className="mt-6 flex items-center gap-2.5 text-[15px]">
@@ -440,7 +513,7 @@ function StandaloneDemo() {
                 </div>
               )}
 
-              {stage < 0 && startCall && (
+              {!webmcpMode && stage < 0 && startCall && (
                 <div className="rise-in mt-6">
                   <ToolChip call={startCall} />
                 </div>
@@ -457,29 +530,9 @@ function StandaloneDemo() {
 
               {phase === "ready" && view && (
                 <>
-                  {webmcpMode && (
-                    <div
-                      data-webmcp-status={webMcpStatus}
-                      className="mb-5 flex items-start gap-3 rounded-xl border bg-background p-4 text-sm"
-                    >
-                      <Globe2 className="mt-0.5 size-4 flex-none" />
-                      <div>
-                        <strong>
-                          {webMcpStatus === "ready"
-                            ? `${WEBMCP_TOOL_NAMES.length} WebMCP site tools are ready`
-                            : webMcpStatus === "registering"
-                              ? "Registering WebMCP site tools…"
-                              : webMcpStatus === "error"
-                                ? "WebMCP registration failed"
-                                : "Open this page in ChatGPT or WebMCP-enabled Chrome"}
-                        </strong>
-                        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                          {webMcpError || "The agent can build, compare, select, swap, refresh, and verify on this shared page. Identity and exact purchase confirmation stay human-only."}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                  {narration && <p className="mt-4 text-[15px] leading-7">{narration}</p>}
+                  {webmcpMode
+                    ? <ActivityRail calls={calls} notice={agentNotice} />
+                    : narration && <p className="mt-4 text-[15px] leading-7">{narration}</p>}
                   {showWidget && (
                     <div className="rise-in mt-6">
                       <Woven
@@ -494,9 +547,9 @@ function StandaloneDemo() {
                       />
                     </div>
                   )}
-                  {laterCalls.length > 0 && (
+                  {!webmcpMode && laterCalls.length > 0 && (
                     <div className="mt-5 flex flex-wrap items-center gap-2">
-                      <span className="microlabel text-muted-foreground">{webmcpMode ? "Shared WebMCP activity" : "Live MCP calls"}</span>
+                      <span className="microlabel text-muted-foreground">Live MCP calls</span>
                       {laterCalls.map((call) => <ToolChip key={call.id} call={call} />)}
                     </div>
                   )}
@@ -525,6 +578,7 @@ function StandaloneDemo() {
 
       <div className="flex-none px-4 pb-4">
         <div className="mx-auto w-full max-w-3xl">
+          {!webmcpMode && (
           <div className="flex items-center gap-3 rounded-[28px] border bg-background px-5 py-3 shadow-sm">
             <div className="min-h-6 flex-1 text-[15px]">
               {typed ? (
@@ -557,9 +611,10 @@ function StandaloneDemo() {
               <ArrowUp className="size-4" />
             </button>
           </div>
+          )}
           <p className="mt-2 text-center text-xs text-muted-foreground">
             {webmcpMode
-              ? "WebMCP and the human share this live page — same server rules, human-only confirmation, no live charge."
+              ? "One live page for the agent and you: site tools prepare the cart, you verify identity and confirm exact terms. Seeded merchants · simulated payments · no live charge."
               : "Simulated rehearsal of the ChatGPT/Codex MCP experience — same server, real tool calls, no live charge."}
           </p>
         </div>
@@ -577,6 +632,165 @@ function ToolChip({ call }: { call: ToolCall }) {
       {call.status === "done" && <Check className="size-3 text-emerald-600" />}
       {call.status === "error" && <TriangleAlert className="size-3 text-destructive" />}
     </div>
+  );
+}
+
+type WebMcpStatus = "unavailable" | "registering" | "ready" | "error";
+
+function WebMcpStatusBadge({ status }: { status: WebMcpStatus }) {
+  const label = status === "ready"
+    ? `${WEBMCP_TOOL_NAMES.length} tools live`
+    : status === "registering"
+      ? "Registering…"
+      : status === "error"
+        ? "Registration failed"
+        : "No agent detected";
+  return (
+    <Badge variant="outline" data-webmcp-status={status} className="items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.08em]">
+      <span
+        className={cn(
+          "size-1.5 rounded-full",
+          status === "ready" && "pulse-dot bg-emerald-500",
+          status === "registering" && "animate-pulse bg-amber-500",
+          status === "error" && "bg-destructive",
+          status === "unavailable" && "bg-muted-foreground/50",
+        )}
+      />
+      {label}
+    </Badge>
+  );
+}
+
+function WorkspacePanel({ status, error, onRedetect }: { status: WebMcpStatus; error: string | null; onRedetect: () => void }) {
+  const [copied, setCopied] = useState<number | null>(null);
+  const copy = async (index: number) => {
+    try {
+      await navigator.clipboard.writeText(WEBMCP_PROMPTS[index]!);
+      setCopied(index);
+      window.setTimeout(() => setCopied((current) => (current === index ? null : current)), 1_800);
+    } catch {
+      setCopied(null);
+    }
+  };
+  const heading = status === "ready"
+    ? `${WEBMCP_TOOL_NAMES.length} site tools are live on this page`
+    : status === "registering"
+      ? "Registering site tools…"
+      : status === "error"
+        ? "Site-tool registration failed"
+        : "Open this page inside a WebMCP-capable agent";
+  const detail = status === "error"
+    ? error
+    : status === "ready"
+      ? "ChatGPT or Codex can start, read, compare, select, swap, refresh, and verify here. Every call changes this same page, so you both see the same carts."
+      : status === "registering"
+        ? "Binding each tool to this page with an abort signal so navigation removes them."
+        : "The ChatGPT desktop browser and Chrome 149+ with WebMCP discover the tools automatically. Everything below also works by hand.";
+  return (
+    <section
+      data-webmcp-panel
+      data-webmcp-status={status}
+      aria-labelledby="webmcp-heading"
+      className="rise-in grid gap-5 rounded-2xl border bg-background p-5 sm:p-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]"
+    >
+      <div className="min-w-0">
+        <div className="flex items-start gap-3">
+          <span className="grid size-9 flex-none place-items-center rounded-lg border bg-muted/50"><Bot className="size-4" /></span>
+          <div className="min-w-0">
+            <h1 id="webmcp-heading" className="text-base font-semibold tracking-tight">{heading}</h1>
+            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{detail}</p>
+            {status === "unavailable" && (
+              <Button variant="outline" size="sm" className="mt-3" onClick={onRedetect}>
+                <RotateCcw className="size-3.5" /> Re-detect agent
+              </Button>
+            )}
+          </div>
+        </div>
+        <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Site tools on this page">
+          {WEBMCP_TOOL_NAMES.map((name) => (
+            <li key={name} className="inline-flex items-center gap-1.5 rounded-md border bg-muted/40 px-2 py-1 font-mono text-[11px]">
+              {name}
+              {WEBMCP_READ_ONLY_TOOLS.includes(name) && <span className="microlabel text-muted-foreground">read</span>}
+            </li>
+          ))}
+        </ul>
+        <div className="mt-4 flex items-start gap-2 rounded-lg border border-dashed p-3 text-xs">
+          <Lock className="mt-0.5 size-3.5 flex-none text-muted-foreground" />
+          <p className="leading-relaxed">
+            <strong className="font-medium">Human-only, by design:</strong> {WEBMCP_HUMAN_ONLY_ACTIONS.join(" · ")}. No tool exists for them; you do those in this page.
+          </p>
+        </div>
+      </div>
+      <div className="min-w-0 rounded-xl bg-zinc-950 p-4 text-white sm:p-5">
+        <span className="microlabel text-white/45">Try asking ChatGPT or Codex</span>
+        <ul className="mt-3 space-y-2">
+          {WEBMCP_PROMPTS.map((prompt, index) => (
+            <li key={prompt}>
+              <button
+                type="button"
+                onClick={() => void copy(index)}
+                aria-label={`Copy prompt: ${prompt}`}
+                className="group flex w-full cursor-pointer items-start gap-2.5 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2.5 text-left text-xs leading-relaxed text-white/80 transition-colors hover:bg-white/[0.09]"
+              >
+                <span className="flex-1">“{prompt}”</span>
+                {copied === index
+                  ? <Check className="mt-0.5 size-3.5 flex-none text-emerald-400" />
+                  : <Copy className="mt-0.5 size-3.5 flex-none text-white/40 group-hover:text-white/80" />}
+              </button>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-3 text-[11px] leading-relaxed text-white/45">Click a prompt to copy it. Seeded merchants · simulated payments · no live charge.</p>
+      </div>
+    </section>
+  );
+}
+
+function ActivityRail({ calls, notice }: { calls: ToolCall[]; notice: string | null }) {
+  const recent = calls.slice(-6);
+  return (
+    <section aria-label="Shared activity" data-webmcp-activity className="mt-5 overflow-hidden rounded-xl border bg-background">
+      <header className="flex flex-wrap items-center justify-between gap-2 border-b px-4 py-2.5">
+        <span className="microlabel text-muted-foreground">Shared activity · agent and you</span>
+        {notice && (
+          <span className="rise-in inline-flex max-w-full items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-medium text-emerald-800">
+            <Bot className="size-3 flex-none" /><span className="truncate">{notice}</span>
+          </span>
+        )}
+      </header>
+      <ol className="divide-y">
+        {recent.map((call) => (
+          <li key={call.id} className="flex items-center gap-3 px-4 py-2 text-xs">
+            <SourcePill source={call.source} />
+            <code className="flex-none font-mono text-[11px]">{call.name}</code>
+            {call.status === "running" && <Loader2 className="size-3 flex-none animate-spin text-muted-foreground" />}
+            {call.status === "done" && <Check className="size-3 flex-none text-emerald-600" />}
+            {call.status === "error" && <TriangleAlert className="size-3 flex-none text-destructive" />}
+            <span className={cn("min-w-0 flex-1 truncate", call.status === "error" ? "text-destructive" : "text-muted-foreground")}>{call.message}</span>
+            <time className="hidden flex-none font-mono text-[10px] text-muted-foreground sm:inline" dateTime={new Date(call.at).toISOString()}>
+              {formatTime(new Date(call.at).toISOString())}
+            </time>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+function SourcePill({ source }: { source: ToolSource }) {
+  return (
+    <span
+      className={cn(
+        "inline-flex w-14 flex-none items-center justify-center gap-1 rounded-full px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.08em]",
+        source === "agent" && "bg-zinc-950 text-white",
+        source === "person" && "bg-blue-50 text-blue-800",
+        source === "page" && "bg-muted text-muted-foreground",
+      )}
+    >
+      {source === "agent" && <Bot className="size-2.5" />}
+      {source === "person" && <UserRound className="size-2.5" />}
+      {source === "agent" ? "Agent" : source === "person" ? "You" : "Page"}
+    </span>
   );
 }
 
@@ -1546,35 +1760,8 @@ function categoryIcon(category: Category) {
   return <PackageSearch className="size-4" />;
 }
 
-function formatMoney(cents: number) {
-  return `S$${(cents / 100).toLocaleString("en-SG", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
-
 function formatTime(value: string) {
   return new Intl.DateTimeFormat("en-SG", { hour: "numeric", minute: "2-digit" }).format(new Date(value));
-}
-
-function cartWaterproof(cart: RankedCart) {
-  return Number(cart.lines.find((line) => line.category === "tent")?.name.match(/([\d,]+)\s*mm/i)?.[1]?.replaceAll(",", "") || 0);
-}
-
-function rankCarts(carts: RankedCart[], priority: RankingPriority, area: PickupArea) {
-  return carts.toSorted((a, b) => {
-    const areaDifference = area === "Any" ? 0 : Number(b.area === area) - Number(a.area === area);
-    if (areaDifference) return areaDifference;
-    if (priority === "value") return a.totalCents - b.totalCents;
-    if (priority === "speed") return a.pickupMinutes - b.pickupMinutes;
-    if (priority === "weather") return cartWaterproof(b) - cartWaterproof(a);
-    return b.score - a.score;
-  });
-}
-
-function cartTraits(cart: RankedCart, carts: RankedCart[]) {
-  const traits = [cart.badge === "CUSTOM" ? "Custom" : cart.badge.replace("BEST ", "Best ").toLowerCase()];
-  if (cart.totalCents === Math.min(...carts.map((candidate) => candidate.totalCents))) traits.push("Lowest total");
-  if (cart.pickupMinutes === Math.min(...carts.map((candidate) => candidate.pickupMinutes))) traits.push("Soonest pickup");
-  if (cartWaterproof(cart) === Math.max(...carts.map(cartWaterproof))) traits.push("Most rainproof");
-  return [...new Set(traits)];
 }
 
 function formatReadyTime(cart: RankedCart) {

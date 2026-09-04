@@ -1,14 +1,17 @@
 # Woven AI handover
 
-**Last updated:** 31 August 2026
+**Last updated:** 3 September 2026
 
 **Repository:** `Ducksss/LifeHack-2026`
 
 **Product:** Woven
 
-**Current phase:** Working MCP App plus locally verified WebMCP challenge build.
-The existing public browser deployment is verified, but the new `/webmcp` route,
-challenge video upload, ChatGPT connection, and Devpost publishing remain outstanding.
+**Current phase:** Working MCP App plus a locally verified, improved WebMCP
+challenge build. The public deployment already serves the 31 August `/webmcp`
+route (checked logged-out on 3 September), but the improved workspace panel,
+model-sized tool results, natural-language selection, and shared activity rail
+are not deployed yet. Deployment of this build, the challenge video upload,
+ChatGPT connection, and Devpost publishing remain outstanding.
 
 **Repository synchronization:** The primary checkout should be clean and aligned
 with `origin/main` after handoff. Worktree paths and counts are ephemeral; always
@@ -103,7 +106,7 @@ Its identity step is implemented and must remain labeled simulated.
 | Buyer MCP App | Complete | React widget using a self-contained hosted entry point, first-result snapshot fallback, and the MCP Apps bridge |
 | Local plugin packaging | Complete | v0.3.0 repo marketplace package with a fresh widget resource URI, in-place identity status refresh, branded install-page assets, cache-safe stdio launcher, real Codex CLI install, nine-tool smoke test, and verified guide |
 | Browser fallback | Complete | `/demo`; simulated chat-host rehearsal, same domain behavior over HTTP (`?instant` skips animations) |
-| WebMCP workspace | Complete locally | `/webmcp`; seven top-level site tools, shared visible Choice Center, abort-bound registration, human-only identity/purchase; verified in the real in-app browser at desktop and 390 px |
+| WebMCP workspace | Complete locally; improved build not yet deployed | `/webmcp`; seven top-level site tools over `document.modelContext` with a `navigator.modelContext` fallback, model-sized results with ids and `nextSteps`, `select_cart`/`swap_cart_item` by merchant, location, or item name, per-location refresh diffs, a workspace panel with the tool list, human-only actions and copyable prompts, and a shared Agent/You/Page activity rail; verified through the real registration path (spec-shaped shim) at 1440 px and 390 px with no console errors |
 | Demo identity page | Complete | `/identity`; working provider-style handoff with a prominent simulator boundary and no credential fields |
 | Install guide page | Complete | `/install`; Woven-branded guide styled after the ChatGPT Plugins tab (clearly labeled preview, three install paths, verification checklist); linked from the landing page and demo host headers |
 | Merchant desk | Complete | `/merchant`; inventory, approved alternatives, scenarios, orders, audit, reset |
@@ -113,7 +116,7 @@ Its identity step is implemented and must remain labeled simulated.
 | Checkout safety | Complete for prototype | Identity-session binding, expiry, hash, private nonce, exact terms, idempotency, signed receipt verification |
 | Demo identity check | Complete for prototype | Server-enforced state + PKCE + allowlisted callback + one-time code + 15-minute session; never call it Visa OAuth, KYC, or a real Visa login |
 | Visa rail | Simulated only | Approval, decline, failure, and reversal semantics |
-| Automated verification | Green | 37 tests, TypeScript/build gate, focused browser verification; live agent evaluation remains opt-in and credential-dependent |
+| Automated verification | Green | 44 tests, TypeScript/build gate, focused browser verification; live agent evaluation remains opt-in and credential-dependent |
 | README and gallery | Complete | Best-README structure and ten 1600×900 Devpost gallery assets plus a separate 3:2 project thumbnail |
 | Stage fallback assets | Complete | Five numbered 1600×900 frames with editable SVG sources and explicit simulator boundaries |
 | Judge pitch deck | Complete | Ten-slide camping story; presenter notes and source blocks included |
@@ -189,7 +192,8 @@ whole backend or split these layers into services without a measured reason.
 | `src/payment.ts` | Simulated authorization adapter and the future real-payment replacement seam |
 | `src/server.ts` | MCP tools/transports, HTTP APIs, static UI, validation and process startup |
 | `web/widget.tsx` | Buyer MCP App plus the simulated chat-host rehearsal (`/demo`) |
-| `web/webmcp.ts` | Seven browser-native site-tool contracts and abort-bound registration |
+| `web/webmcp.ts` | Seven browser-native site-tool contracts, model-sized result summaries, natural-language cart/alternative resolution, activity reporting, model-context resolution, and abort-bound registration |
+| `web/ranking.ts` | Shared cart ranking, traits, rain rating, and money formatting used by the Choice Center and `compare_carts` |
 | `web/landing.tsx` | Marketing landing page served at `/` |
 | `web/merchant.tsx` | Merchant operations desk |
 | `web/install.tsx` | In-product install guide (`/install`) styled after the ChatGPT Plugins tab |
@@ -248,8 +252,14 @@ MCP result `_meta`, never in model-visible `structuredContent`.
 
 `start_mission`, `get_mission`, `compare_carts`, `select_cart`,
 `swap_cart_item`, `refresh_carts`, and `verify_receipt` are registered only in
-the top-level `/webmcp` page. There is no identity, preview, confirmation, or
-purchase tool.
+the top-level `/webmcp` page through `document.modelContext` (falling back to
+Chrome's early `navigator.modelContext`). Results are compact summaries built in
+`web/webmcp.ts` that carry cart ids, readable totals, and a `nextSteps` line;
+`select_cart` and `swap_cart_item` accept merchant, location, and item names as
+well as ids and fail with candidate lists when ambiguous; `refresh_carts` diffs
+carts per merchant location. Every call is reported to the page and shown in
+the shared activity rail. There is no identity, preview, confirmation, or
+purchase tool, and the page's human-only panel says so.
 
 ### HTTP surfaces
 
@@ -377,10 +387,14 @@ ignored by Git.
 
 The verified public demo URL is <https://visa-woven.vercel.app/demo>.
 
-The WebMCP challenge route is verified locally only. Do not claim
-<https://visa-woven.vercel.app/webmcp> is live until this exact build is deployed
-and checked in a logged-out browser. The local 2:58 master is
-`output/Woven-WebMCP-Challenge.mp4`; it has not been uploaded.
+<https://visa-woven.vercel.app/webmcp> currently serves the 31 August build
+(seven tools, readiness card); it was loaded logged-out on 3 September and
+returned the `Permissions-Policy: tools=(self)` and `Origin-Agent-Cluster`
+headers. The improved workspace in this repository is verified locally only. Do
+not describe the workspace panel, prompts, natural-language selection, or
+activity rail as live until this exact build is deployed and rechecked
+logged-out. The local 2:58 master is `output/Woven-WebMCP-Challenge.mp4`; it was
+rendered from the earlier readiness-card layout and has not been uploaded.
 
 The confirmed team listing is:
 
@@ -414,8 +428,10 @@ inspect
 Unless the user changes direction, prioritize in this order:
 
 1. **WebMCP challenge launch:** with explicit user authorization, deploy this
-   build, verify `/webmcp` over public HTTPS, upload the 2:58 master to YouTube,
-   run logged-out checks, and publish the separate Devpost entry.
+   build (the improved workspace is not live yet), verify `/webmcp` over public
+   HTTPS in the ChatGPT desktop browser, upload the 2:58 master to YouTube, run
+   logged-out checks, and publish the separate Devpost entry before
+   3 September 2026, 1:00 PM PDT.
 2. **Real ChatGPT connection:** connect the deployed `/mcp` endpoint in Developer
    Mode and verify the widget, private metadata, CSP and tool calls.
 3. **Public orchestration smoke check:** with an intentionally supplied

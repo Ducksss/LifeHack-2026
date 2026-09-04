@@ -36,7 +36,9 @@ feature real.
   commerce verification, `/demo`, `/webmcp`, `/identity`, `/merchant`, `/install`,
   SQLite state, and a simulated Visa adapter.
 - `/webmcp` exposes seven top-level browser-native site tools over the same
-  server router and visible Choice Center; identity and purchase remain human-only.
+  server router and visible Choice Center, with model-sized results,
+  natural-language cart selection, and a shared agent/person activity rail;
+  identity and purchase remain human-only.
 - The canonical rainy-weekend camping request produces complete, weather-compatible,
   one-merchant carts and an exact, expiring confirmation.
 - Non-camping requests route through a credential-dormant open-world POC that

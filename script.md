@@ -29,7 +29,10 @@ boundaries below, but the 0:48–1:28 product beat shows the real `/webmcp` page
 
 The spoken voice is AI-generated. Do not use the older exact-3:00 judge video
 for this challenge: the rules require a video shorter than three minutes and a
-visible WebMCP demonstration.
+visible WebMCP demonstration. The master was rendered from the earlier
+readiness-card layout; the live `/webmcp` page now opens with a workspace panel
+(tool list, human-only actions, copyable prompts) and a shared Agent/You
+activity rail, which a live judge will see instead.
 
 ## Current product versus target storyboard
 

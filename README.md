@@ -131,11 +131,14 @@ experience: a clearly labeled simulated chat host that types the canonical
 request, shows every MCP tool call live, and drives the same backend. It is
 marked “Simulated” on screen and is not a second product.
 
-The `/webmcp` route adds seven imperative, top-level WebMCP site tools to the
-same page. An agent can start or inspect a mission, open the shared comparison
-UI, select a cart, apply a merchant-approved swap, refresh current offers, and
-verify a receipt. Identity, checkout preview, and purchase confirmation are
-deliberately absent: those remain direct human actions in the visible page.
+The `/webmcp` route turns the same page into a shared workspace with seven
+imperative, top-level WebMCP site tools. An agent can start or read a mission,
+open the shared comparison and rerank it, select a cart by merchant and
+location name, apply a merchant-approved swap by item name, refresh current
+offers and hear what changed, and verify a receipt. Results are compact and
+model-sized, every call appears in a visible activity rail beside the person's
+own actions, and the page lists the three human-only actions that deliberately
+have no tool: identity, exact checkout review, and purchase confirmation.
 
 MCP supplies the host connection, tool contract, private widget metadata, and
 embedded UI. After `start_mission` reaches Woven, the server—not the host
@@ -362,10 +365,13 @@ and approved swap, completes the server-enforced simulated identity handoff,
 shows the verified state and host reply, then fades back to the start. It never
 creates a checkout mandate or confirms a purchase.
 
-Open `/webmcp` in a current WebMCP-capable ChatGPT or Codex browser session to
-discover the seven page tools. The readiness card and shared activity rail make
-agent actions visible; the browser and MCP transports enter the same
-server-owned mission router.
+Open `/webmcp` in the ChatGPT desktop app's built-in browser, in Codex, or in
+Chrome 149+ with WebMCP enabled to discover the seven page tools. The workspace
+panel shows the live tool list and the human-only boundary, offers copyable
+prompts to try, and mirrors every agent call in a shared activity rail beside
+your own clicks; the browser and MCP transports enter the same server-owned
+mission router. Without a WebMCP agent the page still works by hand and offers
+a re-detect control.
 
 ### Connect the ChatGPT app
 

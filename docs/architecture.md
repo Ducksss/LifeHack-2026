@@ -67,7 +67,7 @@ second prompt.
 
 | Layer | Responsibility | Primary implementation |
 | --- | --- | --- |
-| Interaction and transport | MCP tool schemas, HTTP/stdio transport, browser API, React MCP App, top-level WebMCP registration, app-only checkout visibility, private `_meta` | `src/server.ts`, `src/widget.ts`, `web/widget.tsx`, `web/webmcp.ts` |
+| Interaction and transport | MCP tool schemas, HTTP/stdio transport, browser API, React MCP App, top-level WebMCP registration and model-sized results, app-only checkout visibility, private `_meta` | `src/server.ts`, `src/widget.ts`, `web/widget.tsx`, `web/webmcp.ts`, `web/ranking.ts` |
 | Mission routing and orchestration | Keep canonical camping deterministic; for other retail missions interpret `MissionSpec`, discover in parallel, normalize, compose, verify, optionally retry, and terminate within fixed bounds | `src/server.ts`, `src/open-world.ts` |
 | Commerce verification | Decide requirement, compatibility, quantity, one-location, budget, stock, evidence, and checkout eligibility from typed server data | `src/domain.ts`, `src/open-world.ts` |
 | State and checkout | Rebuild carts from current catalog rows, enforce identity and exact mandates, transact inventory/orders atomically, audit, and sign receipts | `src/store.ts` |
@@ -99,21 +99,28 @@ because there is no model in that path.
 
 ### WebMCP site-tool contract
 
-| Tool | Effect |
-| --- | --- |
-| `start_mission` | Enter the same deterministic/open-world mission router used by MCP |
-| `get_mission` | Read the current public mission view |
-| `compare_carts` | Open and configure the visible shared Choice Center |
-| `select_cart` | Persist one currently offered cart |
-| `swap_cart_item` | Apply one current merchant-approved alternative and revalidate |
-| `refresh_carts` | Rebuild public carts from current price and stock |
-| `verify_receipt` | Verify a simulated receipt's server signature |
+| Tool | Effect | Result |
+| --- | --- | --- |
+| `start_mission` | Enter the same deterministic/open-world mission router used by MCP | Mission summary |
+| `get_mission` | Read the current public mission view | Mission summary: every cart compact, the selected cart detailed, identity status, `humanOnly`, `nextSteps` |
+| `compare_carts` | Open and configure the visible shared Choice Center | The ranked order the person now sees, with cart ids and traits |
+| `select_cart` | Persist one currently offered cart by `cartId` or by merchant and location name | Detailed selected cart |
+| `swap_cart_item` | Apply one current merchant-approved alternative by `offerId` or item name and revalidate | What was replaced, the new total, detailed cart |
+| `refresh_carts` | Rebuild public carts from current price and stock | Per-location changes plus the mission summary |
+| `verify_receipt` | Verify a simulated receipt's server signature | Receipt number, merchant, total, verification |
 
-Every schema rejects additional properties. Registration is bound to an
-`AbortSignal`, so navigation or remount removes the tools. The response headers
-include `Origin-Agent-Cluster: ?1` and `Permissions-Policy: tools=(self)`.
+Every schema rejects additional properties; natural-language arguments are
+resolved strictly in code and ambiguous matches fail with the candidate ids.
+Results are compact summaries built in `web/webmcp.ts`, never the raw view:
+they carry no confirmation nonce, identity session, or receipt signature.
+Registration uses `document.modelContext` (the spec and the ChatGPT desktop
+browser) and falls back to `navigator.modelContext` (Chrome's early preview);
+it is bound to an `AbortSignal`, so navigation or remount removes the tools.
+Each call is reported to the page as running, then done or failed, and rendered
+in the shared activity rail beside the person's own actions. The response
+headers include `Origin-Agent-Cluster: ?1` and `Permissions-Policy: tools=(self)`.
 There is intentionally no identity, preview, confirmation, or purchase tool;
-those actions require the person in the visible interface.
+those actions require the person in the visible interface, and the page says so.
 
 ## Cart algorithm
 

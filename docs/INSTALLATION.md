@@ -234,11 +234,16 @@ The browser fallback uses the same mission router, orchestration layer, store,
 domain rules, and payment simulator as the MCP App. It is a rehearsal transport,
 not the primary product.
 
-In a current WebMCP-capable ChatGPT or Codex browser session, `/webmcp`
-discovers seven tools: `start_mission`, `get_mission`, `compare_carts`,
-`select_cart`, `swap_cart_item`, `refresh_carts`, and `verify_receipt`. A visible
-readiness card confirms registration. Identity, checkout preview, and purchase
-confirmation must not appear in the discovered list.
+In the ChatGPT desktop app's built-in browser, in Codex, or in Chrome 149+ with
+WebMCP enabled, `/webmcp` discovers seven tools: `start_mission`, `get_mission`,
+`compare_carts`, `select_cart`, `swap_cart_item`, `refresh_carts`, and
+`verify_receipt`. The header badge reads **7 tools live**, the workspace panel
+lists the tools and the human-only actions, and the shared activity rail shows
+each agent call. Paste one of the page's prompts to test, for example
+"Compare the camping carts by rain protection with Central pickup, then select
+the best one." Identity, checkout preview, and purchase confirmation must not
+appear in the discovered list. In a browser without WebMCP the badge reads
+**No agent detected** and a **Re-detect agent** button is offered.
 
 ## Troubleshooting
 
