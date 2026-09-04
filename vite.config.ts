@@ -30,6 +30,7 @@ export default defineConfig(({ mode }) => {
           rollupOptions: {
             input: {
               demo: path.resolve("web/demo.html"),
+              storefront: path.resolve("web/storefront.html"),
               widget: path.resolve("web/widget.html"),
               merchant: path.resolve("web/merchant.html"),
               install: path.resolve("web/install.html"),

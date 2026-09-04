@@ -14,11 +14,11 @@
 
 | Domain / scope | Authoritative source | Source type | Reviewed date |
 |---|---|---|---|
-| Trust and confirmation | `docs/PRD.md` | Product contract | 2026-09-01 |
-| State and evidence lifecycle | `docs/architecture.md` | Architecture contract | 2026-09-01 |
-| External readiness | `docs/HANDOVER.md` | Operational handover | 2026-09-01 |
-| Payment boundary | `src/payment.ts`, `docs/PRD.md` | Code + product contract | 2026-09-01 |
-| Brand and claims | `docs/BRAND_GUIDE.md` | Brand guide | 2026-09-01 |
+| Trust and confirmation | `docs/PRD.md` | Product contract | 2026-09-02 |
+| State and evidence lifecycle | `docs/architecture.md` | Architecture contract | 2026-09-02 |
+| External readiness | `docs/HANDOVER.md` | Operational handover | 2026-09-02 |
+| Payment boundary | `src/payment.ts`, `docs/PRD.md` | Code + product contract | 2026-09-02 |
+| Brand and claims | `docs/BRAND_GUIDE.md` | Brand guide | 2026-09-02 |
 
 ## Visual contract
 
@@ -35,11 +35,14 @@
 | Capability | Canonical owner | Source of truth | Allowed variants | Verification |
 |---|---|---|---|---|
 | Cart selection | Buyer app | `web/widget.tsx` | demo / live | component + browser flow |
-| Source mode | WebMCP host header | `web/widget.tsx` | live / demo | browser + tool test |
+| Guided browser rehearsal | Simulated chat host + browser takeover | `web/demo.tsx`, `web/demo-pacing.ts`, `web/demo-protocol.ts`, `web/storefront.tsx` | idle / opening / connecting / running / results / browsing / selecting / adding / selected / handoff / complete / error | protocol + pacing + desktop/mobile browser flow |
+| WebMCP storefront | Woven Trail Market | `web/storefront.tsx` | idle / running / resolved / degraded / error | browser + tool test |
+| Source mode | Storefront mission composer | `web/storefront.tsx` | connected stores / explicit showcase data | browser + tool test |
+| Activity overlay | Storefront collapsible aside | `web/storefront.tsx`, `web/storefront-state.ts` | desktop float / mobile bottom sheet | state + visual test |
 | Select | Native element | `web/widget.tsx` | pickup area | keyboard + browser |
 | Dialog | Native `dialog` | `web/widget.tsx` | choice / approved swap | keyboard + browser |
 | Status badges | Shared Badge | `web/components/ui/badge.tsx` | source / platform / evidence | component + visual |
-| Error alert | Buyer/host workflow | `web/widget.tsx` | retryable / terminal | failure-path test |
+| Error alert | Active buyer workflow | `web/widget.tsx`, `web/storefront.tsx` | retryable / terminal / explicit showcase action | failure-path test |
 
 ## Component behavior
 
@@ -50,11 +53,12 @@
 | Cart card | bordered | n/a | action focus | border + ring | action disabled | action label | source status |
 | Source toggle | two choices | surface shift | visible ring | `aria-pressed` + surface | n/a | host activity | host error + alternate mode |
 | Dialog | closed | n/a | first task control | modal | n/a | contained actions | content preserved |
+| Activity sheet | collapsed on mobile idle | surface only | trigger ring | expanded disclosure | n/a | one indeterminate operation | persistent recovery |
 
 ## Dataset navigation
 
 - Admin tables: merchant surface remains the canonical dense table.
-- Exploratory lists: buyer carts are capped at five; live success targets one complete cart per platform.
+- Exploratory lists: the MCP App may show five seeded carts; the storefront shows the best two complete kits while truthfully disclosing a larger seeded result. Live success targets one complete cart per platform.
 - URL state: source mode is intentionally session-local; checkout URLs are never stored in the URL or shareable state.
 - Page size: bounded by orchestration/cart caps; no pagination.
 - Empty/no-results/error/loading treatment: explicit no-complete-cart, connector status, retryable error, and stable loader.
@@ -65,7 +69,8 @@
 
 | Operation | Trigger | Pending | Success destination | Success feedback | Failure recovery | Focus outcome | Source ref |
 |---|---|---|---|---|---|---|---|
-| Start live mission | page/tool | source activity | cart results | platform status + carts | retry or demo toggle | results | `docs/PRD.md` |
+| Start live mission | page/tool | one truthful indeterminate source operation | cart results | platform status + two storefront kits | retry or explicit showcase action | results | `docs/PRD.md` |
+| Run guided demo | human submit | 1.2s evaluation, explicit 4.5s WebMCP rehearsal/testing receipt, then the real storefront pending state | returned chat result | five-beat rail, supported-browser guidance, safe-action highlight, agent cursor, storefront scroll, human boundary, and control-return notice | pause/resume, manual next beat outside network work, or replay with no fabricated result | chat result / human review button | `docs/PRD.md` |
 | Select cart | card action | disabled peers | selected card | border/ring + exact summary | refresh | selected action | `docs/PRD.md` |
 | Verify identity | app-only action | button label | same mission | verified identity copy | restart handoff | exact review | `docs/architecture.md` |
 | Create live handoff | exact review | “Revalidating…” | consent block | exact terms + merchant button | refreshed carts/new review | handoff button | `docs/architecture.md` |
@@ -74,23 +79,26 @@
 
 ## Navigation and responsive behavior
 
-- Route document title policy: product + surface; WebMCP sets “Woven WebMCP Workspace”.
+- Route document title policy: product + surface; `/webmcp` sets “Woven Trail Market — WebMCP Showcase” and `/demo` sets “Woven — Chat to Browser Demo”.
 - Route error / 403 page behavior: inline safe error; no authorization details.
-- Breadcrumb/tab/route-state policy: source toggle is header-owned; Choice Center tabs are dialog-owned.
-- Sidebar/drawer/bottom-sheet transformation: none; cards stack on mobile and dialogs remain viewport-bounded.
+- Breadcrumb/tab/route-state policy: the storefront source toggle is mission-composer-owned; MCP App Choice Center tabs remain dialog-owned.
+- Sidebar/drawer/bottom-sheet transformation: the storefront activity aside floats at desktop and becomes a non-modal bottom sheet on mobile. It starts collapsed while idle, opens for real activity, has no focus trap, and never owns authorization actions.
+- Demo presentation frame: desktop starts with a complete simulated chat surface inside an unbranded laptop silhouette, temporarily replaces it with the browser-control surface, then returns to chat. Mobile removes decorative hardware and lets the same takeover fill the viewport.
+- Demo control rail: remains visible throughout takeover, announces **WebMCP rehearsal active**, current action, and beat; the activation receipt identifies `/demo` as non-registering and links to the real top-level `/webmcp` test surface plus the official browser guidance. Pause/Resume and Next beat are native keyboard controls. At the final boundary it changes to **Human control required**.
 - Responsive table strategy: comparison scrolls horizontally; cards stack.
 - Truncation/full-value access: product names wrap; secrets are never rendered.
-- Focus restoration and sticky-obstruction policy: native dialog restores focus; sticky alerts do not cover final controls.
+- Focus restoration and sticky-obstruction policy: native dialog restores focus; the mobile activity sheet can collapse and does not trap focus or own the primary mission control.
 
 ## Overlays and feedback
 
 - Dialog primitive: native `dialog` with explicit heading and close button.
+- Storefront activity primitive: collapsible `aside` with `aria-live` status copy and no backdrop.
 - Destructive confirmation levels: only demo purchase confirmation is destructive; merchant checkout remains an external continuation.
 - Toast placement/duration/deduplication: no transient toast system; workflow errors persist inline/sticky.
 - Alert/banner scope and persistence: connector status belongs to the mission; action failure belongs to the active app.
 - Tooltip delay/dismissal: native title only for nonessential utilities; essential explanation is visible text.
 - Unsaved-changes behavior: not applicable.
-- Layer/z-index contract: dialog backdrop > sticky workflow alert > page content.
+- Layer/z-index contract: modal dialog > demo browser takeover > storefront non-modal activity > demo/browser chrome and sticky headers > page content. The demo host never places glass around the frame; glass is permitted only on the storefront activity surface, while handoff and commerce results are solid.
 
 ## Async and resilience
 
@@ -101,8 +109,9 @@
 - Retry/backoff/timeout behavior: two discovery passes inside 25 seconds; one-platform degradation returns healthy verified carts; total failure is retryable.
 - Version conflict and multi-tab behavior: price, stock, or variant change invalidates selection and pending handoff.
 - Session expiry/re-authentication: identity and checkout handoffs expire independently and require fresh human review.
-- Long-running progress and return path: host activity text then a retryable error or result.
-- Stale-request cancellation/invalidation and pending-state ownership: AbortSignal reaches connectors; server owns snapshot and preview invalidation.
+- Long-running progress and return path: one indeterminate observable operation, then a retryable error/degraded state or evidence derived from the returned view. No timer may manufacture completion.
+- Guided pacing ownership: `/demo` owns presentation holds only after the frame reports a truthful state. In-flight mission and selection requests continue while paused; manual advance is unavailable during those requests. Reduced motion removes travel/animation, not the explanatory hold.
+- Stale-request cancellation/invalidation and pending-state ownership: the storefront aborts superseded requests and ignores stale sequence numbers; AbortSignal reaches connectors; the server owns snapshot and preview invalidation.
 - Dialog/form preservation and retry after mutation failure: cart choice stays visible unless its version changes.
 
 ## Validation
@@ -124,9 +133,9 @@
 
 - Required static commands: `npm run test`, `npm run build`, `npm run check`.
 - Browser/device/locale/theme matrix: `/demo` and `/webmcp` at 1440×900 and 390×844; hosted MCP App in ChatGPT and Codex; English/light theme.
-- Accessibility checks: keyboard source toggle, dialog navigation/close, focus-visible, named icon actions, error live semantics, reduced motion.
+- Accessibility checks: keyboard source toggle and functional anchors, dialog navigation/close, non-modal mobile sheet, focus-visible, named icon actions, error live semantics, accessible scrollbars, and reduced motion.
 - Native-language/domain review and target-user evidence: English product-owner review; Singapore contract evidence in PRD.
 - Component-state/visual regression coverage: loading, live healthy/degraded, empty, stale, identity pending/verified, exact external handoff, demo receipt.
 - Canonical sibling flow used for comparison: `/demo?instant`.
-- Project audit command/result: recorded in final handover after browser verification.
+- Project audit command/result: strict premium UI audit on 2 September 2026 — 0 findings; `designmd lint DESIGN.md` — 0 errors (orphaned-token warnings only).
 - Failure-path evidence: connector fixtures and handoff security tests.

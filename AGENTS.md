@@ -36,7 +36,7 @@ feature real.
   commerce verification, `/demo`, `/webmcp`, `/identity`, `/merchant`, `/install`,
   SQLite state, and a simulated Visa adapter.
 - `/webmcp` exposes seven top-level browser-native site tools over the same
-  server router and visible Choice Center; identity and purchase remain human-only.
+  server router and inline storefront results; identity and purchase remain human-only.
 - The canonical rainy-weekend camping request produces complete, weather-compatible,
   one-merchant carts and an exact, expiring confirmation.
 - Non-camping requests route through a credential-dormant open-world POC that
@@ -58,8 +58,11 @@ feature real.
   interaction and tool transport layer; Woven's server-owned orchestration and
   deterministic commerce rules remain separate backend responsibilities.
 - `/demo` is a stage-safe rehearsal over the same backend: a clearly labeled
-  simulated chat host (marked “Simulated” on screen) that surfaces real MCP tool
-  calls. It never impersonates a real host and is not the primary product.
+  simulated host (marked “Simulated” on screen) that frames the real storefront,
+  waits for the mission response, scrolls to verified kits, selects one through
+  the reversible site action, and stops at the human-only handoff. The host and
+  framed storefront register no top-level WebMCP tools. It never impersonates a
+  real host and is not the primary product.
 - `/webmcp` may expose mission, comparison, selection, approved-swap, refresh,
   and receipt-verification actions. Never expose identity, checkout preview,
   confirmation secrets, or purchase authorization as WebMCP tools.
@@ -109,7 +112,7 @@ feature real.
 - Historical pre-Woven archive branches are not sources of truth. Do not merge
   them into `main` by default: they contain obsolete branding and pre-rename
   copy.
-- The Woven shadcn interface and labeled simulated chat-host demo are already in
+- The Woven shadcn interface and labeled guided storefront demo are already in
   `main`; historical source branches are not current product dependencies.
 - Do not commit `data/`, `dist/`, `.env`, `.playwright-cli/`, secrets, logs, or
   local tool metadata unless the user explicitly requests it.

@@ -44,13 +44,34 @@ cards). The shipped product UI uses its own system, below.
 
 ## Product UI system
 
-The web surfaces (`/demo`, `/identity`, `/merchant`, and the MCP widget) are built with
+The web surfaces (`/demo`, `/webmcp`, `/identity`, `/merchant`, and the MCP widget) are built with
 Tailwind CSS and shadcn/ui in a Vercel/Linear-style monochrome system: white
 cards, hairline neutral borders, near-black (`#0A0A0A`) primary actions, one
 dark hero/ops surface, and Waypoint Blue reserved for the simulated payment
 boundary. The Flightpath mark carries Signal Lime and Waypoint Blue into the UI
 as its only decorative accents. Tokens live as CSS variables in
 `web/styles.css`; shadcn primitives live in `web/components/ui/`.
+
+`/webmcp` is the intentional light storefront variant: true white, quiet Route
+Mist catalog fields, original olive/charcoal/clay product cutouts, editorial
+Geist scale, and a solid Route Ink human-handoff section. Translucency is
+limited to the single “Behind the cart” activity surface. It may use one gloss
+pass after a real result; commerce cards, errors, identity, exact terms, and
+merchant continuation stay solid. On mobile the activity surface is a
+collapsible non-modal bottom sheet with no backdrop or focus trap.
+
+`/demo` starts in the original quiet white LifeHack `Woven Demo Host` conversation inside a
+solid presentation frame. The real light storefront then takes over that frame
+with an explicit opaque **WebMCP rehearsal active** receipt, a persistent
+five-beat control rail, truthful browser activity, a restrained agent cursor,
+highlighted reversible actions, and page scrolling before control returns to
+chat with the selected result. The receipt plainly says that the embedded frame
+does not register tools and presents the official ChatGPT/Chrome test paths plus
+a direct top-level storefront link. The rail uses Signal Lime for reversible site
+actions and changes to Waypoint Blue only at **Human control required**. The outer
+frame never adds another glass surface. On mobile the hardware silhouette is
+removed and the browser takeover fills the viewport; there is no modal or focus
+trap.
 
 Type is Geist Sans for interface copy and headings (semibold, tight tracking)
 and Geist Mono for IDs, audit events, table prices, and uppercase operational
@@ -77,6 +98,7 @@ no-card-details boundary.
 | --- | --- |
 | Hero | Everything you need. Woven into one choice. |
 | Results | Five ways it comes together. |
+| WebMCP storefront | Tell us the trip. We’ll build the whole kit. |
 | Compatibility | Every thread checked. Nothing left to connect. |
 | Checkout | Review the exact terms. |
 | Confirmation | Your yes is the final thread. |
@@ -116,10 +138,13 @@ mission.
 | `docs/Woven-Devpost-Visuals.pptx` | Editorial source deck; the current product-style explainers use the HTML sources above |
 | `docs/assets/screenshots/*.png` | Verified product gallery |
 | `docs/assets/screenshots/demo-identity.png` | Verified `/identity` simulator evidence |
+| `docs/assets/screenshots/demo-guided-{desktop,mobile}.png` | Verified `/demo` chat-to-browser-to-chat and human-handoff evidence |
+| `docs/assets/screenshots/demo-guided-browser-control.png` | Verified desktop browser-control stop at the human-only boundary |
 | `docs/assets/screenshots/webmcp-workspace-{ready,desktop,mobile,status}.png` | Verified WebMCP readiness, shared comparison, responsive, and activity evidence |
+| `web/assets/storefront/{stormweave-tent,drynest-sleeping-bag,trailrest-sleeping-mat,rainbeam-lantern,trailguard-first-aid}.webp` | Original 720×720 brand-neutral product cutouts for the fictional storefront; no merchant or outdoor-brand endorsement |
 | `docs/assets/slides/*.png` | Text-free editorial backgrounds for friction, the complete kit, and explicit human confirmation |
 | `docs/assets/demo/*.{png,svg}` | Numbered 16:9 stage fallback sequence and closing card built from verified product screens |
-| `docs/assets/marketing/woven-demo-loop.gif` | Animated ~33s loop of the real `/demo` flow for README, Devpost, and social posts |
+| `docs/assets/marketing/woven-demo-loop.gif` | Legacy pre-guided `/demo` loop; do not use as current evidence until regenerated from the framed-storefront flow |
 | `docs/assets/marketing/woven-how-it-works-square.png` | 1080 × 1080 four-step how-it-works card for feeds |
 | `docs/assets/marketing/woven-how-it-works-story.png` | 1080 × 1920 four-step how-it-works card for stories |
 | `script.md` | Authoritative three-minute narration and language guardrails |
@@ -127,7 +152,9 @@ mission.
 | `video/WovenJudgeVideo.tsx` | Three-minute Remotion judge-video source using the same brand tokens and verified evidence |
 | `video/Woven-Judge-Video.srt` | Sidecar captions for the judge-video master |
 | `video/Woven-WebMCP-Video.srt` | Retimed sidecar captions for the 2:58 WebMCP master |
-| `public/woven-video/` | Replaceable ElevenLabs AI narration and ambient audio for the Remotion composition |
+| `public/woven-video/voiceover/` | Replaceable ElevenLabs AI narration for the original judge composition |
+| `public/woven-video/webmcp-voiceover/` | Challenge-specific local system TTS narration for the WebMCP composition |
+| `public/woven-video/ambient.mp3` | Shared ambient bed for both Remotion compositions |
 | `output/Woven-Judge-Video.mp4` | Generated local master; ignored by Git and uploaded only after final review |
 | `output/Woven-WebMCP-Challenge.mp4` | Generated 2:58 WebMCP challenge master; ignored by Git and must be reviewed before upload |
 
@@ -139,11 +166,25 @@ The demo fallback PNGs are also 1600 × 900. Their editable SVG sources referenc
 the canonical logo and raw product screenshots, so update the source screenshots
 first whenever the buyer or merchant UI changes, then re-render each SVG to PNG.
 The marketing cards embed a live portrait capture of `/demo` and the current
-gallery screenshots; regenerate them after any visible UI change. The animated
-loop is recorded from the real `/demo` sequence at 1280 × 800 and assembled with
-ffmpeg at 8 fps, 960px wide. Use `/demo?loop=true` for unattended live display;
-it shows the server-enforced simulated identity success and host acknowledgement,
-then fades back to the start without depicting an automatic purchase.
+gallery screenshots; regenerate them after any visible UI change. A future
+replacement animated loop should record the real `/demo?loop=true` sequence at
+1280 × 800 and be assembled with ffmpeg at 8 fps, 960px wide. The current guided
+loop opens the storefront, waits for the real response, scrolls, selects the
+cart, stops at the human-only handoff, and replays without starting identity or
+depicting an automatic purchase.
+
+### Storefront cutout provenance
+
+The five storefront cutouts were created with OpenAI's built-in ImageGen in
+project-bound mode, exported with transparent backgrounds, then resized to
+720×720 WebP for the repository. The shared prompt direction was: “premium
+studio product cutout, three-quarter view, olive/charcoal/clay palette, soft
+grounding shadow, no text, no logo, no people, transparent background, original
+fictional outdoor equipment, consistent retail lighting.” Each asset added only
+its category-specific object: compact two-person rain tent; rolled synthetic
+sleeping bag; rolled self-inflating sleeping mat; rugged IPX4 camp lantern; or
+compact water-resistant first-aid pouch. Do not replace them with real-brand
+product photography or imply a merchant endorsement.
 
 ## Campaign image brief
 

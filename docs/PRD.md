@@ -4,7 +4,8 @@
 
 Woven is a personal commerce system that builds a complete kit around a user’s
 mission instead of returning a list of product links. Its primary experience is
-an MCP App inside ChatGPT/Codex and a WebMCP-enabled browser workspace, while
+an MCP App inside ChatGPT/Codex and the fictional Woven Trail Market storefront
+in a WebMCP-enabled browser, while
 its backend owns mission routing,
 orchestration, deterministic commerce verification, persistence, and checkout.
 It crosses the purchase boundary only after the user confirms an exact mandate.
@@ -16,14 +17,20 @@ retail categories.
 
 Within three minutes, an audience should see:
 
-1. A natural-language camping mission open five ranked, pickup-ready carts in a Choice Center.
-2. The user compare full carts, rerank by priority or area, and optionally swap only merchant-approved compatible items.
-3. A visible proof that rain protection, capacity, two sleep systems, packed volume, lighting, first aid, stock, pickup, and budget all work together.
-4. A simulated connector-style identity handoff be enforced before checkout.
-5. An exact checkout preview be bound to that identity session, merchant, items,
+1. A person submit one natural-language camping mission in the clearly labeled original LifeHack `Woven Demo Host` conversation and see the Woven Trail Market browser take over the same presentation surface.
+2. The browser explicitly announce **WebMCP rehearsal active**, disclose the seven reversible site actions and human-only boundary, then show truthful safe-site activity while the storefront waits for the real shared-backend response.
+3. Highlighted reversible `compare_carts` and `select_cart` actions choose TrailHaus and reveal proof that rain protection, capacity, two sleep systems, packed volume, lighting, first aid, stock, pickup, and budget all work together.
+4. The guided browser stop at a solid human-only handoff, return control to chat with an exact cart summary, and leave identity or checkout to a direct user action.
+5. A direct user action enforce the simulated connector-style identity handoff before an exact checkout preview bound to that identity session, merchant, items,
    total, version, and expiry.
 6. An explicit user confirmation produce a clearly simulated Visa authorization and signed, server-verifiable receipt.
-7. A merchant operator control substitutions and force stock, price, authorization, and order failure paths without changing code.
+7. The hosted MCP App independently retain its five-cart Choice Center, and a merchant operator control substitutions and force stock, price, authorization, and order failure paths without changing code.
+
+The dedicated `/webmcp` showcase opens idle. A person or agent can start the same
+mission from the Woven Trail Market page, watch truthful observable activity,
+compare the best two complete one-store kits, and then hand off to direct
+human-only identity and merchant controls. `/demo` is its stage-safe guided
+rehearsal; the hosted MCP App remains the canonical five-cart in-chat surface.
 
 ## Primary persona
 
@@ -42,19 +49,59 @@ seeded; every price is in SGD.
 ## Functional requirements
 
 - Run as a current MCP App with a React widget in ChatGPT/Codex.
-- Expose a top-level `/webmcp` workspace with imperative WebMCP tools registered
-  through `navigator.modelContext.registerTool` and removed through an abort-bound
+- Expose a dedicated top-level `/webmcp` Woven Trail Market storefront with
+  imperative WebMCP tools registered through `document.modelContext.registerTool`
+  and removed through an abort-bound
   lifecycle.
+- Keep Shop, Complete kits, Field guide, and Cart as working anchors. Human
+  mission submission and agent `start_mission` invocation must drive the same
+  visible mission state.
+- Default each new browser session to connected-store mode. Seeded showcase data
+  is a session-local explicit choice and must never be a silent live fallback.
+- Model storefront activity as `idle`, `running`, `resolved`, `degraded`, or
+  `error`; abort superseded work, ignore stale responses, and invalidate private
+  handoff state on selection, swap, or refresh.
+- While work is pending, display one truthful indeterminate operation and pending
+  downstream checks. Reveal connector status, cart composition, evidence, and
+  totals only from a returned `MissionView`; never simulate backend progress or
+  expose model reasoning.
+- Render the best two complete one-store kits with original fictional product
+  cutouts, exact quantities and totals, pickup readiness, source platform,
+  verification time, compatibility evidence, and deterministic cart metrics.
+- Use a single translucent “Behind the cart” surface. On desktop it floats in a
+  reserved column; on mobile it becomes a collapsible non-modal bottom sheet
+  with no focus trap. Commerce results and human authorization surfaces remain
+  solid and high contrast.
 - Let WebMCP agents start or inspect missions, compare/select carts, apply only
   approved swaps, refresh current carts, and verify receipts; never expose demo
   identity, checkout-preview, or purchase-confirmation tools to the agent.
 - Treat MCP as the interaction/tool transport, not the mission engine: the
   backend owns workflow routing, evidence classification, cart composition, and
   checkout eligibility.
-- Offer a browser fallback that uses the same backend rules.
+- Preserve the clearly labeled original LifeHack `Woven Demo Host` shell at
+  `/demo`; embed the real storefront entry, submit through the same mission backend, let the
+  browser take over the presentation while safe WebMCP-equivalent actions are
+  highlighted, scroll only after a returned result, select a cart through the
+  existing reversible action, stop at the human-only handoff, and return the
+  selected result to chat. The host document must not register WebMCP tools.
+- Pace `/demo` as a five-beat presentation over real state: connection, returned
+  kits, comparison, reversible choice, and human handoff. Provide keyboard-safe
+  Pause/Resume, Next beat, and Replay controls. Pause may stop only presentation
+  holds; it must not cancel or manufacture an in-flight backend result, and Next
+  beat must remain unavailable during real network work.
+- On a directly opened `/webmcp`, distinguish unsupported, registering,
+  connected, and failed WebMCP states. Show “WebMCP active · 7 tools” only after
+  all seven abort-bound registrations have resolved. The framed rehearsal must
+  identify itself as a rehearsal rather than claim a live top-level connection.
+- Make the testing path explicit in both browser surfaces: `/demo` must link to
+  the real top-level `/webmcp` surface and identify that its embedded frame does
+  not register tools; unsupported or failed `/webmcp` sessions must direct
+  people to ChatGPT's in-app browser or Google Chrome with WebMCP enabled through
+  its experimental flag or origin trial, with a link to the official guide.
 - Let `/demo?loop=true` run an unattended, non-purchasing visual walkthrough of
-  comparison, reranking, compatibility proof, approved swaps, the simulated
-  identity success, and a host acknowledgement.
+  chat submission, browser takeover, real mission resolution, verified cart
+  browsing, reversible cart selection, the human-only boundary, and the return
+  to chat before replaying.
 - Seed at least three merchants and two locations per merchant.
 - Return five complete location choices for the canonical mission and open them
   in an accessible native dialog.
@@ -64,6 +111,9 @@ seeded; every price is in SGD.
   preferred area; persist preferences only after explicit opt-in.
 - Apply hard compatibility, inventory, pickup, and budget constraints before ranking.
 - Keep each recommended cart at one merchant/location.
+- Attach deterministic metrics to every ranked cart: unit count, category count,
+  optional packed liters, and optional tent waterproof rating. Canonical
+  connected carts report 7 units, 5 categories, 89 L, and 3,000 mm.
 - Show why every component is compatible.
 - Show a pickup plan with ready time, travel estimate, leave-by time, and store close.
 - Permit only active merchant-approved substitutions, then revalidate the
@@ -99,8 +149,9 @@ seeded; every price is in SGD.
   cited research leads and never gain select, identity, preview, or purchase controls.
 - Rebuild every persisted connected cart from current SQLite price, stock,
   attributes, merchant, and location before preview and confirmation.
-- Keep the canonical `/demo` sequence and exact five-cart result unchanged when
-  OpenAI is unavailable; non-camping missions fail with retryable
+- Keep the canonical camping engine and exact five-cart MCP App result unchanged
+  when OpenAI is unavailable; `/demo` rehearses the best-two storefront view of
+  that same result, and non-camping missions fail with retryable
   `AGENT_UNAVAILABLE` instead of fabricated results.
 
 ## Non-goals for this prototype
@@ -147,15 +198,38 @@ satisfy this contract.
   rate limiting, untrusted web content, bounded ranking, and guaranteed termination.
 - The MCP and browser transports enter the same server-owned mission router, and
   only the non-camping route enters the bounded LangGraph.js workflow.
-- `/webmcp` registers exactly seven discoverable site tools with closed JSON
-  schemas, updates the shared visible Choice Center, and preserves human-only
-  identity and exact purchase confirmation.
+- `/webmcp` serves its dedicated storefront entry and registers exactly seven
+  discoverable site tools with closed JSON schemas. Human submission and site
+  tool invocation update the same visible results/activity state while identity,
+  exact checkout, confirmation secrets, merchant continuation, and purchase
+  authority remain human-only.
+- Connected mode returns one healthy cart when one connector fails, with a
+  warning. Total connector failure returns no fabricated cart and offers retry
+  plus a manually selected showcase-data action.
+- No activity step claims completed server work before a real response.
+- The storefront displays the canonical cart proof as 7 units, 5 categories,
+  89 L packed, and a 3,000 mm rainfly; it never repeats the illustrative 85 L.
+- Model-visible mission and WebMCP results contain no checkout URL, identity
+  authorization URL, confirmation nonce, or purchase secret.
 - Every returned cart is within S$300 and contains a tent, two sleeping bags,
   two sleeping mats, a rain-ready lantern, and a first-aid kit from one pickup
   location.
 - Every tent covers two campers with at least a 2,000 mm rainfly, every cart fits
   within the 120 L packed-gear allowance, and every required unit is in stock.
 - The Choice Center opens automatically, supports keyboard dismissal, and can be reopened.
+- `/demo` serves a separate guided-host entry, remains visibly labeled
+  **Simulated**, embeds `/webmcp` in explicit **Showcase data** mode, and exposes
+  no top-level WebMCP tools. It visibly transfers presentation control from chat
+  to the browser and back, and never claims a completed step before the
+  corresponding real response or reversible UI action.
+- `/demo` keeps the activation boundary and each returned proof state readable
+  through deterministic presentation holds, supports pause/manual advance, and
+  retains the same semantic holds with animation removed in reduced-motion mode.
+- The activation/testing receipt remains visible for 4.5 seconds by default,
+  says that the embedded rehearsal does not register site tools, and provides
+  working links to the direct storefront and official WebMCP testing guide.
+- Storefront navigation, source choice, activity disclosure, cart choice, and
+  mobile sheet work with a keyboard; reduced motion skips the gloss/reveal pass.
 - Preference persistence is off by default and removable by clearing the opt-in checkbox.
 - A withdrawn or invalid substitution cannot form a selectable custom cart.
 - Checkout preview fails without a current verified demo identity session.
@@ -176,6 +250,6 @@ satisfy this contract.
 - `/` (landing), `/demo`, `/webmcp`, `/identity`, `/merchant`, `/architecture`,
   `/healthz`, and `/mcp` run from one process.
 - Plugin manifests pass Codex plugin validation.
-- `/demo?loop=true` completes the server-enforced simulated identity handoff,
-  then replays without creating a checkout mandate, confirming a purchase, or
-  mutating inventory.
+- `/demo?loop=true` shows the human-only boundary, returns the selected result to
+  chat, then replays without starting identity, creating a checkout mandate,
+  confirming a purchase, or mutating inventory.

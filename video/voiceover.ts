@@ -70,3 +70,55 @@ export const voiceovers = [
     spoken: "Woven makes shopping through A I simple enough to use, and controlled enough to trust.",
   },
 ] as const;
+
+export const webMcpVoiceovers = [
+  {
+    id: "opening",
+    start: 0.5,
+    end: 11.8,
+    text: "Shopping agents can suggest products. Woven uses WebMCP to finish a multi-item mission: one request, seven site tools, complete verified carts, and a human-only purchase boundary.",
+    spoken: "Shopping agents can suggest products. Woven uses Web M C P to finish a multi-item mission: one request, seven site tools, complete verified carts, and a human-only purchase boundary.",
+  },
+  {
+    id: "live-tools",
+    start: 12.4,
+    end: 48.5,
+    text: "Here is the live, top-level Woven Trail Market storefront. The browser discovers seven purpose-built tools: start or inspect a mission, compare and select carts, apply an approved swap, refresh price and stock, and verify an existing receipt. When the agent calls start_mission, the same page the person sees moves from idle to verified kits. Tool calls and human review share one state. There is no DOM guessing, and no separate agent-only result.",
+    spoken: "Here is the live, top-level Woven Trail Market storefront. The browser discovers seven purpose-built tools: start or inspect a mission, compare and select carts, apply an approved swap, refresh price and stock, and verify an existing receipt. When the agent calls start mission, the same page the person sees moves from idle to verified kits. Tool calls and human review share one state. There is no D O M guessing, and no separate agent-only result.",
+  },
+  {
+    id: "mission",
+    start: 52.4,
+    end: 68.7,
+    text: "Our test mission is a rainy-weekend camping kit for two, under S$300, in one car boot, pickup-ready today. Woven has to satisfy quantity, weather, compatibility, volume, current stock, budget, and one pickup location at the same time.",
+    spoken: "Our test mission is a rainy-weekend camping kit for two, under three hundred Singapore dollars, in one car boot, pickup-ready today. Woven has to satisfy quantity, weather, compatibility, volume, current stock, budget, and one pickup location at the same time.",
+  },
+  {
+    id: "verified-result",
+    start: 70.4,
+    end: 88.5,
+    text: "Woven verifies five complete candidates and shows the best two. TrailHaus is 7 units across 5 required categories, 89 L packed, a 3,000 mm rainfly, and an exact S$231 total from one pickup point. These are checkout-quality facts, not search snippets.",
+    spoken: "Woven verifies five complete candidates and shows the best two. TrailHaus is seven units across five required categories, eighty-nine liters packed, a three-thousand-millimeter rainfly, and an exact two-hundred-thirty-one Singapore dollar total from one pickup point. These are checkout-quality facts, not search snippets.",
+  },
+  {
+    id: "human-boundary",
+    start: 89,
+    end: 130.5,
+    text: "The agent may rerank the kits, select one, or apply only a merchant-approved compatible alternative. Then it stops. Identity, exact checkout terms, confirmation secrets, and purchase authorization are deliberately absent from the WebMCP tool surface. The person completes the simulated identity handoff, sees every item, quantity, merchant, pickup point, total, and expiry, then confirms directly. Only that click can produce the simulated Visa result; Woven accepts no card credentials and cannot make a live charge.",
+    spoken: "The agent may rerank the kits, select one, or apply only a merchant-approved compatible alternative. Then it stops. Identity, exact checkout terms, confirmation secrets, and purchase authorization are deliberately absent from the Web M C P tool surface. The person completes the simulated identity handoff, sees every item, quantity, merchant, pickup point, total, and expiry, then confirms directly. Only that click can produce the simulated Visa result. Woven accepts no card credentials and cannot make a live charge.",
+  },
+  {
+    id: "implementation",
+    start: 133.3,
+    end: 152,
+    text: "Implementation is equally explicit. The top-level document supplies modelContext; Woven registers seven tools with closed schemas, read-only annotations where appropriate, and one AbortSignal that removes the tool surface on navigation. Every call enters the same server router and deterministic verifier used by the visible storefront.",
+    spoken: "Implementation is equally explicit. The top-level document supplies model context. Woven registers seven tools with closed schemas, read-only annotations where appropriate, and one abort signal that removes the tool surface on navigation. Every call enters the same server router and deterministic verifier used by the visible storefront.",
+  },
+  {
+    id: "closing",
+    start: 154,
+    end: 176.5,
+    text: "Woven shows what people and agents can do together: the agent handles reversible preparation, the server enforces commerce truth, and the person owns identity and purchase. The live app, public source, and demo are ready for review. Seeded inventory, simulated identity, simulated payment—no live charge.",
+    spoken: "Woven shows what people and agents can do together: the agent handles reversible preparation, the server enforces commerce truth, and the person owns identity and purchase. The live app, public source, and demo are ready for review. Seeded inventory, simulated identity, simulated payment. No live charge.",
+  },
+] as const;

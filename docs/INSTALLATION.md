@@ -234,11 +234,15 @@ The browser fallback uses the same mission router, orchestration layer, store,
 domain rules, and payment simulator as the MCP App. It is a rehearsal transport,
 not the primary product.
 
-In a current WebMCP-capable ChatGPT or Codex browser session, `/webmcp`
+Open `/webmcp` as a top-level page in ChatGPT's in-app browser, which supports
+WebMCP out of the box, or Google Chrome with WebMCP enabled through its
+experimental flag or origin trial. The `/demo` frame is intentionally a
+non-registering rehearsal and links to the direct storefront plus the
+[official testing guide](https://openai.com/webmcp-challenge/). The direct page
 discovers seven tools: `start_mission`, `get_mission`, `compare_carts`,
 `select_cart`, `swap_cart_item`, `refresh_carts`, and `verify_receipt`. A visible
-readiness card confirms registration. Identity, checkout preview, and purchase
-confirmation must not appear in the discovered list.
+**WebMCP active · 7 tools** status confirms registration. Identity, checkout
+preview, and purchase confirmation must not appear in the discovered list.
 
 ## Troubleshooting
 

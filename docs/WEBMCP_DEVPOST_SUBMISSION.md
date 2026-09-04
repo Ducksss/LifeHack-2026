@@ -1,29 +1,30 @@
 # Woven — WebMCP Challenge submission guide
 
 This guide translates the live WebMCP Challenge page and official rules into a
-submission plan for Woven. It was verified against Devpost on 1 September 2026.
+submission plan for Woven. It was last verified against Devpost on 4 September
+2026.
 The [official rules](https://webmcp.devpost.com/rules) and any later organizer
 notices always prevail over this guide.
 
 ## Submission decision
 
-Woven is a strong, eligible-looking fit for the challenge, but the submission is
-not ready to send yet. The implementation, public repository, license, copy, and
-live route exist. The remaining critical work is to verify the live tools in a
-judge-equivalent browser, produce and publish a compliant public YouTube demo,
-complete the entrant checks, and submit the Devpost form.
+Woven is submitted to the WebMCP Challenge. The public storefront, repository,
+MIT license, challenge story, 2:58 YouTube demo, timed English captions, and
+Devpost embed are live and verified. The remaining administrative follow-up is
+to reconcile the Devpost entrant type with the challenge team listing and keep
+the public app, repository, and video available through judging.
 
 | Gate | Current Woven status | Required action |
 | --- | --- | --- |
 | WebMCP implementation | Ready | Seven top-level tools are implemented in `web/webmcp.ts` and registered from the visible page through `document.modelContext.registerTool` |
-| Public live URL | Partly verified | `/webmcp` returns HTTP 200 with `Origin-Agent-Cluster: ?1`, `Permissions-Policy: tools=(self)`, and a bundle containing all seven tool names; still run a real tool-discovery and invocation test in ChatGPT's in-app browser or WebMCP-enabled Chrome |
+| Public live URL | Ready | `https://visa-woven.vercel.app/webmcp` is public; the seven-tool surface and visible storefront behavior were verified in Codex's in-app browser |
 | Public repository | Ready, canonical URL must remain consistent | Use `https://github.com/Ducksss/LifeHack-2026` unless the project owner explicitly changes the canonical submission repository; do not split judges between that repository and the duplicate `Woven-Commerce` remote |
 | Open-source license | Ready | GitHub detects the MIT `LICENSE`; confirm it remains visible in the repository About area |
 | Challenge-period provenance | Ready, subject to entrant attestation | The root commit is dated 29 August 2026 and the dedicated WebMCP commit is dated 31 August 2026, both after the challenge opened |
 | Text description | Ready below | Paste the final copy and keep the simulator boundaries intact |
-| Demo video | Not ready | Render or recover the final master, ensure it visibly demonstrates a real WebMCP tool call, clear all audio/trademark rights, upload it publicly to YouTube, and add the URL |
-| Eligibility/team representative | Human check | Confirm age, residence, conflict, ownership, and the authorized representative before submitting |
-| Devpost entry | Pending | Join the challenge, complete every required field, submit, and save proof of receipt before the deadline |
+| Demo video | Ready and public | The 2:58 Remotion master is public at `https://youtu.be/_v84xyD8CkM`; YouTube reported no copyright or Community Guidelines issues, and the timed English caption track is published |
+| Eligibility/team representative | Human follow-up | Devpost reports the challenge entry as submitted, but Additional Info says `Individual` while the challenge team listing contains Chai Pin Zheng, Krish Gupta, and arav cabral; confirm the intended entrant type and representative authority |
+| Devpost entry | Submitted | Devpost shows `SUBMITTED`, `5/5 steps done`, and the public project page embeds the corrected video |
 
 ## Dates and operating window
 
@@ -80,16 +81,21 @@ summary as exhaustive.
 ### 1. A working WebMCP web app
 
 The app must be usable on its intended platform and behave as shown in the
-description and video. Judges may use ChatGPT's in-app browser or Google Chrome
-149 or later with `chrome://flags/#enable-webmcp-testing` enabled.
+description and video. The [official OpenAI testing guidance](https://openai.com/webmcp-challenge/)
+says to use ChatGPT's in-app browser, which supports WebMCP out of the box, or
+Google Chrome with WebMCP enabled through its experimental flag or origin trial.
+For the current Chrome testing build, the challenge resources identify
+`chrome://flags/#enable-webmcp-testing`.
 
 For Woven:
 
-**Live URL:** https://visa-woven.vercel.app/webmcp
+**Intended live URL after authorized deployment:** https://visa-woven.vercel.app/webmcp
 
-- [x] Public HTTPS route responds without login.
-- [x] Required WebMCP security headers are present.
-- [x] The deployed bundle contains all seven site-tool names.
+- [ ] This exact storefront build responds over public HTTPS without login.
+- [ ] Required WebMCP security headers are present on the deployed storefront.
+- [ ] The deployed bundle contains all seven site-tool names.
+- [x] Codex's in-app browser discovers exactly seven tools on the local storefront.
+- [x] Local `start_mission` changes the visible storefront and returns no checkout/identity secret.
 - [ ] In ChatGPT's in-app browser, confirm all seven tools are discovered.
 - [ ] Invoke `start_mission`, `compare_carts`, `select_cart`, and
   `refresh_carts` against the live route and confirm the visible page changes.
@@ -148,14 +154,20 @@ The submitted video must be publicly visible on YouTube, shorter than 3:00,
 include audio, clearly show the project functioning, and explain both what was
 built and how WebMCP is used. Judges do not have to watch after 3:00.
 
-Current Woven source targets a 2:58 Remotion composition, but the rendered master
-is not present in this checkout and no public challenge-video URL is recorded.
-The current WebMCP scene transitions between screenshots. Treat that as a
-storyboard, not sufficient final proof: the published cut should show a real
-agent discovering the site tools and calling at least one of them while the
-shared page visibly responds.
+The local H.264/AAC master is `output/Woven-WebMCP-Challenge.mp4` and measures
+178.048 seconds (2:58.048). The corrected cut puts the deployed storefront on
+screen at 0:12, explicitly narrates discovery and `start_mission`, shows the
+idle and verified shared-page states, names every human-only exclusion, and
+finishes with the registration and abort-cleanup source proof. Its matching
+caption track is `video/Woven-WebMCP-Video.srt`.
 
-**Required video URL:** `[ADD PUBLIC YOUTUBE URL]`
+For supporting `/demo` rehearsal footage, keep the explicit **WebMCP rehearsal
+active** receipt and five-beat rail visible long enough to read. That route is a
+truthful simulated host and does not itself register site tools; use the direct
+`/webmcp` page for the actual discovery proof. On the direct page, capture
+**WebMCP active · 7 tools** only after registration completes.
+
+**Submitted video URL:** <https://youtu.be/_v84xyD8CkM>
 
 Recommended 2:50 maximum final cut:
 
@@ -163,8 +175,8 @@ Recommended 2:50 maximum final cut:
 | --- | --- |
 | 0:00–0:18 | The concrete problem: one rainy-weekend request still requires quantities, compatibility, stock, pickup, and budget work |
 | 0:18–0:38 | Open the live `/webmcp` page in a supported agent browser and show the seven discovered tools |
-| 0:38–1:10 | Have the agent call `start_mission`; show five complete one-merchant carts appear in the same visible page |
-| 1:10–1:35 | Call `compare_carts` with a priority/area and show the Choice Center open and rerank |
+| 0:38–1:10 | Have the agent call `start_mission`; show the truthful activity surface resolve and two complete one-store kits appear in the same visible page |
+| 1:10–1:35 | Call `compare_carts` with a priority/area and show the inline storefront kits rerank |
 | 1:35–1:55 | Call `select_cart` or an approved swap and show shared human/agent state |
 | 1:55–2:20 | Explain that identity, exact checkout review, and purchase confirmation are deliberately human-only and absent from the tool surface |
 | 2:20–2:38 | Show source code using `document.modelContext.registerTool`, closed schemas, annotations, and abort-bound cleanup |
@@ -172,8 +184,8 @@ Recommended 2:50 maximum final cut:
 
 Before upload:
 
-- [ ] Render H.264/AAC and verify the actual duration with `ffprobe`; aim below
-  2:55 to preserve margin after editing.
+- [x] Render H.264/AAC and verify the actual duration with `ffprobe`: the local
+  master is 2:58.048.
 - [ ] Watch the entire exported file with sound.
 - [ ] Keep tool names, the browser address, page response, and human-only
   boundary readable at 1080p.
@@ -213,22 +225,24 @@ requires quantities, compatibility, budget, current stock, pickup, and consent
 to work together. Woven turns that multi-step job into a structured
 collaboration between an agent and the person already using the page.
 
-On Woven's WebMCP workspace, the agent does not guess at buttons or scrape the
-interface. Seven purpose-built site tools let it start or inspect a mission,
-open the shared cart comparison, select an offered cart, apply only a
+On the fictional **Woven Trail Market** storefront, the agent does not guess at
+buttons or scrape the interface. Seven purpose-built site tools let it start or
+inspect a mission, rerank the visible cart comparison, select an offered cart, apply only a
 merchant-approved compatible alternative, refresh current price and stock, and
 verify an existing simulated receipt.
 
 ### How it creates a better user experience
 
 The canonical request asks for a rainy-weekend camping kit for two first-time
-campers under S$300 that fits in one car boot and is pickup-ready today. Woven
-returns five complete carts, each from one merchant and one pickup location,
-and explains how every quantity and component satisfies the brief.
+campers that fits in one car boot and is pickup-ready today. Woven Trail Market
+shows the best two complete carts, each from one merchant and one pickup
+location, and explains how every quantity and component satisfies the brief.
+The lead proof is exact: 7 units, 5 categories, 89 L packed, and a 3,000 mm
+rainfly.
 
-Agent calls update the same React workspace the person can see. When the agent
-calls `compare_carts`, Woven opens and configures the visible Choice Center
-rather than returning a disconnected text result. The person can review the
+Agent calls update the same React storefront the person can see. When the agent
+calls `compare_carts`, Woven reranks the visible inline kits rather than
+returning a disconnected text result. The person can review the
 same carts, prices, stock, compatibility proof, alternatives, and selected
 state. That removes repeated searching and cart reconstruction without hiding
 the decision from the person.
@@ -244,12 +258,12 @@ That boundary is intentional. Woven does not register identity verification,
 checkout preview, confirmation secrets, or purchase authorization as WebMCP
 tools. The agent may prepare and recommend; the person must complete the
 clearly labeled demo identity handoff, review exact expiring terms, and directly
-confirm. Inventory, identity, merchants, and payment authorization are
+confirm or continue to a merchant. Inventory, identity, merchants, and payment authorization are
 simulated, Woven accepts no card credentials, and it cannot make a live charge.
 
 ### How WebMCP was implemented
 
-The top-level `/webmcp` document registers seven imperative tools through
+The dedicated top-level `/webmcp` storefront document registers seven imperative tools through
 `document.modelContext.registerTool`: `start_mission`, `get_mission`,
 `compare_carts`, `select_cart`, `swap_cart_item`, `refresh_carts`, and
 `verify_receipt`.
@@ -260,7 +274,7 @@ and every registration is attached to an `AbortSignal` so navigation removes
 the page's tool surface. The server sends `Origin-Agent-Cluster: ?1` and
 `Permissions-Policy: tools=(self)`.
 
-WebMCP and the existing MCP App enter the same server-owned mission router,
+Human submission, WebMCP, and the existing MCP App enter the same server-owned mission router,
 deterministic commerce verifier, SQLite state, and checkout controls. The agent
 cannot mark a cart checkout-eligible. Connected catalog facts may support a
 cart; cited web research remains research-only. Price, stock, compatibility,
@@ -281,15 +295,16 @@ Woven was built around a simple product promise: everything works together.
 
 ### What it does
 
-One natural-language mission becomes five ranked, complete, compatible carts.
-The agent and person share a visible Choice Center, current selection,
+One natural-language mission becomes verified complete carts; the storefront
+shows the best two in solid comparison cards. The agent and person share a
+visible storefront state, current selection,
 merchant-approved alternatives, and refreshable catalog state. The agent can do
 reversible preparation through WebMCP while identity and exact transaction
 confirmation stay human-only.
 
 ### How we built it
 
-Woven is one Node.js and TypeScript service with a React workspace, seven
+Woven is one Node.js and TypeScript service with a dedicated React storefront, seven
 top-level WebMCP site tools, HTTP and stdio MCP transports, deterministic cart
 verification, bounded LangGraph.js orchestration for non-camping missions,
 SQLite persistence, and a simulated payment adapter. Tests assert the exact
@@ -310,10 +325,12 @@ validation, persistence, cart rules, and confirmation boundary.
 ### Accomplishments
 
 - Seven browser-discoverable WebMCP tools over a complete product workflow.
-- Tool calls update the visible human workspace instead of a parallel agent-only
+- Tool calls update the visible storefront instead of a parallel agent-only
   state.
-- Five complete one-merchant carts with explicit budget, volume, weather,
-  quantity, stock, and pickup proofs.
+- Two visible complete one-merchant kits with exact budget, volume, weather,
+  quantity, stock, pickup, source, and verification proofs.
+- One truthful glass activity surface; commerce cards and authorization controls
+  remain solid, and total connector failure never fabricates a result.
 - Merchant-approved substitutions, refreshable facts, signed simulated
   receipts, and deterministic failure behavior.
 - Human-only identity and purchase confirmation enforced by the server and
@@ -354,7 +371,7 @@ add this disclosure to the description:
 
 > Woven began before the challenge as an MCP commerce prototype. During the
 > submission period we meaningfully extended it with a top-level WebMCP
-> workspace, seven imperative site tools, shared human-agent UI state,
+> storefront showcase, seven imperative site tools, shared human-agent UI state,
 > abort-bound registration, WebMCP security headers, tests, screenshots, and
 > challenge media. The dated WebMCP commit and compare link isolate that work.
 
@@ -367,9 +384,9 @@ WebMCP Leverage is also the first tie-breaker.
 | Criterion | Woven evidence | Make unmistakable in the entry |
 | --- | --- | --- |
 | WebMCP Leverage | Seven non-trivial tools; closed schemas; annotations; abort cleanup; shared UI effects; deliberately bounded authority | Show actual discovery and at least two live tool calls; link directly to `web/webmcp.ts` and `test/webmcp.test.ts`; explain why identity and purchase are absent |
-| Execution | End-to-end mission, five carts, comparison, selection, approved swap, refresh, human confirmation boundary, merchant failure controls | Use the live deployment, one coherent run, readable state changes, and a fresh-clone check rather than feature enumeration |
+| Execution | End-to-end mission, two storefront kits, comparison, selection, approved swap, refresh, human confirmation boundary, and fail-closed connector behavior | Use the live deployment, one coherent run, readable state changes, and a fresh-clone check rather than feature enumeration |
 | Potential Impact | First-time campers face a concrete multi-product compatibility, stock, pickup, budget, and consent problem | Lead with the user and measurable constraints; show how one request replaces repeated search and cart rebuilding |
-| Creativity & Ambition | Complete-cart mission commerce plus a visible human-agent workspace and consent-aware tool surface | Contrast complete verified outcomes with product-link search; frame omission of irreversible tools as intentional interaction design |
+| Creativity & Ambition | Complete-cart mission commerce plus a visible human-agent storefront and consent-aware tool surface | Contrast complete verified outcomes with product-link search; frame omission of irreversible tools as intentional interaction design |
 
 Avoid spending scarce video time on the MCP App, LangGraph internals, Visa
 roadmap, or merchant desk unless each directly supports a WebMCP judging point.
@@ -422,8 +439,9 @@ summary without rechecking the official rules.
   and the four-part required description.
 - [ ] Add the challenge-period commit and compare links.
 - [ ] If the form supports testing instructions, use: “Open the live URL in
-  ChatGPT's in-app browser, or Chrome 149+ with
-  `chrome://flags/#enable-webmcp-testing`; no login is required.”
+  ChatGPT's in-app browser, where WebMCP works out of the box, or Google Chrome
+  with WebMCP enabled through its experimental flag or origin trial; no login is
+  required.”
 - [ ] Preview every link and image in the saved draft.
 - [ ] Submit before 3 September 2026, 1:00 PM PDT / 4 September, 4:00 AM SGT.
 - [ ] Save the submission confirmation page, email, and final public project URL.

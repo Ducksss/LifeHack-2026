@@ -109,9 +109,14 @@ step in the audit trail without changing code.
 
 Woven is a TypeScript and React commerce system whose primary interface is an
 MCP App with nine tools over HTTP and stdio. The same repository includes a
-clearly labeled simulated chat host for stage-safe rehearsals. MCP and the
-browser API enter the same mission router; the browser demo is not a separate
-mock of the product.
+clearly labeled original LifeHack `Woven Demo Host` shell that yields to Woven Trail Market
+for a full browser-control rehearsal and then receives the selected result back.
+The rehearsal explicitly announces WebMCP, exposes its five visible beats and
+current reversible action, distinguishes the non-registering embedded rehearsal
+from the linked top-level WebMCP test surface, and pauses at the human-only boundary; its controls
+pace only returned UI states, never backend progress.
+MCP, WebMCP, and human browser actions enter the same mission router; the
+browser demo is not a separate mock of the product.
 
 One Node.js and Express service hosts five distinct layers: MCP/HTTP interaction,
 mission routing and bounded orchestration, deterministic commerce verification,
@@ -170,8 +175,9 @@ exact, expiring purchase a separate user-controlled state.
 **Being honest without weakening the demo.** Merchant inventory, identity, and
 Visa authorization are simulated, but the cart engine, server enforcement,
 transactions, failure paths, MCP calls, and receipt verification are real. The
-browser rehearsal labels itself **Simulated** on screen and uses the same backend
-instead of impersonating ChatGPT or hiding prototype boundaries.
+browser rehearsal labels itself **Simulated** on screen, uses explicit showcase
+data and the same backend, and stops at the human-only handoff instead of
+impersonating ChatGPT or hiding prototype boundaries.
 
 **Keeping orchestration useful but bounded.** A general retail prompt can fan
 out into arbitrary research and incompatible product combinations. We made
@@ -282,9 +288,11 @@ compatible, under budget, pickup today.”
 
 **0:48–1:30 — Ask once**
 
-Run the canonical prompt in ChatGPT/Codex or open `/demo`, where the simulated
-chat host types the canonical request and plays the `start_mission` activity live. Point
-out the five complete one-merchant carts. Compare them, select TrailHaus, and show the two-person
+Run the canonical prompt in ChatGPT/Codex or open `/demo`, submit it in the
+simulated chat, and watch the explicit WebMCP rehearsal receipt hand the real
+storefront browser control. Let it resolve, scroll to the best two of five
+complete candidates, highlight the reversible selection with the agent cursor,
+change to **Human control required**, and return TrailHaus to chat. Show the two-person
 quantity proof, rain ratings, 89 L packed volume, demo stock, pickup location,
 and S$231.00 total.
 
@@ -335,8 +343,11 @@ decline, and reversal paths.
 **Is this a browser extension?**
 
 No. The primary experience is an MCP App rendered inside ChatGPT or Codex. The
-browser route is a clearly labeled simulated chat host that rehearses the same
-experience — same backend, real MCP tool calls shown live, no live charge.
+browser route is the clearly labeled original LifeHack `Woven Demo Host` shell
+that yields to
+the real storefront for browser control, then receives the result back. It
+rehearses the same backend, exposes no top-level site tools, does not impersonate
+ChatGPT, and performs no live charge.
 
 **Does it make real Visa payments?**
 

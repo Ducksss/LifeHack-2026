@@ -89,7 +89,7 @@ export function createWebMcpTools(adapter: WebMcpAdapter): WebMcpTool[] {
     {
       name: "compare_carts",
       title: "Compare carts on the page",
-      description: "Open Woven's visible Choice Center and optionally rerank complete carts by priority or pickup area. This changes only the shared page view.",
+    description: "Rerank Woven's visible complete storefront kits by priority or pickup area. This changes only the shared page view.",
       inputSchema: {
         type: "object",
         properties: {
@@ -102,7 +102,7 @@ export function createWebMcpTools(adapter: WebMcpAdapter): WebMcpTool[] {
       execute: async (input) => {
         const view = currentView(adapter);
         adapter.compare(input as Parameters<WebMcpAdapter["compare"]>[0]);
-        return result("Opened the Choice Center on the shared page.", view, { applied: input });
+        return result("Updated the visible complete-kit comparison on the shared page.", view, { applied: input });
       },
     },
     {

@@ -3,7 +3,7 @@
 ## Shape
 
 Woven is deliberately one deployable Node.js service with distinct runtime
-layers. ChatGPT/Codex, the WebMCP workspace, and the browser fallback enter
+layers. ChatGPT/Codex, the WebMCP storefront, and the browser fallback enter
 through MCP, WebMCP, or HTTP; the
 server then routes the mission, optionally orchestrates non-camping discovery,
 applies deterministic commerce verification, persists state, and enforces
@@ -16,8 +16,8 @@ flowchart LR
   MCP --> Widget[MCP App React widget]
   Widget -->|app.callServerTool| MCP
 
-  Demo[Browser /demo] -->|same actions over HTTP| API[Demo API]
-  WebMCP[Browser /webmcp] -->|7 registered site tools| API
+  Demo[Simulated chat /demo] -->|browser takeover + validated frame protocol| WebMCP
+  WebMCP[Woven Trail Market /webmcp] -->|7 registered site tools + human HTTP actions| API
   Identity[Browser /identity] -->|state + one-time code| API
   Merchant[Merchant /merchant] --> API
 
@@ -36,26 +36,51 @@ flowchart LR
 ![What actually happens: the eight-step trace from the model's tool call to the receipt, with real payload shapes and failure gates](assets/devpost/woven-under-the-hood.png)
 
 The in-chat surface uses the standard MCP Apps bridge (`app.callServerTool`).
-`/webmcp` registers seven imperative tools in the top-level document and maps
-them to the same HTTP API and mission router. `/demo` remains the rehearsal
-transport for on-stage reliability: it renders a clearly labeled simulated chat
-host (marked “Simulated” in its header and footer) that drives the same backend
-over HTTP and surfaces each MCP tool call as it happens. Neither browser route
-impersonates a real host or performs live charges.
+`/webmcp` is a dedicated light fictional storefront. It registers seven
+imperative tools in the top-level document and maps them to the same HTTP API
+and mission router used by its human mission composer. Its inline storefront
+results and “Behind the cart” activity surface update from the returned public
+`MissionView`. `/demo` remains the rehearsal transport for on-stage reliability:
+it starts in the clearly labeled original LifeHack `Woven Demo Host` conversation, then lets
+the same storefront take over a same-origin browser frame. After a person
+submits, a narrow validated `postMessage` protocol asks the frame to run the real
+showcase mission, scroll after the response, compare and select the best cart
+through existing reversible actions, stop at the human-only handoff, and return
+an exact public result summary to chat. The host owns presentation pacing: it
+holds only observable states that have actually occurred, can pause or manually
+advance those holds, and never pauses or fakes the mission request itself. A
+same-origin internal `advance` message releases the framed storefront between
+returned-result, comparison, selection, and handoff states. The host document registers no WebMCP tools, and the framed
+storefront suppresses top-level registration; only a directly opened `/webmcp`
+page exposes the seven tools. The direct page reports unsupported, registering,
+connected, or failed and claims **WebMCP active** only after all seven
+registrations resolve. The frame reports **WebMCP rehearsal active** instead.
+Its activation receipt also states that the embedded frame does not register
+tools and links to the real top-level `/webmcp` surface. When that direct page
+runs without WebMCP support or registration fails, a solid notice points to the
+two official testing paths: ChatGPT's in-app browser, or Google Chrome with
+WebMCP enabled through its experimental flag or origin trial.
+Neither browser route
+impersonates a real host or performs live charges. Identity, exact revalidation,
+private native merchant-cart creation, and merchant continuation are visible
+direct-user controls on `/webmcp`, never site tools.
 
 `/architecture` is a standalone interactive explanation of the current service
 and the credential-gated target Visa boundary. Its tracer can autoplay or be
 paused, and reduced-motion preferences disable autoplay by default.
 
-With `?loop=true`, the browser auto-advances the existing Choice Center controls,
-compatibility proof, and approved-swap dialog, then completes the same simulated
-identity state, PKCE, single-use-code, and callback flow used by the interactive
-demo. It shows the verified state and host acknowledgement before fading and
-reloading. The loop never creates a checkout preview, receives a confirmation
-nonce, or calls `confirm_purchase`.
+With `?loop=true`, the simulated host replays chat submission, browser takeover,
+real mission resolution, result scrolling, reversible cart selection, and the
+return to chat. Seven deterministic presentation holds make the fast happy path
+legible without changing backend timing; Pause/Resume affects those holds only,
+and Next beat is unavailable while `start_mission` or `select_cart` is pending.
+Each run visibly reaches the human-only handoff before returning.
+It never starts identity, creates a
+checkout preview, receives a confirmation nonce, or calls `confirm_purchase`.
 
-The hosted MCP resource and `/demo` use explicit HTML entry points. The hosted
-entry is bundled into one self-contained HTML resource so sandboxed hosts do
+The hosted MCP resource and `/demo` use explicit HTML entry points. `/demo`
+loads `web/demo.tsx`; the MCP App loads `web/widget.tsx`. The hosted entry is
+bundled into one self-contained HTML resource so sandboxed hosts do
 not need to fetch scripts, styles, or fonts from localhost. It always
 initializes the MCP Apps bridge and does not infer host mode from iframe nesting
 because Codex may run the resource in a top-level sandboxed guest. In ChatGPT,
@@ -67,7 +92,7 @@ second prompt.
 
 | Layer | Responsibility | Primary implementation |
 | --- | --- | --- |
-| Interaction and transport | MCP tool schemas, HTTP/stdio transport, browser API, React MCP App, top-level WebMCP registration, app-only checkout visibility, private `_meta` | `src/server.ts`, `src/widget.ts`, `web/widget.tsx`, `web/webmcp.ts` |
+| Interaction and transport | MCP tool schemas, HTTP/stdio transport, browser API, React MCP App, guided simulated host, dedicated storefront, top-level-only WebMCP registration, human-only checkout visibility, private `_meta` | `src/server.ts`, `src/widget.ts`, `web/widget.tsx`, `web/demo.tsx`, `web/demo-protocol.ts`, `web/storefront.tsx`, `web/storefront-state.ts`, `web/webmcp.ts` |
 | Mission routing and orchestration | Keep canonical camping deterministic; for other retail missions interpret `MissionSpec`, discover in parallel, normalize, compose, verify, optionally retry, and terminate within fixed bounds | `src/server.ts`, `src/open-world.ts` |
 | Commerce verification | Decide requirement, compatibility, quantity, one-location, budget, stock, evidence, and checkout eligibility from typed server data | `src/domain.ts`, `src/open-world.ts` |
 | State and checkout | Rebuild carts from current catalog rows, enforce identity and exact mandates, transact inventory/orders atomically, audit, and sign receipts | `src/store.ts` |
@@ -103,7 +128,7 @@ because there is no model in that path.
 | --- | --- |
 | `start_mission` | Enter the same deterministic/open-world mission router used by MCP |
 | `get_mission` | Read the current public mission view |
-| `compare_carts` | Open and configure the visible shared Choice Center |
+| `compare_carts` | Rerank the visible storefront kit comparison by priority or pickup area |
 | `select_cart` | Persist one currently offered cart |
 | `swap_cart_item` | Apply one current merchant-approved alternative and revalidate |
 | `refresh_carts` | Rebuild public carts from current price and stock |
@@ -115,10 +140,26 @@ include `Origin-Agent-Cluster: ?1` and `Permissions-Policy: tools=(self)`.
 There is intentionally no identity, preview, confirmation, or purchase tool;
 those actions require the person in the visible interface.
 
+The storefront defaults to live connectors and never substitutes seeded data.
+One failed connector produces a degraded view that retains healthy verified
+carts. Total failure remains an error with retry plus a direct explicit
+showcase-data action. Client request sequence numbers and `AbortController`
+prevent stale responses from overwriting newer work. Pending UI shows one
+indeterminate operation; later proof steps remain pending until a real response.
+The activity surface is a non-modal `aside`, not a dialog, and contains no
+authorization control.
+
 ## Cart algorithm
 
 The canonical mission has five required categories: a two-person tent, sleeping
 bags, sleeping mats, a lantern, and first-aid supplies.
+
+Every ranked cart also carries deterministic `metrics`: `unitCount`,
+`categoryCount`, optional `packedLiters`, and optional `tentWaterproofMm`.
+Both seeded and connected builders compute them from verified cart lines; the
+canonical connected proof is 7 units, 5 categories, 89 L, and 3,000 mm. Because
+views rebuild carts from stored offers, this additive field requires no database
+migration.
 
 1. Apply scenario-adjusted inventory and price.
 2. Reject zero-stock offers.
@@ -234,6 +275,11 @@ The Choice Center is a native `<dialog>` rendered by the existing MCP App. Its
 priority and area reranking are presentation-only: checkout always consumes the
 server cart ID and current server price. Browser preference storage is disabled
 until the user checks the explicit remember box.
+
+The `/webmcp` storefront does not reuse that dialog. It shows the best two kits
+inline in solid cards and truthfully states when a larger seeded result was
+reduced to two for the storefront. Selecting one scrolls to a separate solid
+human-handoff section; the seven site tools cannot operate that section.
 
 `merchant_alternatives` stores the merchant's active source/replacement pairs.
 `mission_carts` stores offer IDs for a selected custom camping composition or

@@ -19,6 +19,12 @@ test("canonical mission produces complete, compatible carts under budget", () =>
   assert.equal(carts[0]?.merchantName, "TrailHaus");
   assert.equal(carts[0]?.totalCents, 23_100);
   assert.equal(carts[0]?.badge, "BEST MATCH");
+  assert.deepEqual(carts[0]?.metrics, {
+    unitCount: 7,
+    categoryCount: 5,
+    packedLiters: 89,
+    tentWaterproofMm: 3_000,
+  });
   assert.equal(carts.find((cart) => cart.badge === "BEST VALUE")?.merchantName, "CampWorks");
   for (const cart of carts) {
     assert.ok(cart.totalCents <= mission.budgetCents);

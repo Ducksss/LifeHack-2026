@@ -25,7 +25,7 @@ import close from "../docs/assets/demo/05-close.png";
 import buyerOverview from "../docs/assets/screenshots/buyer-overview.png";
 import webMcpReady from "../docs/assets/screenshots/webmcp-workspace-ready.png";
 import webMcpCompare from "../docs/assets/screenshots/webmcp-workspace-desktop.png";
-import { voiceovers } from "./voiceover";
+import { voiceovers, webMcpVoiceovers } from "./voiceover";
 
 const FPS = 30;
 const INK = "#0E4B3B";
@@ -291,12 +291,12 @@ const WebMcpScene = () => {
       <Img src={webMcpReady} style={{ height: "100%", objectFit: "cover", opacity: 1 - compare, position: "absolute", width: "100%" }} />
       <Img src={webMcpCompare} style={{ height: "100%", objectFit: "cover", opacity: compare, position: "absolute", width: "100%" }} />
       <div style={{ background: INK, borderRadius: 16, boxShadow: "0 20px 54px rgba(14,75,59,.25)", color: WHITE, left: 48, padding: "16px 20px", position: "absolute", top: 48 }}>
-        <div style={{ color: LIME, fontFamily: "Geist Mono Variable", fontSize: 16, fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase" }}>WebMCP · live site tools</div>
-        <div style={{ fontFamily: "Geist Variable", fontSize: 28, fontWeight: 760, marginTop: 6 }}>{compare < 0.5 ? "Seven tools discovered on the page" : "compare_carts changed the shared UI"}</div>
+        <div style={{ color: LIME, fontFamily: "Geist Mono Variable", fontSize: 16, fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase" }}>Woven Trail Market · WebMCP</div>
+        <div style={{ fontFamily: "Geist Variable", fontSize: 28, fontWeight: 760, marginTop: 6 }}>{compare < 0.5 ? "Seven tools discovered on the storefront" : "start_mission changed the shared UI"}</div>
       </div>
       <div style={{ bottom: 38, display: "flex", gap: 8, left: 48, position: "absolute" }}>
         {["start_mission", "get_mission", "compare_carts", "select_cart", "swap_cart_item", "refresh_carts", "verify_receipt"].map((tool) => (
-          <div key={tool} style={{ background: tool === "compare_carts" && compare > 0.5 ? LIME : "rgba(14,75,59,.94)", borderRadius: 999, color: tool === "compare_carts" && compare > 0.5 ? INK : WHITE, fontFamily: "Geist Mono Variable", fontSize: 13, fontWeight: 750, padding: "9px 11px" }}>{tool}</div>
+          <div key={tool} style={{ background: tool === "start_mission" && compare > 0.5 ? LIME : "rgba(14,75,59,.94)", borderRadius: 999, color: tool === "start_mission" && compare > 0.5 ? INK : WHITE, fontFamily: "Geist Mono Variable", fontSize: 13, fontWeight: 750, padding: "9px 11px" }}>{tool}</div>
         ))}
       </div>
       <div style={{ background: WHITE, border: `2px solid ${CLAY}`, borderRadius: 999, bottom: 88, color: CLAY, fontFamily: "Geist Variable", fontSize: 17, fontWeight: 800, padding: "10px 15px", position: "absolute", right: 48 }}>No identity or purchase tool · human only</div>
@@ -388,6 +388,78 @@ const ClosingScene = () => {
   );
 };
 
+const SourceScene = () => {
+  const frame = useCurrentFrame();
+  const reveal = spring({ frame, fps: FPS, config: { damping: 20, mass: 0.8 } });
+  const checks = [
+    "Closed input schemas",
+    "Read-only annotations",
+    "Abort-bound cleanup",
+    "Shared server verifier",
+  ];
+
+  return (
+    <AbsoluteFill style={{ background: PAPER, opacity: fade(frame, s(20)), overflow: "hidden" }}>
+      <Brand />
+      <div style={{ left: 76, position: "absolute", top: 132, width: 900 }}>
+        <Kicker>WebMCP implementation</Kicker>
+        <div style={{ color: INK, fontFamily: "Georgia, serif", fontSize: 58, fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.02, marginTop: 22 }}>
+          Seven explicit tools.<br />One bounded surface.
+        </div>
+      </div>
+      <div
+        style={{
+          background: INK,
+          borderRadius: 22,
+          bottom: 92,
+          boxShadow: "0 24px 70px rgba(14,75,59,.2)",
+          color: WHITE,
+          fontFamily: "Geist Mono Variable",
+          fontSize: 20,
+          left: 76,
+          lineHeight: 1.65,
+          opacity: reveal,
+          padding: "28px 32px",
+          position: "absolute",
+          translate: `0 ${interpolate(reveal, [0, 1], [30, 0])}px`,
+          width: 900,
+        }}
+      >
+        <div><span style={{ color: LIME }}>const</span> context = document.modelContext;</div>
+        <div><span style={{ color: LIME }}>const</span> controller = <span style={{ color: "#9CB6FF" }}>new</span> AbortController();</div>
+        <div style={{ marginTop: 14 }}><span style={{ color: "#9CB6FF" }}>for</span> (const tool of createWebMcpTools(adapter))</div>
+        <div style={{ paddingLeft: 28 }}>await context.registerTool(tool, &#123; signal: controller.signal &#125;);</div>
+        <div style={{ color: "rgba(252,250,245,.6)", marginTop: 14 }}>return () =&gt; controller.abort();</div>
+      </div>
+      <div style={{ display: "grid", gap: 15, position: "absolute", right: 76, top: 256, width: 430 }}>
+        {checks.map((check, index) => (
+          <div
+            key={check}
+            style={{
+              alignItems: "center",
+              background: WHITE,
+              border: "1px solid rgba(14,75,59,.16)",
+              borderRadius: 14,
+              color: INK,
+              display: "flex",
+              fontFamily: "Geist Variable",
+              fontSize: 25,
+              fontWeight: 720,
+              gap: 14,
+              opacity: spring({ frame: frame - 20 - index * 10, fps: FPS, config: { damping: 18 } }),
+              padding: "17px 19px",
+            }}
+          >
+            <span style={{ alignItems: "center", background: LIME, borderRadius: 999, display: "flex", fontSize: 17, height: 28, justifyContent: "center", width: 28 }}>✓</span>
+            {check}
+          </div>
+        ))}
+      </div>
+      <Boundary />
+    </AbsoluteFill>
+  );
+};
+
 const VoiceoverTrack = () => (
   <>
     {voiceovers.map((clip) => (
@@ -398,24 +470,11 @@ const VoiceoverTrack = () => (
   </>
 );
 
-const webMcpStarts: Record<(typeof voiceovers)[number]["id"], number> = {
-  opening: 0.6,
-  problem: 12.6,
-  "complete-cart": 30.6,
-  "ask-once": 58,
-  "review-once": 96.2,
-  "confirm-once": 119.2,
-  "merchant-control": 134,
-  "why-chat": 153.5,
-  "truth-boundary": 165.2,
-  "final-line": 172.8,
-};
-
 const WebMcpVoiceoverTrack = () => (
   <>
-    {voiceovers.map((clip) => (
-      <Sequence key={clip.id} from={s(webMcpStarts[clip.id])} durationInFrames={s(clip.end - clip.start)} name={`Voiceover · ${clip.id}`}>
-        <Audio src={staticFile(`woven-video/voiceover/${clip.id}.mp3`)} volume={0.96} />
+    {webMcpVoiceovers.map((clip) => (
+      <Sequence key={clip.id} from={s(clip.start)} durationInFrames={s(clip.end - clip.start)} name={`WebMCP voiceover · ${clip.id}`}>
+        <Audio src={staticFile(`woven-video/webmcp-voiceover/${clip.id}.mp3`)} volume={0.96} />
       </Sequence>
     ))}
   </>
@@ -438,11 +497,11 @@ const WovenJudgeVideo = () => (
 const WovenWebMcpVideo = () => (
   <AbsoluteFill style={{ background: INK }}>
     <Sequence from={s(0)} durationInFrames={s(12)} name="01 · Opening"><TitleScene /></Sequence>
-    <Sequence from={s(12)} durationInFrames={s(18)} name="02 · Problem"><ProblemScene /></Sequence>
-    <Sequence from={s(30)} durationInFrames={s(18)} name="03 · Complete cart"><CompleteCartScene /></Sequence>
-    <Sequence from={s(48)} durationInFrames={s(40)} name="04 · WebMCP site tools"><WebMcpScene /></Sequence>
+    <Sequence from={s(12)} durationInFrames={s(40)} name="02 · Live WebMCP site tools"><WebMcpScene /></Sequence>
+    <Sequence from={s(52)} durationInFrames={s(18)} name="03 · Mission problem"><ProblemScene /></Sequence>
+    <Sequence from={s(70)} durationInFrames={s(18)} name="04 · Verified complete cart"><CompleteCartScene /></Sequence>
     <Sequence from={s(88)} durationInFrames={s(45)} name="05 · Human checkout boundary"><CheckoutScene /></Sequence>
-    <Sequence from={s(133)} durationInFrames={s(20)} name="06 · Merchant control"><MerchantScene /></Sequence>
+    <Sequence from={s(133)} durationInFrames={s(20)} name="06 · Source proof"><SourceScene /></Sequence>
     <Sequence from={s(153)} durationInFrames={s(25)} name="07 · Closing"><ClosingScene /></Sequence>
     <Audio src={staticFile("woven-video/ambient.mp3")} volume={0.8} />
     <WebMcpVoiceoverTrack />

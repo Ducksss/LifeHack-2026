@@ -67,6 +67,8 @@ test("captured Shopify UCP and WooCommerce Store API shapes normalize into compl
   assert.deepEqual(new Set(carts.map((cart) => cart.platform)), new Set(["shopify", "woocommerce"]));
   assert.ok(carts.every((cart) => cart.totalCents === 54_500 && cart.totalCents < 90_000));
   assert.ok(carts.every((cart) => cart.lines.length === 5 && cart.lines.reduce((sum, line) => sum + line.quantity, 0) === 7));
+  assert.ok(carts.every((cart) => cart.metrics.unitCount === 7 && cart.metrics.categoryCount === 5));
+  assert.ok(carts.every((cart) => cart.metrics.packedLiters === 89 && cart.metrics.tentWaterproofMm === 3_000));
   assert.ok(carts.every((cart) => cart.lines.every((line) => line.externalProductId && line.externalVariantId && line.lastVerifiedAt)));
 });
 

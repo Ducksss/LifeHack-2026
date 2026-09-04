@@ -13,6 +13,11 @@ colors:
   success: "oklch(0.627 0.17 149.2)"
   warning: "oklch(0.666 0.157 58.3)"
   identity: "oklch(0.4 0.19 264.5)"
+  route: "oklch(0.205 0.028 154.3)"
+  route-foreground: "oklch(0.985 0.005 145)"
+  signal: "oklch(0.9 0.205 124.2)"
+  storefront-mist: "oklch(0.976 0.007 141.5)"
+  handoff: "oklch(0.53 0.244 263.8)"
 typography:
   sans:
     fontFamily: '"Geist Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif'
@@ -20,10 +25,10 @@ typography:
     fontFamily: '"Geist Mono Variable", ui-monospace, "SF Mono", "Cascadia Mono", monospace'
 rounded:
   DEFAULT: "0.625rem"
-  sm: "calc(0.625rem - 4px)"
-  md: "calc(0.625rem - 2px)"
+  sm: "0.375rem"
+  md: "0.5rem"
   lg: "0.625rem"
-  xl: "calc(0.625rem + 4px)"
+  xl: "0.875rem"
 spacing:
   section-gap: "2rem"
   page-max: "65rem"
@@ -41,7 +46,7 @@ components:
 
 ### Creative North Star
 
-Woven should feel like a well-prepared expedition table: a dark briefing surface, neatly grouped evidence cards, and one conspicuous final handoff. The weave mark and faint hero grid are the expressive signature; commerce controls remain familiar and quiet.
+Woven should feel like a well-prepared expedition table. The MCP App uses a dark briefing surface with neatly grouped evidence cards. `/webmcp` uses a true-white expedition storefront with generous editorial type, original outdoor product cutouts, and one glossy “Behind the cart” activity surface. `/demo` preserves the original LifeHack `Woven Demo Host` conversation shell, lets the storefront visibly take browser control for safe WebMCP actions, then returns the selected result to that same chat inside a restrained, unbranded premium-laptop silhouette.
 
 ### Product context and register
 
@@ -50,14 +55,14 @@ Woven should feel like a well-prepared expedition table: a dark briefing surface
 - **Locale(s) and language policy:** English UI, SGD amounts, Singapore dates/times. Product names remain merchant-authored.
 - **Usage scene:** Desktop or mobile, inside ChatGPT/Codex or the browser workspace, with moderate density and a time-sensitive pickup decision.
 - **Register:** Hybrid. The landing hero is brand-led; `/demo`, `/webmcp`, identity, merchant, and install surfaces are product-led.
-- **Memorable signature:** The dark woven briefing header followed by numbered proof sections.
+- **Memorable signature:** A dark woven briefing header in the MCP App; a light fictional trail storefront with one floating proof surface in `/webmcp`; and a visible chat-to-browser-to-chat handoff staged inside a generic laptop frame in `/demo`.
 - **Restraint:** Identity, totals, source health, failure recovery, and merchant checkout use standard controls and direct language.
-- **Anti-references:** No neon crypto dashboard, glassmorphism stack, marketplace ad wall, or falsely native ChatGPT imitation.
+- **Anti-references:** No neon crypto dashboard, stacked glassmorphism, marketplace ad wall, or invented ChatGPT sidebar chrome. The familiar LifeHack host stays explicitly labeled `Woven Demo Host` and `Simulated`; glass is reserved for the single storefront activity surface.
 - **Token ownership/runtime mapping:** This file mirrors the canonical Tailwind v4 variables in `web/styles.css`; it does not generate runtime tokens. `npm run check` is the drift gate.
 
 ## Colors
 
-The interface is primarily black, white, and zinc so evidence and totals carry the hierarchy. Emerald is reserved for verified/healthy state, amber for recoverable connector degradation, red for actionable failure, and blue for the simulated identity boundary. Focus uses the runtime ring token. The current product supports a light theme only.
+The interface is primarily black, white, and zinc so evidence and totals carry the hierarchy. The light storefront adds `storefront-mist` for quiet catalog fields, `route` for the solid authorization section, `signal` for the small woven spark, and `handoff` blue for simulated identity. Emerald is reserved for verified/healthy state, amber for recoverable connector degradation, and red for actionable failure. Focus uses the runtime ring token. The current product supports a light theme only.
 
 ## Typography
 
@@ -65,11 +70,11 @@ Geist Variable carries prose, controls, and product names. Geist Mono is limited
 
 ## Layout
 
-Buyer content caps at 1040px (`65rem`) with 24–40px responsive section padding. Cards move from one column to two or three without changing task order. Tables may scroll horizontally when comparison semantics would be lost by stacking. Loading, error, and source-status blocks reserve stable space where practical.
+Buyer content caps at 1040px (`65rem`) with 24–40px responsive section padding. The storefront uses a 1440px editorial frame and reserves 31rem for its desktop activity overlay without changing document order. The guided demo uses one full chat surface within a solid charcoal-and-silver laptop stage; its browser takeover replaces the conversation area rather than competing beside it, and the frame carries no third-party mark. A persistent opaque control rail names the rehearsal, current reversible action, and five-beat position; the explicit activation receipt occupies the browser content area rather than adding a modal. At mobile the hardware silhouette disappears and the browser takeover fills the viewport without trapping focus. Cards move from one column to two or three without changing task order. Product rails scroll horizontally on narrow screens. Tables may scroll when comparison semantics would be lost by stacking. Loading, error, and source-status blocks reserve stable space where practical.
 
 ## Elevation & Depth
 
-Hierarchy comes from tonal surfaces and 1px borders. A small shadow distinguishes the embedded buyer app; dialogs use a stronger shadow and a dimmed backdrop. Cards do not receive decorative floating shadows. Sticky alerts remain below dialogs.
+Hierarchy comes from tonal surfaces and 1px borders. A small shadow distinguishes the embedded buyer app; dialogs use a stronger shadow and a dimmed backdrop. Storefront commerce cards remain solid and use restrained hover depth. The desktop demo device is an opaque presentation prop, not a glass application layer. The only translucent product layer is the fixed “Behind the cart” activity surface, with one gloss pass after a real result. Sticky navigation remains above page content; the non-modal activity surface remains below modal dialogs.
 
 ## Shapes
 
@@ -91,7 +96,7 @@ The host header owns source mode. Numbered sections own buyer progression. Platf
 
 ### Forms and overlays
 
-The Choice Center and swap chooser use native `dialog`, explicit headings, close controls, and bounded scrolling. Native selects and checkboxes retain platform keyboard behavior. Errors remain near the active workflow and offer a retry when the server marks them retryable.
+The MCP App Choice Center and swap chooser use native `dialog`, explicit headings, close controls, and bounded scrolling. The storefront activity surface is a collapsible `aside`, never a dialog and never a focus trap. On desktop it floats to the right without blocking the reserved content column. On mobile it becomes a bottom sheet, starts collapsed while idle, opens for real activity, and remains manually collapsible. During the guided demo it disappears only after cart selection so the solid human-only handoff owns the final frame. Errors stay near the active workflow and offer retry or an explicit showcase-data action when appropriate.
 
 ### Iconography
 
@@ -99,7 +104,7 @@ Lucide React is canonical. Use outline icons at `size-3` through `size-7`; decor
 
 ### Motion
 
-Feedback uses 160–300ms transitions; staged demo narration is the sole long-form motion. Motion communicates activity or content arrival and is interruptible. `prefers-reduced-motion` reduces every animation and transition.
+Feedback uses 140–300ms transitions; staged demo narration is the sole long-form motion. The demo browser takeover and return-to-chat transition communicate ownership changes, while storefront depth movement stays restrained, product cutouts resolve progressively, and the activity surface gets one 720ms gloss pass only after a real result. The guided host holds evaluation for 1.2s, the testing/activation explanation for 4.5s, returned results for 1.4s, comparison for 2.4s, target selection for 1.3s, selected state for 1.2s, and the human boundary for 2.5s. These are presentation holds after truthful events, never simulated backend progress. Pause stops only presentation timers; Next beat is disabled during real network work. `prefers-reduced-motion` removes movement and transitions but retains the semantic holds so every state remains understandable.
 
 ### Content and data visualization
 
@@ -109,5 +114,8 @@ Voice is direct, exact, and non-promotional. Say “verified”, “research onl
 
 - **Do:** Put platform, verification time, exact total, and checkout boundary beside the selected cart.
 - **Do:** Preserve the same cart ordering and action vocabulary across MCP App and WebMCP surfaces.
+- **Do:** While pending, show one indeterminate operation and keep later checks pending; reveal evidence and totals only from the returned `MissionView`.
+- **Do:** Keep the storefront’s Shop, Complete kits, Field guide, and Cart navigation functional.
 - **Don't:** Treat connector failure as an empty success or silently fall back to seeded products.
-- **Don't:** expose checkout URLs, signatures, tokens, or identity protocol state in visible data tables or model-readable results.
+- **Don't:** Expose checkout URLs, signatures, tokens, or identity protocol state in visible data tables or model-readable results.
+- **Don't:** Put identity, checkout, confirmation, or merchant continuation controls inside the translucent activity surface.

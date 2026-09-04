@@ -18,16 +18,28 @@ The audience should remember one sequence:
 ## WebMCP Challenge recording cut
 
 The challenge master is a separate 2:58 composition:
-`output/Woven-WebMCP-Challenge.mp4`. It preserves the narration and truth
-boundaries below, but the 0:48–1:28 product beat shows the real `/webmcp` page:
+`output/Woven-WebMCP-Challenge.mp4`. It preserves the product truth boundaries
+below, but uses a challenge-specific narration and puts the real `/webmcp`
+page on screen by 0:12:
 
-1. the browser discovers seven top-level site tools;
-2. `start_mission` returns the five complete carts;
-3. `compare_carts` opens the visible Choice Center with **Most rainproof** and
-   **Central** applied; and
-4. the frame states that identity and exact purchase confirmation are human-only.
+1. the browser discovers seven top-level site tools on the light fictional
+   **Woven Trail Market** storefront;
+2. `start_mission` changes the same page from idle to verified kits while the
+   narration explains the full seven-tool surface;
+3. the rainy-weekend brief and storefront show two complete one-store kits,
+   including the canonical
+   7 units, 5 categories, 89 L, and 3,000 mm proof;
+4. the trust beat names identity, checkout terms, secrets, and purchase
+   authorization as deliberately absent from WebMCP; and
+5. a source-proof scene shows `document.modelContext`, closed schemas,
+   annotations, and abort-bound cleanup before the final human-agent outcome.
 
-The spoken voice is AI-generated. Do not use the older exact-3:00 judge video
+Use configured connected stores for the recorded challenge run. If recording
+locally without connector credentials, select **Showcase data** explicitly and
+say that it is seeded; never imply a silent live fallback.
+
+The challenge narration is generated with the local system TTS voice and the
+sidecar captions are authored from the same source text. Do not use the older exact-3:00 judge video
 for this challenge: the rules require a video shorter than three minutes and a
 visible WebMCP demonstration.
 
@@ -63,13 +75,25 @@ Before judges arrive:
 7. Rehearse the happy path once, then reset the data again.
 
 Use the real MCP App when the host and network are dependable. Use `/demo` as the
-stage fallback; it clearly labels itself **Simulated**, rehearses the same
-backend, and surfaces each tool call without presenting itself as real ChatGPT.
-For an unattended visual loop, `/demo?loop=true` compares and reranks carts,
-returns to the selected kit, shows the compatibility proof and approved swap,
-completes the server-enforced simulated identity handoff, shows the verified
-state and host reply, then fades back to the start. It never creates exact
-checkout terms or confirms a purchase.
+stage fallback; it preserves the original LifeHack `Woven Demo Host` shell and
+clearly labels it **Simulated**,
+lets the real Woven Trail Market storefront take over the framed presentation,
+and rehearses the same backend without presenting itself as ChatGPT. For an
+unattended visual loop, `/demo?loop=true` presents the full rehearsal inside an
+unbranded laptop frame, waits for the real mission response, highlights the
+safe browser actions, scrolls to the verified kits, adds TrailHaus, stops at the
+human-only boundary, returns the result to chat, and then replays. It never
+starts identity, creates exact checkout terms, or confirms a purchase.
+
+The guided run is intentionally paced. Leave autoplay running for the clean
+15–18 second story, or use **Pause**, **Next beat**, and **Replay** in the fixed
+control rail. Pause affects only the explanatory holds after real states; the
+mission or cart-selection request continues. The connection receipt must be
+readable as **WebMCP rehearsal active** before the first site action begins. It
+stays visible for 4.5 seconds, states that the embedded rehearsal does not
+register tools, and links to the real top-level storefront. Actual WebMCP testing
+uses ChatGPT's in-app browser or Google Chrome with WebMCP enabled through its
+experimental flag or origin trial.
 
 ## Visual system and screen choreography
 
@@ -201,8 +225,8 @@ your hand toward the product screenshot and say, “Let me show you.”
 
 **Live screen sequence**
 
-Enter or reveal the canonical request. In `/demo`, let the simulated host type it
-and show the staged `start_mission` activity before the real widget appears:
+Enter or reveal the canonical request. In `/demo`, submit it from the simulated
+chat and let the storefront take over the presentation surface:
 
 > I need a complete rainy-weekend camping kit for 2 first-time campers. Keep it
 > under S$300, fit it in one car boot, and make it pickup-ready today.
@@ -211,24 +235,36 @@ Then:
 
 1. Show the host header so the environment is honest: real ChatGPT/Codex when
    connected, or the clearly labeled **Simulated** host in `/demo`.
-2. Let the `start_mission` tool call appear; do not narrate the protocol details.
-3. When the widget loads, pause on the Choice Center with five ranked one-location carts.
-4. Open **Compare carts**, switch to **Most rainproof**, then select **TrailHaus**.
-5. Point to the pickup plan and merchant-approved swap before the two-person
+2. In `/demo`, click **Send mission**. The tool card evaluates the request, then
+   the browser takes over. Pause for the explicit **WebMCP rehearsal active**
+   receipt: this embedded scene is the non-registering rehearsal; the direct
+   `/webmcp` link is the actual seven-tool test surface, while identity,
+   checkout terms, and purchase authorization are not shared. The real
+   storefront pending state then waits for the shared-backend response; do not
+   narrate protocol details.
+3. Let the storefront reveal the best two of five complete candidates and scroll
+   to the verified cards. In the MCP App, pause on the five-cart Choice Center.
+4. Let `/demo` hold the comparison, move the visible agent cursor to TrailHaus,
+   highlight the reversible `compare_carts` and `select_cart` actions, add
+   TrailHaus, and stop at **Only you can continue** while the rail changes to
+   **Human control required**. In the MCP App,
+   select TrailHaus directly.
+5. Let the browser return control to chat, then point to the pickup summary and the two-person
    tent and 3,000 mm rainfly, two sleeping bags, two
    mats, IPX4 lantern, first-aid coverage, 89 L packed volume, pickup location,
    seeded demo stock, and **S$231.00** total.
 
-**Screen priority:** Keep the widget large enough that the product names,
-quantity proof, pickup location, and total are readable. Browser chrome and
-developer tools are never part of the shot.
+**Screen priority:** Keep the takeover or returned chat result large enough that
+the product names, quantity proof, pickup location, and total are readable. The
+framed browser chrome in `/demo` is intentional; developer tools and unrelated
+browser chrome are never part of the shot.
 
-**Fallback frame:** `docs/assets/demo/01-ask-once.png`.
+**Fallback frame:** `docs/assets/screenshots/demo-guided-desktop.png`.
 
 **Say**
 
-> “Woven returned five complete choices—not loose product links. I can compare
-> full carts, optimize for rain protection or pickup, and still choose. This S$231.00
+> “Woven returned five complete candidates—not loose product links—and this
+> storefront is showing the best two. This S$231.00
 > cart includes a rainproof tent, a sleeping bag and mat for each camper, an
 > IPX4 lantern, and water-resistant first aid. All seven required units fit one
 > car boot, stay under budget, and are ready at one pickup location.”
@@ -382,8 +418,9 @@ Recovery line:
 **Is this a browser extension?**
 
 No. Woven is an MCP App/plugin inside ChatGPT or Codex. `/demo` is a clearly
-labeled simulated host that rehearses the same backend, surfaces the tool calls,
-and never presents itself as a real ChatGPT session.
+labeled simulated ChatGPT-style host that yields its screen to the real
+storefront, receives the result back, rehearses the same backend, exposes no
+site tools itself, and never presents itself as ChatGPT.
 
 **Why not build another shopping app?**
 

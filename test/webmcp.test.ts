@@ -43,6 +43,7 @@ const view = {
       score: 120,
       badge: "BEST MATCH",
       lines: [],
+      metrics: { unitCount: 0, categoryCount: 0 },
       checks: ["Complete and compatible"],
       alternatives: [
         {
@@ -108,6 +109,7 @@ test("WebMCP actions reuse the current mission and update the visible page", asy
   await execute("select_cart", { cartId: "cart_webmcp" });
   await execute("swap_cart_item", { offerId: "offer-new" });
   await execute("refresh_carts");
+  const publicResult = await execute("get_mission");
 
   assert.deepEqual(comparisons, [{ priority: "weather", area: "Central" }]);
   assert.deepEqual(calls, [
@@ -115,6 +117,7 @@ test("WebMCP actions reuse the current mission and update the visible page", asy
     ["swap_cart_item", { missionId: "mis_webmcp", cartId: "cart_webmcp", offerId: "offer-new" }],
     ["build_carts", { missionId: "mis_webmcp" }],
   ]);
+  assert.doesNotMatch(JSON.stringify(publicResult), /checkoutUrl|authorizationUrl|confirmationNonce|identitySession|nonce/i);
 });
 
 test("WebMCP registration is abort-bound so page navigation unregisters every tool", async () => {
@@ -136,7 +139,11 @@ test("WebMCP registration is abort-bound so page navigation unregisters every to
 
 test("the public WebMCP route is top-level and origin-keyed", () => {
   const server = readFileSync("src/server.ts", "utf8");
+  const storefront = readFileSync("web/storefront.html", "utf8");
   assert.match(server, /Origin-Agent-Cluster", "\?1"/);
   assert.match(server, /Permissions-Policy", "tools=\(self\)"/);
-  assert.match(server, /app\.get\("\/webmcp"[^]*demo\.html/);
+  assert.match(server, /app\.get\("\/webmcp"[^]*storefront\.html/);
+  assert.doesNotMatch(server, /app\.get\("\/webmcp"[^]*demo\.html/);
+  assert.match(storefront, /storefront\.tsx/);
+  assert.match(storefront, /Woven Trail Market/);
 });

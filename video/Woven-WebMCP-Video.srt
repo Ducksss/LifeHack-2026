@@ -1,48 +1,97 @@
 1
-00:00:00,600 --> 00:00:11,600
-We already ask ChatGPT what to buy. But actually buying still means opening tabs,
-checking compatibility, finding stock, and rebuilding everything at checkout. We built Woven to finish that process.
+00:00:00,500 --> 00:00:04,200
+Shopping agents can suggest products.
 
 2
-00:00:12,600 --> 00:00:29,400
-Imagine planning a first camping trip for two on a rainy weekend. Search can recommend a tent,
-but it does not guarantee rainproof shelter, two complete sleep systems, lighting and first aid, one-car fit, budget, stock, and one pickup location.
+00:00:04,200 --> 00:00:11,800
+Woven uses WebMCP to finish a multi-item mission: one request, seven site tools,
+complete verified carts, and a human-only purchase boundary.
 
 3
-00:00:30,600 --> 00:00:47,000
-Woven understands the complete request, eliminates incompatible combinations, and creates ready-to-buy carts.
-Every cart comes from one merchant and one location, with proof that every component and quantity fits the same trip.
+00:00:12,400 --> 00:00:17,400
+Here is the live, top-level Woven Trail Market storefront.
 
 4
-00:00:58,000 --> 00:01:23,000
-Woven returned five complete options—not loose product links. This S$231.00 cart includes a rainproof tent, a sleeping bag and mat for each camper, an IPX4 lantern, and water-resistant first aid.
-All seven required units fit one car boot, stay under budget, and are ready at one pickup location.
+00:00:17,400 --> 00:00:26,000
+The browser discovers seven purpose-built tools: start or inspect a mission, compare and select carts,
+apply an approved swap, refresh price and stock, and verify an existing receipt.
 
 5
-00:01:36,200 --> 00:01:57,800
-Before checkout, Woven enforces a simulated identity handoff, then rechecks price and stock. The AI cannot approve the purchase.
-The user sees every item and quantity, the pickup location, and the S$231.00 total before one direct confirmation.
+00:00:26,000 --> 00:00:33,400
+When the agent calls start_mission, the same page the person sees
+moves from idle to verified kits.
 
 6
-00:01:59,200 --> 00:02:13,800
-Only after that click does Woven produce a simulated Visa authorization and pickup receipt.
-No card details enter Woven, and no live charge occurs.
+00:00:33,400 --> 00:00:37,800
+Tool calls and human review share one state.
+There is no DOM guessing, and no separate agent-only result.
 
 7
-00:02:14,000 --> 00:02:30,600
-On the merchant side, Woven already supports inventory import, price and stock controls, orders, and an audit trail.
-Merchants can simulate a price change, stockout, authorization decline, or reversal without changing code.
+00:00:52,400 --> 00:00:59,000
+Our test mission is a rainy-weekend camping kit for two, under S$300,
+in one car boot, pickup-ready today.
 
 8
-00:02:33,500 --> 00:02:45,200
-Why ChatGPT? Because that is where the user’s request already exists. Why a plugin? Because Woven can turn that conversation
-into merchant actions and a reviewable checkout without asking the user to start again.
+00:00:59,000 --> 00:01:08,200
+Woven has to satisfy quantity, weather, compatibility, volume, current stock,
+budget, and one pickup location at the same time.
 
 9
-00:02:45,200 --> 00:02:52,800
-This prototype uses seeded inventory, a server-enforced demo identity check,
-and a simulated Visa authorization. No live charge occurs.
+00:01:10,400 --> 00:01:13,500
+Woven verifies five complete candidates and shows the best two.
 
 10
-00:02:52,800 --> 00:02:57,900
-Woven makes shopping through AI simple enough to use—and controlled enough to trust.
+00:01:13,500 --> 00:01:24,500
+TrailHaus is 7 units across 5 required categories, 89 L packed, a 3,000 mm rainfly,
+and an exact S$231 total from one pickup point.
+
+11
+00:01:24,500 --> 00:01:28,400
+These are checkout-quality facts, not search snippets.
+
+12
+00:01:29,000 --> 00:01:36,000
+The agent may rerank the kits, select one,
+or apply only a merchant-approved compatible alternative. Then it stops.
+
+13
+00:01:36,000 --> 00:01:44,000
+Identity, exact checkout terms, confirmation secrets, and purchase authorization
+are deliberately absent from the WebMCP tool surface.
+
+14
+00:01:44,000 --> 00:01:54,000
+The person completes the simulated identity handoff, sees every item, quantity, merchant,
+pickup point, total, and expiry, then confirms directly.
+
+15
+00:01:54,000 --> 00:02:00,300
+Only that click can produce the simulated Visa result.
+Woven accepts no card credentials and cannot make a live charge.
+
+16
+00:02:13,300 --> 00:02:16,500
+Implementation is equally explicit.
+
+17
+00:02:16,500 --> 00:02:24,500
+The top-level document supplies modelContext; Woven registers seven tools with closed schemas,
+read-only annotations where appropriate, and one AbortSignal that removes the tool surface on navigation.
+
+18
+00:02:24,500 --> 00:02:31,700
+Every call enters the same server router and deterministic verifier
+used by the visible storefront.
+
+19
+00:02:34,000 --> 00:02:42,500
+Woven shows what people and agents can do together: the agent handles reversible preparation,
+the server enforces commerce truth, and the person owns identity and purchase.
+
+20
+00:02:42,500 --> 00:02:46,500
+The live app, public source, and demo are ready for review.
+
+21
+00:02:46,500 --> 00:02:51,900
+Seeded inventory, simulated identity, simulated payment—no live charge.

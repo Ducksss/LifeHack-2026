@@ -4,7 +4,7 @@ import OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import { DomainError } from "./domain.js";
-import type { CatalogItem, CommercePlatform } from "./domain.js";
+import type { CartMetrics, CatalogItem, CommercePlatform } from "./domain.js";
 
 const MAX_DISCOVERY_PASSES = 2;
 const MAX_OFFERS_PER_REQUIREMENT = 8;
@@ -213,6 +213,7 @@ export interface GenericCart {
   score: number;
   badge: "BEST MATCH" | "BEST VALUE" | "ALTERNATIVE";
   lines: GenericCartLine[];
+  metrics: CartMetrics;
   checks: string[];
   evidence: EvidenceCheck[];
   sources: EvidenceSource[];
@@ -402,11 +403,32 @@ export function buildGenericCarts(specInput: MissionSpec, offersInput: Connected
         return typeof packed === "number" ? sum + packed * quantity : Number.POSITIVE_INFINITY;
       }, 0);
       if (spec.maxPackedLiters !== undefined && packedLiters > spec.maxPackedLiters) continue;
+      const finitePackedLiters = Number.isFinite(packedLiters) ? packedLiters : undefined;
+      const tentWaterproofMm = chosen.find((offer) => typeof offer.attributes.waterproofMm === "number")?.attributes.waterproofMm;
       const identity = { merchantId: first.merchantId, locationId: first.locationId, offerIds: chosen.map((offer) => offer.offerId) };
       const id = `cart_${sha256(identity).slice(0, 12)}`;
       const budgetScore = Math.round(20 * (1 - totalCents / spec.budgetCents) * 10) / 10;
       const pickupScore = Math.max(0, Math.round((20 - first.pickupMinutes / 6) * 10) / 10);
       const evidenceScore = 60;
+      const lines = chosen.map((offer) => {
+        const requirement = spec.requirements.find((entry) => entry.id === offer.requirementId)!;
+        return {
+          offerId: offer.offerId,
+          requirementId: requirement.id,
+          sku: offer.sku,
+          name: offer.name,
+          category: requirement.id,
+          priceCents: offer.priceCents,
+          quantity: requirement.quantity,
+          compatibility: `${requirement.label} verified from the connected ${offer.source.title}.`,
+          platform: offer.platform || "demo",
+          externalStoreId: offer.externalStoreId,
+          externalProductId: offer.externalProductId,
+          externalVariantId: offer.externalVariantId,
+          sourceUrl: offer.sourceUrl,
+          lastVerifiedAt: offer.lastVerifiedAt,
+        };
+      });
       carts.push({
         id,
         version: sha256({ id, prices: chosen.map((offer) => [offer.offerId, offer.priceCents]), stock: chosen.map((offer) => [offer.offerId, offer.stock]) }),
@@ -423,25 +445,13 @@ export function buildGenericCarts(specInput: MissionSpec, offersInput: Connected
         currency: "SGD",
         score: evidenceScore + pickupScore + budgetScore,
         badge: "ALTERNATIVE",
-        lines: chosen.map((offer) => {
-          const requirement = spec.requirements.find((entry) => entry.id === offer.requirementId)!;
-          return {
-            offerId: offer.offerId,
-            requirementId: requirement.id,
-            sku: offer.sku,
-            name: offer.name,
-            category: requirement.id,
-            priceCents: offer.priceCents,
-            quantity: requirement.quantity,
-            compatibility: `${requirement.label} verified from the connected ${offer.source.title}.`,
-            platform: offer.platform || "demo",
-            externalStoreId: offer.externalStoreId,
-            externalProductId: offer.externalProductId,
-            externalVariantId: offer.externalVariantId,
-            sourceUrl: offer.sourceUrl,
-            lastVerifiedAt: offer.lastVerifiedAt,
-          };
-        }),
+        lines,
+        metrics: {
+          unitCount: lines.reduce((sum, line) => sum + line.quantity, 0),
+          categoryCount: new Set(lines.map((line) => line.category)).size,
+          ...(finitePackedLiters === undefined ? {} : { packedLiters: finitePackedLiters }),
+          ...(typeof tentWaterproofMm === "number" ? { tentWaterproofMm } : {}),
+        },
         checks: evidence.map((check) => check.detail),
         evidence,
         sources: [...new Map(chosen.map((offer) => [offer.source.id, offer.source])).values()],

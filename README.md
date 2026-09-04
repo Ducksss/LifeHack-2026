@@ -90,7 +90,8 @@ rebuild the cart at checkout.
 
 Woven finishes that job inside the AI workflow the user already uses. Ask
 ChatGPT or Codex once and Woven returns complete carts from one pickup location,
-opens a Choice Center to compare five options, shows why every item works
+opens a Choice Center to compare five options in the MCP App—or the best two in
+the Woven Trail Market WebMCP storefront—shows why every item works
 together, rechecks the price and stock, and waits for a separate human
 confirmation before authorization.
 
@@ -126,16 +127,30 @@ merchant actions and return a structured checkout for review.
 
 The primary product is a real MCP App/plugin inside ChatGPT or Codex. The model
 can ask Woven to build carts, but app-only tools and a direct user click protect
-checkout. The `/demo` browser route is a stage-safe rehearsal of that
-experience: a clearly labeled simulated chat host that types the canonical
-request, shows every MCP tool call live, and drives the same backend. It is
-marked “Simulated” on screen and is not a second product.
+checkout. The `/demo` browser route is a stage-safe rehearsal of the strongest
+cross-surface flow: the clearly labeled original LifeHack `Woven Demo Host` conversation
+accepts the mission, lets Woven Trail Market take control of the presentation,
+opens with an explicit **WebMCP rehearsal active** receipt, highlights reversible
+browser actions, waits for the shared backend, scrolls to the verified kits,
+selects the best match, stops at the human-only boundary,
+and returns the exact result to chat. It is marked “Simulated” on screen, uses
+explicit showcase data, registers no site tools itself, and is not a second
+product. A five-beat control rail makes the story deliberate: Pause/Resume stops
+presentation holds without cancelling real work, Next beat is available only
+between network operations, and Replay starts a clean run.
 
-The `/webmcp` route adds seven imperative, top-level WebMCP site tools to the
-same page. An agent can start or inspect a mission, open the shared comparison
-UI, select a cart, apply a merchant-approved swap, refresh current offers, and
-verify a receipt. Identity, checkout preview, and purchase confirmation are
-deliberately absent: those remain direct human actions in the visible page.
+The `/webmcp` route is a dedicated fictional outdoor storefront called **Woven
+Trail Market**, visibly labeled **Showcase**. Its Shop, Complete kits, Field
+guide, and Cart anchors are functional. A person can submit the hero mission or
+an agent can invoke one of seven top-level WebMCP site tools; both update the
+same visible kits and truthful “Behind the cart” activity surface. Identity,
+exact revalidation, private merchant-cart creation, merchant continuation, and
+purchase confirmation are deliberately absent from WebMCP: those remain direct
+human actions in a separate solid handoff section.
+
+Connected stores are the default. If Shopify and WooCommerce are not configured,
+Woven fails closed and offers retry plus an explicit, session-local **Showcase
+data** action. It never substitutes seeded products silently.
 
 MCP supplies the host connection, tool contract, private widget metadata, and
 embedded UI. After `start_mission` reaches Woven, the server—not the host
@@ -155,8 +170,9 @@ and decides whether a cart is checkout-eligible.
 3. **Build complete carts.** Deterministic server rules reject incompatible,
    unverifiable, or unavailable offers, stay under budget, and return up to five
    one-location options. Web findings remain research-only.
-4. **Compare and choose.** The Choice Center reranks by value, pickup speed,
-   rain protection, or preferred area; optional saved preferences stay local.
+4. **Compare and choose.** The MCP App Choice Center or inline storefront kits
+   rerank by value, pickup speed, rain protection, or preferred area; optional
+   saved preferences stay local.
 5. **Show the proof.** The MCP App widget explains tent capacity and rain rating,
    two sleeping bags, two mats, lantern protection, first-aid coverage, packed
    volume, live demo stock, total, pickup plan, and approved substitutions.
@@ -197,7 +213,7 @@ results. Developers who already have a key can run the opt-in live matrix with
 
 ![Under the hood: one request traced from the model's start_mission call through app-only tools, the hidden nonce, and the checkout guard to the receipt](docs/assets/devpost/woven-under-the-hood.png)
 
-![Animated loop of the Woven demo: carts compare themselves, compatibility is shown, simulated identity succeeds, the host replies, and the demo resets without checkout](docs/assets/marketing/woven-demo-loop.gif)
+![Guided Woven demo: a clearly labeled simulated chat host returns the selected TrailHaus cart after a browser-control handoff](docs/assets/screenshots/demo-guided-desktop.png)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -250,11 +266,11 @@ AI-generated with ElevenLabs and can be replaced by swapping the files in
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/assets/screenshots/buyer-overview.png" alt="Woven running inside a simulated chat host with a visible start_mission tool call"></td>
+    <td width="50%"><img src="docs/assets/screenshots/demo-guided-desktop.png" alt="Woven guided demo returning the verified TrailHaus cart from browser control to a simulated chat host"></td>
     <td width="50%"><img src="docs/assets/screenshots/checkout-confirmation.png" alt="Woven exact checkout mandate and explicit confirm button"></td>
   </tr>
   <tr>
-    <td><strong>Born inside the chat.</strong><br>One message becomes a live MCP app — visible tool calls, then five complete carts in the Choice Center.</td>
+    <td><strong>One ask becomes a visible handoff.</strong><br>The simulated chat yields to the real storefront for reversible actions, then receives the verified TrailHaus cart back while identity remains human-only.</td>
     <td><strong>A visible authorization boundary.</strong><br>The exact merchant, pickup, items, and total are bound before confirmation.</td>
   </tr>
   <tr>
@@ -270,6 +286,20 @@ AI-generated with ElevenLabs and can be replaced by swapping the files in
   <tr>
     <td><strong>A pickup-ready result.</strong><br>The user receives a simulated authorization result and receipt.</td>
     <td><strong>A controllable live demo.</strong><br>Inventory, pricing, declines, order failures, and the audit trail are visible on stage.</td>
+  </tr>
+  <tr>
+    <td colspan="2"><img src="docs/assets/screenshots/webmcp-workspace-ready.png" alt="Woven Trail Market light storefront with the mission composer and Behind the cart activity surface"></td>
+  </tr>
+  <tr>
+    <td colspan="2"><strong>A storefront an agent can operate.</strong><br>The fictional Woven Trail Market opens idle, defaults to connected stores, and exposes exactly seven reversible WebMCP tools.</td>
+  </tr>
+  <tr>
+    <td><img src="docs/assets/screenshots/webmcp-workspace-desktop.png" alt="Two complete Woven storefront kits with exact metrics and truthful resolved activity"></td>
+    <td><img src="docs/assets/screenshots/webmcp-workspace-mobile.png" alt="Responsive Woven storefront kit card and collapsible non-modal activity bottom sheet"></td>
+  </tr>
+  <tr>
+    <td><strong>Complete-kit proof, not a product list.</strong><br>The canonical cart exposes 7 units, 5 categories, 89 L packed, and a 3,000 mm rainfly.</td>
+    <td><strong>Mobile without a modal trap.</strong><br>The activity sheet collapses so the storefront and human actions remain reachable.</td>
   </tr>
 </table>
 
@@ -341,8 +371,8 @@ Open the local surfaces:
 | Surface | URL |
 | --- | --- |
 | Landing page | <http://localhost:8787/> |
-| Buyer fallback | <http://localhost:8787/demo> |
-| WebMCP workspace | <http://localhost:8787/webmcp> |
+| Guided buyer rehearsal | <http://localhost:8787/demo> |
+| Woven Trail Market WebMCP showcase | <http://localhost:8787/webmcp> |
 | Demo identity connector | <http://localhost:8787/identity> |
 | Merchant desk | <http://localhost:8787/merchant> |
 | Install guide | <http://localhost:8787/install> |
@@ -356,15 +386,25 @@ The verified public deployment is available at
 in Vercel's temporary filesystem, so demo state may reset after a cold start or
 redeployment.
 
-Add `?loop=true` to `/demo` for an unattended visual walkthrough. It compares
-and reranks carts, returns to the selected kit, shows the compatibility proof
-and approved swap, completes the server-enforced simulated identity handoff,
-shows the verified state and host reply, then fades back to the start. It never
-creates a checkout mandate or confirms a purchase.
+Add `?loop=true` to `/demo` for an unattended visual walkthrough staged inside
+an unbranded laptop presentation frame. The loop opens the storefront, waits
+for the real mission response, scrolls to the verified kits,
+adds TrailHaus, stops at the human-only identity handoff, and then replays. It
+never starts identity, creates a checkout mandate, or confirms a purchase. Use
+the visible Pause/Resume, Next beat, and Replay controls when presenting live.
 
-Open `/webmcp` in a current WebMCP-capable ChatGPT or Codex browser session to
-discover the seven page tools. The readiness card and shared activity rail make
-agent actions visible; the browser and MCP transports enter the same
+To test WebMCP itself, open `/webmcp` as a top-level page in ChatGPT's in-app
+browser, which supports WebMCP out of the box, or in Google Chrome with WebMCP
+enabled through its experimental flag or origin trial. The `/demo` iframe is a
+paced rehearsal and intentionally does not register site tools; its activation
+receipt links to the real storefront and the
+[official WebMCP Challenge testing guide](https://openai.com/webmcp-challenge/).
+The direct-page header moves from registering to **WebMCP active · 7 tools**
+only after all seven registrations resolve; an ordinary browser gets an honest
+unsupported label plus the same testing paths. The “Behind the cart” surface makes real pending,
+resolved, degraded, and error states visible without inventing progress. Use
+**Connected stores** when connectors are configured; otherwise choose
+**Showcase data** explicitly. The browser and MCP transports enter the same
 server-owned mission router.
 
 ### Connect the ChatGPT app
@@ -393,11 +433,9 @@ only for the simulated identity handoff.
 Use the complete [three-minute stage script](script.md). The working happy path
 is:
 
-1. Open `/demo` — the simulated chat host types the canonical request, plays the
-   `start_mission` activity, and opens the Choice Center with five ranked carts.
-2. Compare carts, tune a priority or pickup area, then select a kit and inspect
-   its compatibility proof and pickup plan.
-3. Click **Review checkout**, then **Verify demo identity**.
+1. Open `/demo`, submit the canonical request, and show the visible **Simulated** boundary as Woven Trail Market opens.
+2. Let the real response reveal the best two complete carts, scroll to them, add TrailHaus, and stop at **Only you can continue**.
+3. Inspect the 7-unit, 5-category, 89 L, 3,000 mm, pickup, and exact-total proof, then click **Verify demo identity**.
 4. On `/identity`, click **Continue as Chai**; return and check the result. If
    authorization is still pending, the same status action reopens the handoff.
 5. Review the exact, expiring mandate and click **Confirm S$231.00**.

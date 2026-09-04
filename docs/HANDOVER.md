@@ -1,14 +1,15 @@
 # Woven AI handover
 
-**Last updated:** 31 August 2026
+**Last updated:** 4 September 2026
 
 **Repository:** `Ducksss/LifeHack-2026`
 
 **Product:** Woven
 
-**Current phase:** Working MCP App plus locally verified WebMCP challenge build.
-The existing public browser deployment is verified, but the new `/webmcp` route,
-challenge video upload, ChatGPT connection, and Devpost publishing remain outstanding.
+**Current phase:** Working MCP App plus publicly verified Woven Trail Market
+WebMCP showcase and guided `/demo` rehearsal. The WebMCP Challenge entry is
+submitted with a public corrected demo video and captions. A real ChatGPT
+connection and entrant-type/team reconciliation remain outstanding.
 
 **Repository synchronization:** The primary checkout should be clean and aligned
 with `origin/main` after handoff. Worktree paths and counts are ephemeral; always
@@ -24,8 +25,10 @@ the spoken demo. If a pitch artifact describes planned behavior that the code an
 PRD do not implement, it is not a product claim.
 
 Woven is an agentic-commerce system whose primary interface is an MCP App for
-ChatGPT and Codex, with a browser-native WebMCP workspace at `/webmcp`. MCP and
-WebMCP carry tool calls and share the Choice Center; a
+ChatGPT and Codex, with the fictional Woven Trail Market WebMCP storefront at
+`/webmcp`. MCP and WebMCP carry tool calls into the same mission backend; the
+MCP App owns its Choice Center while the storefront owns inline two-kit results
+and a truthful “Behind the cart” activity surface. A
 separate server-owned mission layer routes work into either the deterministic
 camping engine or a bounded LangGraph.js orchestration workflow. Both paths end
 at the same deterministic commerce rules, SQLite state, identity gate, and exact
@@ -67,12 +70,15 @@ stronger, more defensible demo:
 
 The primary artifact is therefore an actual MCP App/plugin, not a speculative
 browser extension. The browser UI at `/demo` is a reliable stage rehearsal of
-that experience: a clearly labeled simulated chat host (marked “Simulated” in
-its header and footer) that types the canonical request, plays a staged
-`start_mission` activity, renders the real widget inline, surfaces every MCP
-tool call live, and closes with a scripted thank-you after a confirmed
-simulated payment. It drives the same backend behavior and never impersonates a
-real host.
+the strongest cross-surface flow: the clearly labeled original LifeHack
+`Woven Demo Host` conversation accepts the mission, yields its presentation surface to the real
+Woven Trail Market entry, explicitly announces **WebMCP rehearsal active**,
+holds five readable presentation beats, highlights reversible browser actions
+with a visible agent cursor, waits for the shared backend, scrolls to the best
+two verified kits, selects TrailHaus, stops
+at the human-only boundary, and returns the exact result to chat. It uses
+explicit showcase data, exposes no top-level WebMCP tools, drives the same
+backend behavior, and never impersonates a real host.
 
 ## Canonical demo story
 
@@ -81,13 +87,13 @@ real host.
 
 Within three minutes, the audience should see:
 
-1. the mission open five ranked, one-merchant carts in the Choice Center;
-2. the user compare full carts, rerank them, choose a pickup area, and optionally
-   use a merchant-approved compatible substitution;
+1. the mission leave the clearly labeled simulated chat and open Woven Trail Market in the browser-control surface;
+2. the real response reveal the best two complete one-store carts and scroll to them while reversible actions are highlighted;
 3. proof that the tent, two sleeping bags, two sleeping mats, lantern, first-aid
    supplies, rain protection, packed volume, stock, pickup, and budget constraints
    are all satisfied;
-4. a clearly labeled, server-enforced demo identity handoff;
+4. a reversible **Add kit to cart** action select TrailHaus, show the clearly
+   labeled human-only identity boundary, and return the selection to chat;
 5. a price/stock recheck and ten-minute checkout mandate bound to that session;
 6. one explicit click confirming the exact merchant, cart version, and total;
 7. a clearly simulated Visa result and signed receipt; and
@@ -96,14 +102,21 @@ Within three minutes, the audience should see:
 The judge deck follows this as a ten-slide camping story.
 Its identity step is implemented and must remain labeled simulated.
 
+The separate WebMCP story opens the light storefront idle, defaults to connected
+stores, and lets either the person or `start_mission` drive the same visible
+state. Without configured connectors it fails closed and offers retry plus an
+explicit **Showcase data** action. The storefront displays the best two complete
+one-store kits and the canonical proof (7 units, 5 categories, 89 L, 3,000 mm),
+then hands selection to a solid direct-human identity/merchant section.
+
 ## Current product state
 
 | Area | Status | Notes |
 | --- | --- | --- |
 | Buyer MCP App | Complete | React widget using a self-contained hosted entry point, first-result snapshot fallback, and the MCP Apps bridge |
 | Local plugin packaging | Complete | v0.3.0 repo marketplace package with a fresh widget resource URI, in-place identity status refresh, branded install-page assets, cache-safe stdio launcher, real Codex CLI install, nine-tool smoke test, and verified guide |
-| Browser fallback | Complete | `/demo`; simulated chat-host rehearsal, same domain behavior over HTTP (`?instant` skips animations) |
-| WebMCP workspace | Complete locally | `/webmcp`; seven top-level site tools, shared visible Choice Center, abort-bound registration, human-only identity/purchase; verified in the real in-app browser at desktop and 390 px |
+| Browser fallback | Complete | `/demo`; separate simulated chat entry staging a full browser takeover inside an unbranded laptop frame, explicit 4.5-second WebMCP rehearsal/testing receipt, direct-storefront and official-guide links, five-beat rail, Pause/Resume/Next/Replay, explicit showcase data, real mission response, guided scroll/select, visible human-only boundary, and return to chat (`?instant` auto-starts; `?loop=true` replays) |
+| WebMCP storefront showcase | Complete locally | `/webmcp`; dedicated Woven Trail Market Vite entry, seven top-level site tools, truthful unsupported/registering/connected/failed status, supported-browser guidance when tools are unavailable, human/tool shared mission state, non-modal activity, two inline kits, explicit showcase fallback, abort/stale protection, and solid human-only handoff; verified in the real in-app browser at 1440×900 and 390×844 |
 | Demo identity page | Complete | `/identity`; working provider-style handoff with a prominent simulator boundary and no credential fields |
 | Install guide page | Complete | `/install`; Woven-branded guide styled after the ChatGPT Plugins tab (clearly labeled preview, three install paths, verification checklist); linked from the landing page and demo host headers |
 | Merchant desk | Complete | `/merchant`; inventory, approved alternatives, scenarios, orders, audit, reset |
@@ -113,16 +126,16 @@ Its identity step is implemented and must remain labeled simulated.
 | Checkout safety | Complete for prototype | Identity-session binding, expiry, hash, private nonce, exact terms, idempotency, signed receipt verification |
 | Demo identity check | Complete for prototype | Server-enforced state + PKCE + allowlisted callback + one-time code + 15-minute session; never call it Visa OAuth, KYC, or a real Visa login |
 | Visa rail | Simulated only | Approval, decline, failure, and reversal semantics |
-| Automated verification | Green | 37 tests, TypeScript/build gate, focused browser verification; live agent evaluation remains opt-in and credential-dependent |
-| README and gallery | Complete | Best-README structure and ten 1600×900 Devpost gallery assets plus a separate 3:2 project thumbnail |
+| Automated verification | Green | 59 Node tests, TypeScript/build gate, focused storefront-state/metrics/demo-protocol/pacing tests, strict premium UI audit, design-context lint, and in-app browser verification; live agent evaluation remains opt-in and credential-dependent |
+| README and gallery | Complete | Best-README structure, ten 1600×900 Devpost gallery assets, a separate 3:2 project thumbnail, and verified desktop/mobile WebMCP storefront plus guided-demo captures |
 | Stage fallback assets | Complete | Five numbered 1600×900 frames with editable SVG sources and explicit simulator boundaries |
 | Judge pitch deck | Complete | Ten-slide camping story; presenter notes and source blocks included |
 | Judge demo video | Complete and uploaded | Three-minute Remotion master with ElevenLabs AI narration and sidecar captions; public video: <https://youtu.be/FrppMZYmLeg> |
 | Agent context | Current | `AGENTS.md` is canonical; Claude and Copilot use thin pointers to it |
 | Devpost copy | Draft complete | Field-ready copy and demo script exist |
-| WebMCP challenge kit | Local artifacts complete | Paste-ready story in `docs/WEBMCP_DEVPOST_SUBMISSION.md` and a 2:58 Remotion master; authorized deployment, YouTube upload, and submission remain |
+| WebMCP challenge kit | Submitted | Public storefront, paste-ready story, 2:58 Remotion master, public YouTube upload, English captions, and Devpost embed are complete |
 | Public HTTPS deployment | Complete for the demo | <https://visa-woven.vercel.app> (canonical — `BASE_URL` points here and the deployment is verified through `/mcp` widget assets). Vercel Express preset; SQLite uses temporary `/tmp` state and may reset on cold start or redeploy — reset the demo right before presenting |
-| Devpost submission | Text and video ready — publication pending | Draft story includes the working simulated-host and identity boundaries; 13 technology tags, repository, Visa prize and Digital Payments are saved; gallery/PDF fields, logged-out checks, and submission remain outstanding |
+| WebMCP Devpost submission | Submitted | Devpost shows `SUBMITTED` and `5/5 steps done`; the public page embeds <https://youtu.be/_v84xyD8CkM>. Administrative follow-up: resolve `Individual` versus the multi-person challenge team listing |
 | Real merchant/Visa integrations | Credential-blocked | Visa Intelligent Commerce is the selected real path; VTS, VIC, Token Requestor, MLE, and Visa Payment Passkey credentials are required |
 
 ## Product vocabulary
@@ -131,8 +144,9 @@ Its identity step is implemented and must remain labeled simulated.
   count, weather, packed volume, budget, stock, and pickup.
 - **MCP interaction layer:** the host/tool protocol and embedded UI boundary. It
   carries requests and results; it is not Woven's mission planner.
-- **WebMCP workspace:** the top-level browser page that exposes seven reversible
-  mission and cart tools while keeping identity and purchase human-only.
+- **Woven Trail Market storefront:** the clearly fictional top-level `/webmcp`
+  showcase that exposes seven reversible mission/cart tools, inline kit results,
+  and observable activity while keeping identity and purchase human-only.
 - **Mission orchestration:** the server-owned, code-routed workflow that turns a
   non-camping request into a validated `MissionSpec`, gathers connected offers
   and cited research, composes candidates, verifies them, and terminates within
@@ -188,8 +202,14 @@ whole backend or split these layers into services without a measured reason.
 | `src/store.ts` | SQLite schema/state, transactions, confirmation, idempotency, scenarios, CSV and audit |
 | `src/payment.ts` | Simulated authorization adapter and the future real-payment replacement seam |
 | `src/server.ts` | MCP tools/transports, HTTP APIs, static UI, validation and process startup |
-| `web/widget.tsx` | Buyer MCP App plus the simulated chat-host rehearsal (`/demo`) |
+| `web/widget.tsx` | Buyer MCP App hosted resource |
+| `web/demo.tsx` | Guided `/demo` simulated chat, browser takeover, safe-action status, return-to-chat summary, human review, instant, and loop modes |
+| `web/demo-pacing.ts` | Pure five-beat mapping, approved presentation holds, and real-network-stage classification |
+| `web/demo-protocol.ts` | Validated same-origin start/control/stage message contract between the simulated host and framed storefront |
+| `web/storefront.tsx` | Woven Trail Market `/webmcp` UI, human actions, source mode, responsive activity surface, and private handoff state |
+| `web/storefront-state.ts` | Truthful idle/running/resolved/degraded/error derivation, exact tool list, abort/stale helpers, and activity proof |
 | `web/webmcp.ts` | Seven browser-native site-tool contracts and abort-bound registration |
+| `web/assets/storefront/*.webp` | Five original brand-neutral product cutouts generated for the fictional storefront |
 | `web/landing.tsx` | Marketing landing page served at `/` |
 | `web/merchant.tsx` | Merchant operations desk |
 | `web/install.tsx` | In-product install guide (`/install`) styled after the ChatGPT Plugins tab |
@@ -199,6 +219,7 @@ whole backend or split these layers into services without a measured reason.
 | `web/lib/utils.ts` | `cn` class-merge helper for shadcn components |
 | `web/styles.css` | Tailwind v4 entry: shadcn design tokens, Geist fonts, shared animations |
 | `test/domain.test.ts` | Mission, compatibility and ranking behavior |
+| `test/storefront-state.test.ts` | Truthful progress, degradation/failure, abort/stale, refresh/swap, and private-handoff invalidation |
 | `test/open-world.test.ts` | Generic validation/composition, workflow bounds/failures, provenance, persistence, and checkout revalidation |
 | `test/store.test.ts` | Confirmation, security, failures, inventory and CSV behavior |
 | `test/architecture.test.ts` | Architecture tracer autoplay, pause, and reduced-motion behavior |
@@ -214,7 +235,7 @@ whole backend or split these layers into services without a measured reason.
 | `docs/BRAND_GUIDE.md` | Naming, visual tokens, asset inventory and campaign prompt |
 | `docs/Woven-Hackathon-Pitch.pptx` | Judge deck with the camping mission and working simulated identity handoff |
 | `video/WovenJudgeVideo.tsx` | Three-minute Remotion judge composition using the authoritative script and verified product frames |
-| `output/Woven-WebMCP-Challenge.mp4` | Generated 2:58 WebMCP challenge master; ignored by Git and not yet uploaded |
+| `output/Woven-WebMCP-Challenge.mp4` | Generated 2:58 WebMCP challenge master; ignored by Git and uploaded publicly at <https://youtu.be/_v84xyD8CkM> |
 | `video/voiceover.ts` | Timed narration transcript; display copy preserves the authoritative wording |
 | `video/Woven-Judge-Video.srt` | Sidecar captions for the three-minute master |
 | `video/Woven-WebMCP-Video.srt` | Retimed captions for the 2:58 challenge master |
@@ -223,6 +244,8 @@ whole backend or split these layers into services without a measured reason.
 | `docs/assets/brand/woven-cover.{png,svg}` | Product-led repository/social cover using the working buyer UI |
 | `docs/assets/devpost/woven-{user-flow,architecture,trust-boundary}.png` | Verified 1600×900 submission visuals |
 | `docs/assets/demo/*.{png,svg}` | Numbered 1600×900 stage fallback sequence and recording close card |
+| `docs/assets/screenshots/demo-guided-{desktop,mobile}.png` | Verified guided `/demo` chat return at 1440×900 and browser-control handoff at 390×844 |
+| `docs/assets/screenshots/demo-guided-browser-control.png` | Verified desktop browser-control stop at the human-only boundary |
 | `script.md` | Authoritative three-minute narration, stage cues, fallback, judge Q&A, and demo identity boundary |
 
 ## Interfaces and runtime
@@ -249,15 +272,17 @@ MCP result `_meta`, never in model-visible `structuredContent`.
 `start_mission`, `get_mission`, `compare_carts`, `select_cart`,
 `swap_cart_item`, `refresh_carts`, and `verify_receipt` are registered only in
 the top-level `/webmcp` page. There is no identity, preview, confirmation, or
-purchase tool.
+purchase tool. The page opens idle and defaults to connected stores. Seeded
+showcase data runs only after the person selects it or the tool input explicitly
+requests `sourceMode: "demo"`; live failure never falls back silently.
 
 ### HTTP surfaces
 
 | Surface | Default URL |
 | --- | --- |
 | Landing page | `http://localhost:8787/` |
-| Buyer fallback | `http://localhost:8787/demo` |
-| WebMCP workspace | `http://localhost:8787/webmcp` |
+| Guided buyer rehearsal | `http://localhost:8787/demo` |
+| Woven Trail Market WebMCP showcase | `http://localhost:8787/webmcp` |
 | Demo identity connector | `http://localhost:8787/identity` |
 | Merchant desk | `http://localhost:8787/merchant` |
 | Install guide | `http://localhost:8787/install` |
@@ -335,22 +360,48 @@ the currently working product flow.
 
 1. Run `npm run check`, then `npm start`.
 2. Open `/merchant` and click **Reset demo data**.
-3. Keep `/demo` and `/merchant` open in separate tabs (`/demo?instant` skips
-   the intro animation if time is short; `/demo?loop=true` auto-advances through
-   comparison, proof, approved swap, simulated identity success, and a host
-   acknowledgement before fading and replaying, without creating checkout terms
-   or confirming a purchase).
-4. Let `/demo` play: the canonical request types itself, the staged `start_mission`
-   activity runs, and the Choice Center opens with five complete carts.
-5. Compare the carts, show a priority/area rerank, then choose TrailHaus.
-6. Show the two-person, rain-rating, quantity, car-boot, pickup-plan, and approved-swap proof.
-7. Click **Review checkout**, then **Verify demo identity**.
-8. On `/identity`, read the **DEMO ONLY** boundary and click **Continue as Chai**.
-9. Return to Woven, check the session, and review the price/stock recheck.
-10. Read the exact mandate, then click **Confirm**.
-11. Show the simulated result, valid receipt signature, and scripted thank-you close.
-12. If time permits, select **Price change** in `/merchant` and show stale-preview
+3. Keep `/demo` and `/merchant` open in separate tabs (`/demo?instant` auto-starts
+   the canonical rehearsal; `/demo?loop=true` replays chat submission, browser
+   takeover, response, scroll, selection, the human boundary, and return to chat
+   without starting identity or checkout).
+4. Submit the mission in `/demo`; show the **Simulated** chat-host label as the
+   real storefront takes over and waits for the shared-backend response.
+5. Hold on the activation receipt: `/demo` is the non-registering rehearsal;
+   actual tool discovery happens on the linked top-level `/webmcp` page in
+   ChatGPT's in-app browser or WebMCP-enabled Chrome.
+6. Let the browser highlight the safe compare/select actions, scroll to the two
+   complete carts, add TrailHaus, and stop at **Only you can continue**.
+7. Let control return to chat and show the 7-unit, 5-category, 89 L, 3,000 mm,
+   pickup, and exact-total summary.
+8. Click **Review in browser**, then directly click **Verify demo identity**.
+9. On `/identity`, read the **DEMO ONLY** boundary and click **Continue as Chai**.
+10. Return to Woven, check the session, and review the price/stock recheck.
+11. Read the exact mandate, then click **Confirm**.
+12. Show the simulated result, valid receipt signature, and scripted thank-you close.
+13. If time permits, select **Price change** in `/merchant` and show stale-preview
    rejection.
+
+## WebMCP showcase runbook
+
+1. Run `npm run check`, start the service, and open `/webmcp` at 1440×900 in
+   ChatGPT's in-app browser, or Google Chrome with WebMCP enabled through its
+   experimental flag or origin trial.
+2. Confirm the page title is **Woven Trail Market — WebMCP Showcase**, the page
+   opens idle in **Connected stores**, and exactly seven site tools register.
+3. Submit the hero request or call `start_mission`. Both paths must update the
+   same activity surface and inline kit results.
+4. In an unconfigured local environment, show the truthful total-failure state,
+   then click **Use showcase data**. Do not claim this is a live connector result.
+5. Show the best two kit cards and read the TrailHaus proof: 7 units, 5
+   categories, 89 L packed, 3,000 mm rainfly, S$231.
+6. Expand **View 7 WebMCP site tools and activity** and point out that identity,
+   checkout, confirmation secrets, and purchase authority are absent.
+7. Select a kit and show the separate solid human handoff. If the popup is
+   blocked, the same direct action exposes an **Open verification page** fallback.
+8. Repeat at 390×844. The activity surface must be a collapsible, non-modal
+   bottom sheet with no focus trap; collapse it to keep the cart actionable.
+9. Use `docs/assets/screenshots/webmcp-workspace-{ready,desktop,mobile,status}.png`
+   as the verified recording/gallery references.
 
 ## Submission handover
 
@@ -377,15 +428,23 @@ ignored by Git.
 
 The verified public demo URL is <https://visa-woven.vercel.app/demo>.
 
-The WebMCP challenge route is verified locally only. Do not claim
-<https://visa-woven.vercel.app/webmcp> is live until this exact build is deployed
-and checked in a logged-out browser. The local 2:58 master is
-`output/Woven-WebMCP-Challenge.mp4`; it has not been uploaded.
+The WebMCP challenge route is live at
+<https://visa-woven.vercel.app/webmcp>. The corrected 2:58 master is
+`output/Woven-WebMCP-Challenge.mp4` and is public at
+<https://youtu.be/_v84xyD8CkM>. YouTube reported no copyright or Community
+Guidelines issues, the timed English captions are published, and the public
+Devpost page embeds this video.
 
-The confirmed team listing is:
+The WebMCP Challenge entry at <https://devpost.com/software/woven-wzefyv> is
+submitted (`5/5 steps done`). Additional Info still says `Individual` while the
+challenge's team-management page lists multiple people; confirm the intended
+entrant type and representative authority before making any team changes.
 
-- Chai Pin Zheng — Product Engineer
-- Ho Boon How — Product Engineer
+The current WebMCP Challenge teammate listing on Devpost is:
+
+- Chai Pin Zheng (`@Ducksss`)
+- Krish Gupta (`@23guptakrish`)
+- arav cabral (`@arav31`)
 
 Before publishing Devpost, a human must provide or confirm:
 
@@ -404,8 +463,8 @@ exist only to preserve old experiments; they are not sources of truth and should
 not be merged into `main` by default. Recover individual assets or patterns only
 after translating them to Woven and rechecking every trust and transport
 invariant. The Woven-branded shadcn interface and clearly labeled simulated
-chat-host rehearsal are merged into `main`; `/demo`'s labeled chat-host behavior
-is current product, not an archive. Before changing branches or worktrees,
+guided storefront rehearsal are merged into `main`; `/demo`'s labeled simulated
+host behavior is current product, not an archive. Before changing branches or worktrees,
 inspect
 `git worktree list` and preserve dirty state on a branch.
 
@@ -413,9 +472,9 @@ inspect
 
 Unless the user changes direction, prioritize in this order:
 
-1. **WebMCP challenge launch:** with explicit user authorization, deploy this
-   build, verify `/webmcp` over public HTTPS, upload the 2:58 master to YouTube,
-   run logged-out checks, and publish the separate Devpost entry.
+1. **WebMCP entrant reconciliation:** confirm whether the submitted entry should
+   be `Individual` or `Team of Individuals`, verify representative authority,
+   and update Devpost only with explicit human direction.
 2. **Real ChatGPT connection:** connect the deployed `/mcp` endpoint in Developer
    Mode and verify the widget, private metadata, CSP and tool calls.
 3. **Public orchestration smoke check:** with an intentionally supplied
@@ -439,7 +498,7 @@ These ideas are intentionally deferred, not forgotten:
 - extra services, queues, caches or databases;
 - live Visa calls without the exact approved product and credentials.
 
-The five-category camping engine and exact `/demo` sequence remain deliberate
+The five-category camping engine and exact guided `/demo` sequence remain deliberate
 stage constraints. The open-world path is an implemented architecture POC: it
 must stay bounded, web-research-only outside connected catalogs, credential
 dormant in CI, and fail closed until real connectors and validation exist.

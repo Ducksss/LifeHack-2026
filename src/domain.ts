@@ -103,6 +103,13 @@ export interface CartLine {
   lastVerifiedAt?: string;
 }
 
+export interface CartMetrics {
+  unitCount: number;
+  categoryCount: number;
+  packedLiters?: number;
+  tentWaterproofMm?: number;
+}
+
 export interface RankedCart {
   id: string;
   version: string;
@@ -120,6 +127,7 @@ export interface RankedCart {
   score: number;
   badge: "BEST MATCH" | "BEST VALUE" | "ALTERNATIVE" | "CUSTOM";
   lines: CartLine[];
+  metrics: CartMetrics;
   checks: string[];
   alternatives: CartAlternative[];
   inventoryCheckedAt: string;
@@ -522,6 +530,12 @@ function createRankedCart(
     score: Math.round((100 + weatherScore + pickupScore + compactScore + valueScore) * 10) / 10,
     badge,
     lines,
+    metrics: {
+      unitCount: lines.reduce((sum, line) => sum + line.quantity, 0),
+      categoryCount: new Set(lines.map((line) => line.category)).size,
+      packedLiters,
+      ...(tent.waterproofMm === undefined ? {} : { tentWaterproofMm: tent.waterproofMm }),
+    },
     checks: [
       `Rain-rated shelter, ${mission.campers} sleeping bags, ${mission.campers} mats, lighting, and first aid are in stock at one pickup location.`,
       `Packed volume is ${packedLiters} L—within the ${mission.maxPackedLiters} L car-boot allowance.`,
