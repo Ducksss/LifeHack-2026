@@ -129,7 +129,7 @@
       </div>
       <div class="surface">
         <h3>/merchant</h3>
-        <p>Inventory, prices, failure scenarios, orders, and the audit trail.</p>
+        <p>Approved alternatives, inventory, prices, failure scenarios, orders, and the audit trail.</p>
         <span class="tag">Demo control</span>
       </div>
     </div>
@@ -154,21 +154,21 @@
         <i>01</i>
         <div>
           <h4>Transports &amp; tools</h4>
-          <p>HTTP + stdio MCP and the browser API expose six tools — <code>select_cart</code>, <code>create_checkout_preview</code>, and <code>confirm_purchase</code> are app-only.</p>
+          <p>HTTP + stdio MCP and the browser API expose eight tools — selection, compatible swaps, checkout, and confirmation stay app-only.</p>
         </div>
       </div>
       <div class="layer">
         <i>02</i>
         <div>
           <h4>Cart engine</h4>
-          <p>Filters incompatible or out-of-stock offers, assembles complete one-merchant carts, ranks them, and explains every thread.</p>
+          <p>Builds five complete one-merchant carts, applies preferences, and limits swaps to compatible merchant-approved alternatives.</p>
         </div>
       </div>
       <div class="layer">
         <i>03</i>
         <div>
           <h4>Checkout guard</h4>
-          <p>Rechecks price and stock, binds an expiring mandate hash, and requires the private one-time nonce plus an idempotency key.</p>
+          <p>Rechecks price and stock, binds an expiring mandate hash, requires a private nonce, and signs the final receipt.</p>
         </div>
       </div>
       <div class="seams">src/server.ts · src/domain.ts · src/store.ts · src/payment.ts</div>

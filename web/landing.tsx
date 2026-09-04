@@ -27,7 +27,7 @@ const steps = [
   {
     icon: <ListChecks className="size-5" />,
     title: "Review once",
-    body: "Three complete carts from one pickup location each, every thread checked for compatibility, live demo stock, and budget.",
+    body: "Five complete carts open in a Choice Center for comparison, preference ranking, safe swaps, and pickup planning.",
   },
   {
     icon: <ShieldCheck className="size-5" />,
@@ -49,9 +49,11 @@ const tools = [
   "start_mission",
   "build_carts",
   "select_cart",
+  "swap_cart_item",
   "create_checkout_preview",
   "confirm_purchase",
   "get_order_status",
+  "verify_receipt",
 ];
 
 function Landing() {
@@ -144,7 +146,7 @@ function Landing() {
 
           <div className="rise-in relative mt-14 [animation-delay:600ms]">
             <div className="rounded-2xl bg-gradient-to-b from-white/25 via-white/10 to-transparent p-px shadow-[0_40px_120px_-20px_rgba(21,69,232,0.35)]">
-              <Window src={buyerShot} alt="Woven buyer experience: one request becomes three complete, compatible carts" url="woven.demo/buyer" eager />
+              <Window src={buyerShot} alt="Woven buyer experience: one request becomes five complete, comparable carts" url="woven.demo/buyer" eager />
             </div>
           </div>
         </div>
@@ -185,9 +187,9 @@ function Landing() {
             />
             <Feature
               title="Your yes is the final thread"
-              body="A separate, explicit click consumes a private one-time token the model never sees. Success returns a pickup-ready receipt — declines and reversals stay just as visible."
+              body="A separate, explicit click consumes a private one-time token the model never sees. Success returns an exact signed receipt that Woven can verify — declines and reversals stay just as visible."
               shot={orderShot}
-              alt="Simulated Visa result with pickup receipt and live MCP tool calls"
+              alt="Simulated Visa result with a signed verified receipt and live MCP tool calls"
               url="woven.demo/receipt"
             />
           </div>
@@ -195,7 +197,7 @@ function Landing() {
             <Feature
               wide
               title="Trust you can test live"
-              body="The merchant desk flips the demo between normal, stockout, price-change, decline, and reversal scenarios while the audit trail updates — so judges can break it on stage and watch it fail safely."
+              body="The merchant desk publishes compatible alternatives and flips stock, price, decline, or reversal scenarios while the audit trail updates — so judges can break it on stage and watch it recover safely."
               shot={merchantShot}
               alt="Woven merchant desk with demo scenarios, inventory, and audit trail"
               url="woven.demo/merchant"

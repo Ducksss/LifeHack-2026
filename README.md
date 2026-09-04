@@ -123,13 +123,13 @@ marked “Simulated” on screen and is not a second product.
 1. **Ask once.** The host calls `start_mission` with the user's
    budget, destination, devices, and pickup constraint.
 2. **Build complete carts.** Woven rejects incompatible or unavailable
-   offers, stays under budget, and ranks one-merchant options.
-3. **Show the proof.** The MCP App widget explains charger wattage, voltage,
-   cable connectors, adapter fit, live demo stock, total, and pickup time.
-4. **Review once.** The server rechecks price and stock and creates a
+   offers, stays under budget, and opens five location-diverse options in the Choice Center.
+3. **Compare and refine.** The user compares value, speed, power, and pickup plans; reranks with consented local preferences; and may apply a merchant-approved compatible swap.
+4. **Show the proof.** The MCP App explains charger wattage, voltage, cable connectors, adapter fit, seeded stock, total, and pickup timing.
+5. **Review once.** The server rechecks price and stock and creates a
    ten-minute mandate bound to the merchant, cart version, and amount.
-5. **Confirm once.** A private nonce, mandate hash, and idempotency key are
-   verified before the simulated authorization and merchant order.
+6. **Confirm once.** A private nonce, mandate hash, and idempotency key are
+   verified before the simulated authorization, merchant order, and signed receipt.
 
 The AI recommends. The user chooses. Woven binds the exact terms.
 
@@ -144,13 +144,15 @@ Ask once
    ↓
 Receive complete one-merchant carts
    ↓
+Compare, rerank, and make an approved swap
+   ↓
 See why everything works together
    ↓
 Review the exact merchant, items, pickup, and total
    ↓
 Confirm once
    ↓
-Receive a simulated Visa result and pickup receipt
+Receive a simulated Visa result and verified signed receipt
 ```
 
 The proposed next trust step is a **simulated connector-style identity check**
@@ -172,11 +174,11 @@ path, and the identity insert that becomes usable only after implementation.
     <td width="50%"><img src="docs/assets/screenshots/checkout-confirmation.png" alt="Woven exact checkout mandate and explicit confirm button"></td>
   </tr>
   <tr>
-    <td><strong>Born inside the chat.</strong><br>One message becomes a live MCP app — visible tool calls, then three complete carts.</td>
+    <td><strong>Born inside the chat.</strong><br>One message becomes a live MCP app — visible tool calls, then a five-cart Choice Center.</td>
     <td><strong>A visible authorization boundary.</strong><br>The exact merchant, pickup, items, and total are bound before confirmation.</td>
   </tr>
   <tr>
-    <td><img src="docs/assets/screenshots/order-success.png" alt="Woven simulated Visa result and pickup receipt"></td>
+    <td><img src="docs/assets/screenshots/order-success.png" alt="Woven simulated Visa result and signed verified receipt"></td>
     <td><img src="docs/assets/screenshots/merchant-dashboard.png" alt="Woven merchant operations dashboard"></td>
   </tr>
   <tr>
@@ -279,17 +281,19 @@ Use the complete [three-minute stage script](script.md). The working happy path
 is:
 
 1. Open `/demo` — the simulated chat host types the canonical request, plays the
-   `start_mission` activity, and renders the widget with three ranked carts.
-2. Select a kit and inspect its compatibility proof.
-3. Click **Review checkout** to force a stock and price recheck.
-4. Call out the exact, expiring mandate and click **Confirm S$133.00**.
-5. Show the simulated Visa result and pickup receipt.
+   `start_mission` activity, and opens the Choice Center with five ranked carts.
+2. Compare carts, rerank by value/speed/power or pickup area, and choose a kit.
+3. Apply a merchant-approved cable swap, then inspect the compatibility proof and pickup planner.
+4. Click **Review checkout** to force a stock and price recheck.
+5. Call out the exact, expiring mandate and click **Confirm**.
+6. Show the simulated Visa result and server-verified signed receipt.
 
 ### Trust/failure demo
 
 Use `/merchant` to select a scenario, then replay checkout:
 
 - **Stockout** or **Price change** invalidates an old preview.
+- A withdrawn merchant alternative invalidates an unconfirmed custom cart and triggers fresh complete choices.
 - **Auth decline** creates no merchant order.
 - **Order failure** enters reversal after simulated authorization.
 - **Reset demo data** restores stock and clears the local run.
@@ -356,7 +360,8 @@ npm run check
 npm audit
 ```
 
-The automated suite covers cart completeness and ranking, mandate integrity,
+The automated suite covers cart completeness and location-diverse ranking,
+approved swaps, stale-cart recovery, signed receipt verification, mandate integrity,
 stale price/stock rejection, one-time nonce consumption, idempotent confirmation,
 authorization decline, reversal, inventory updates, and CSV validation. CI runs
 the full test and production-build gate on every push and pull request.
@@ -371,6 +376,8 @@ the full test and production-build gate on every push and pull request.
 - [x] Merchant inventory, scenario controls, CSV update, and audit trail
 - [x] Simulated authorization, decline, order failure, and reversal paths
 - [x] End-to-end tests and submission-ready gallery
+- [x] Choice Center modal, comparison, consented local preferences, pickup planner, compatible swaps, recovery, and signed receipts
+- [x] Merchant controls for publishing approved alternatives
 - [x] Public HTTPS landing page, browser demo, merchant desk, health check, and MCP endpoint
 - [ ] Simulated connector-style identity check, enforced before checkout
 - [ ] Shareable ChatGPT app connection against the deployed MCP endpoint

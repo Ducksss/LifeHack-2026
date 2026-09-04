@@ -1,4 +1,8 @@
 import assert from "node:assert/strict";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
 import test from "node:test";
 import { CANONICAL_REQUEST, DomainError } from "../src/domain.js";
 import { WovenStore, parseCsv } from "../src/store.js";
@@ -130,6 +134,111 @@ test("catalog CSV rejects blank values instead of silently zeroing an offer", ()
       () => store.updateCatalogCsv("offer_id,price_sgd,stock\nbyteroute-funan-br-gan65,,4\n"),
       (error) => error instanceof DomainError && error.code === "INVALID_CSV_VALUE",
     );
+  } finally {
+    store.close();
+  }
+});
+
+test("existing catalog rows gain pickup metadata without losing merchant updates", () => {
+  const directory = mkdtempSync(path.join(tmpdir(), "woven-upgrade-"));
+  const filename = path.join(directory, "woven.db");
+  try {
+    const original = new WovenStore(filename);
+    original.updateCatalogCsv("offer_id,price_sgd,stock\nbyteroute-funan-br-gan65,79.00,2\n");
+    original.close();
+
+    const legacy = new DatabaseSync(filename);
+    const row = legacy.prepare("SELECT data FROM catalog WHERE offer_id = ?").get("byteroute-funan-br-gan65")!;
+    const item = JSON.parse(String(row.data));
+    delete item.transitMinutes;
+    delete item.closesAt;
+    delete item.area;
+    legacy.prepare("UPDATE catalog SET data = ? WHERE offer_id = ?")
+      .run(JSON.stringify(item), "byteroute-funan-br-gan65");
+    legacy.close();
+
+    const upgraded = new WovenStore(filename);
+    const refreshed = upgraded.getCatalog().find((candidate) => candidate.offerId === "byteroute-funan-br-gan65")!;
+    assert.equal(refreshed.priceCents, 7_900);
+    assert.equal(refreshed.stock, 2);
+    assert.equal(refreshed.transitMinutes, 18);
+    assert.equal(refreshed.closesAt, "21:30");
+    assert.equal(refreshed.area, "Central");
+    upgraded.close();
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test("only active merchant-approved alternatives can replace a cart item", () => {
+  const { store, view, cart } = setup();
+  try {
+    const alternative = cart.alternatives[0]!;
+    assert.ok(alternative);
+    const swapped = store.swapCartItem(view.mission.id, cart.id, alternative.offerId);
+    assert.equal(swapped.carts.length, view.carts.length);
+    const selected = swapped.carts.find((candidate) => candidate.id === swapped.selectedCartId)!;
+    assert.ok(selected.lines.some((line) => line.offerId === alternative.offerId));
+    assert.equal(selected.lines.length, 4);
+    assert.ok(selected.totalCents <= view.mission.budgetCents);
+
+    const secondMission = store.startMission({ request: CANONICAL_REQUEST });
+    const secondCart = secondMission.carts[0]!;
+    const secondAlternative = secondCart.alternatives.find((candidate) => candidate.offerId === alternative.offerId)!;
+    assert.ok(secondAlternative);
+    assert.doesNotThrow(() => store.swapCartItem(secondMission.mission.id, secondCart.id, secondAlternative.offerId));
+
+    store.setAlternative(alternative.fromOfferId, alternative.offerId, false);
+    assert.throws(
+      () => store.swapCartItem(view.mission.id, cart.id, alternative.offerId),
+      (error) => error instanceof DomainError && error.code === "ALTERNATIVE_NOT_APPROVED",
+    );
+  } finally {
+    store.close();
+  }
+});
+
+test("stock changes refresh complete recovery choices without selecting a stale cart", () => {
+  const { store, view, cart } = setup();
+  try {
+    store.selectCart(view.mission.id, cart.id);
+    store.setScenario("stockout");
+    const recovered = store.view(view.mission.id);
+    assert.equal(recovered.selectedCartId, null);
+    assert.ok(recovered.carts.length >= 2);
+    assert.ok(recovered.carts.every((candidate) => candidate.lines.length === 4));
+    assert.ok(recovered.carts.every((candidate) => candidate.lines.every((line) => line.offerId !== "byteroute-funan-br-gan65")));
+  } finally {
+    store.close();
+  }
+});
+
+test("confirmed receipts are signed and reject tampering", () => {
+  const { store, view, cart } = setup();
+  try {
+    const preview = store.checkoutPreview(view.mission.id, cart.id);
+    const signedAt = new Date("2026-08-30T02:55:00.000Z");
+    const { order } = store.confirmPurchase({
+      previewId: preview.view.preview!.id,
+      mandateHash: preview.view.preview!.mandateHash,
+      confirmationNonce: preview.nonce,
+      idempotencyKey: "idem-signed-receipt-0001",
+    }, signedAt);
+    assert.ok(order.receipt);
+    assert.equal(store.verifyReceipt(order.receipt!.receiptNumber, order.receipt!.signature).valid, true);
+    assert.equal(store.verifyReceipt(order.receipt!.receiptNumber, "0".repeat(64)).valid, false);
+    assert.equal(store.view(view.mission.id).receiptVerification?.valid, true);
+
+    const second = store.startMission({ request: CANONICAL_REQUEST });
+    const secondPreview = store.checkoutPreview(second.mission.id, second.carts[0]!.id);
+    const secondOrder = store.confirmPurchase({
+      previewId: secondPreview.view.preview!.id,
+      mandateHash: secondPreview.view.preview!.mandateHash,
+      confirmationNonce: secondPreview.nonce,
+      idempotencyKey: "idem-signed-receipt-0002",
+    }, signedAt).order;
+    assert.notEqual(secondOrder.receiptNumber, order.receiptNumber);
+    assert.equal(store.verifyReceipt(secondOrder.receipt!.receiptNumber, secondOrder.receipt!.signature).valid, true);
   } finally {
     store.close();
   }

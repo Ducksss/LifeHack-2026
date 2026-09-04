@@ -39,6 +39,9 @@ export interface CatalogItem {
   locationName: string;
   address: string;
   pickupMinutes: number;
+  transitMinutes: number;
+  closesAt: string;
+  area: "Central" | "Airport" | "East";
   sku: string;
   name: string;
   category: Category;
@@ -49,6 +52,7 @@ export interface CatalogItem {
   inputVoltage?: string;
   destination?: string;
   connector?: string;
+  alternativeFor?: string;
 }
 
 export interface CartLine {
@@ -70,13 +74,43 @@ export interface RankedCart {
   locationName: string;
   address: string;
   pickupMinutes: number;
+  transitMinutes: number;
+  closesAt: string;
+  area: CatalogItem["area"];
   totalCents: number;
   currency: "SGD";
   score: number;
-  badge: "BEST MATCH" | "BEST VALUE" | "ALTERNATIVE";
+  badge: "BEST MATCH" | "BEST VALUE" | "ALTERNATIVE" | "CUSTOM";
   lines: CartLine[];
   checks: string[];
+  alternatives: CartAlternative[];
   inventoryCheckedAt: string;
+}
+
+export interface CartAlternative {
+  fromOfferId: string;
+  offerId: string;
+  name: string;
+  category: Category;
+  priceCents: number;
+  stock: number;
+  compatibility: string;
+  deltaCents: number;
+  totalCents: number;
+}
+
+export interface ApprovedAlternative {
+  fromOfferId: string;
+  toOfferId: string;
+}
+
+export interface MerchantAlternative extends ApprovedAlternative {
+  fromName: string;
+  toName: string;
+  merchantName: string;
+  locationName: string;
+  category: Category;
+  active: boolean;
 }
 
 export interface MissionView {
@@ -85,6 +119,7 @@ export interface MissionView {
   selectedCartId: string | null;
   preview?: PublicPreview;
   order?: Order;
+  receiptVerification?: ReceiptVerification;
   scenario: Scenario;
 }
 
@@ -131,7 +166,28 @@ export interface Order {
   paymentMode: "simulated";
   authorizationCode?: string;
   receiptNumber?: string;
+  receipt?: Receipt;
   createdAt: string;
+}
+
+export interface Receipt {
+  receiptNumber: string;
+  orderId: string;
+  missionId: string;
+  request: string;
+  merchantName: string;
+  pickupLocation: string;
+  lines: Array<{ offerId: string; name: string; category: Category; priceCents: number }>;
+  amountCents: number;
+  currency: "SGD";
+  paymentMode: "simulated";
+  createdAt: string;
+  signature: string;
+}
+
+export interface ReceiptVerification {
+  valid: boolean;
+  receipt?: Receipt;
 }
 
 export class DomainError extends Error {
@@ -149,13 +205,14 @@ const merchants = [
     id: "byteroute",
     name: "ByteRoute",
     locations: [
-      ["funan", "Funan · Level 3", "107 North Bridge Rd", 45],
-      ["jewel", "Jewel · Level 4", "78 Airport Blvd", 70],
+      ["funan", "Funan · Level 3", "107 North Bridge Rd", 45, 18, "21:30", "Central"],
+      ["jewel", "Jewel · Level 4", "78 Airport Blvd", 70, 32, "22:00", "Airport"],
     ],
     products: [
       ["BR-GAN65", "65W GaN dual-port charger", "charger", 6900, 65, "100–240V"],
       ["BR-GAN30", "30W compact charger", "charger", 3900, 30, "100–240V"],
       ["BR-C2C100", "100W USB-C woven cable", "mac_cable", 2400, 100, "USB-C ↔ USB-C"],
+      ["BR-C2C60", "60W USB-C soft-touch cable", "mac_cable", 2000, 60, "USB-C ↔ USB-C", "BR-C2C100"],
       ["BR-C2L", "USB-C to Lightning cable", "iphone_cable", 2800, 20, "USB-C ↔ Lightning"],
       ["BR-JP", "Japan Type-A travel adapter", "adapter", 1200, 0, "Japan / Type A"],
     ],
@@ -164,12 +221,13 @@ const merchants = [
     id: "citymobile",
     name: "City Mobile",
     locations: [
-      ["bugis", "Bugis Junction · B1", "200 Victoria St", 65],
-      ["plq", "Paya Lebar Quarter · L2", "10 Paya Lebar Rd", 95],
+      ["bugis", "Bugis Junction · B1", "200 Victoria St", 65, 16, "21:30", "Central"],
+      ["plq", "Paya Lebar Quarter · L2", "10 Paya Lebar Rd", 95, 24, "22:00", "East"],
     ],
     products: [
       ["CM-PD45", "45W PD travel charger", "charger", 4900, 45, "100–240V"],
       ["CM-C2C60", "60W USB-C cable", "mac_cable", 1800, 60, "USB-C ↔ USB-C"],
+      ["CM-C2C100", "100W USB-C reinforced cable", "mac_cable", 2300, 100, "USB-C ↔ USB-C", "CM-C2C60"],
       ["CM-C2L", "USB-C to Lightning cable", "iphone_cable", 2500, 20, "USB-C ↔ Lightning"],
       ["CM-JP", "Japan slim travel adapter", "adapter", 1000, 0, "Japan / Type A"],
     ],
@@ -178,12 +236,13 @@ const merchants = [
     id: "voltandgo",
     name: "Volt & Go",
     locations: [
-      ["orchard", "Orchard Gateway · L2", "277 Orchard Rd", 55],
-      ["marina", "Marina Square · L2", "6 Raffles Blvd", 85],
+      ["orchard", "Orchard Gateway · L2", "277 Orchard Rd", 55, 22, "22:00", "Central"],
+      ["marina", "Marina Square · L2", "6 Raffles Blvd", 85, 20, "21:30", "Central"],
     ],
     products: [
       ["VG-GAN67", "67W GaN charger", "charger", 7300, 67, "100–240V"],
       ["VG-C2C100", "100W USB-C cable", "mac_cable", 2600, 100, "USB-C ↔ USB-C"],
+      ["VG-C2C60", "60W USB-C travel cable", "mac_cable", 2100, 60, "USB-C ↔ USB-C", "VG-C2C100"],
       ["VG-C2L", "Braided Lightning cable", "iphone_cable", 3000, 20, "USB-C ↔ Lightning"],
       ["VG-JP", "Japan grounded travel adapter", "adapter", 1400, 0, "Japan / Type A"],
     ],
@@ -191,8 +250,8 @@ const merchants = [
 ] as const;
 
 export const seedCatalog: CatalogItem[] = merchants.flatMap((merchant) =>
-  merchant.locations.flatMap(([locationId, locationName, address, pickupMinutes]) =>
-    merchant.products.map(([sku, name, category, priceCents, watts, detail], index) => ({
+  merchant.locations.flatMap(([locationId, locationName, address, pickupMinutes, transitMinutes, closesAt, area]) =>
+    merchant.products.map(([sku, name, category, priceCents, watts, detail, alternativeFor], index) => ({
       offerId: `${merchant.id}-${locationId}-${sku}`.toLowerCase(),
       merchantId: merchant.id,
       merchantName: merchant.name,
@@ -200,11 +259,15 @@ export const seedCatalog: CatalogItem[] = merchants.flatMap((merchant) =>
       locationName,
       address,
       pickupMinutes,
+      transitMinutes,
+      closesAt,
+      area,
       sku,
       name,
       category,
       priceCents,
       stock: locationId === "plq" && index === 0 ? 1 : 4 + (index % 3),
+      ...(alternativeFor ? { alternativeFor } : {}),
       ...(category === "charger"
         ? { watts, inputVoltage: detail }
         : category === "adapter"
@@ -284,15 +347,88 @@ function sha256(value: unknown): string {
   return createHash("sha256").update(JSON.stringify(value)).digest("hex");
 }
 
+const requiredCategories: Category[] = ["charger", "mac_cable", "iphone_cable", "adapter"];
+
+function createRankedCart(
+  mission: Mission,
+  chosen: CatalogItem[],
+  scenario: Scenario,
+  now: Date,
+  badge: RankedCart["badge"],
+): RankedCart | null {
+  const first = chosen[0];
+  if (!first || chosen.length !== requiredCategories.length) return null;
+  if (chosen.some((item) =>
+    item.merchantId !== first.merchantId ||
+    item.locationId !== first.locationId ||
+    item.stock < 1 ||
+    !compatibility(item)
+  )) return null;
+  if (new Set(chosen.map((item) => item.category)).size !== requiredCategories.length) return null;
+
+  const totalCents = chosen.reduce((sum, item) => sum + item.priceCents, 0);
+  if (totalCents > mission.budgetCents) return null;
+  const ordered = requiredCategories.map((category) => chosen.find((item) => item.category === category)!);
+  const cartIdentity = {
+    merchantId: first.merchantId,
+    locationId: first.locationId,
+    offerIds: ordered.map((item) => item.offerId),
+  };
+  const lines: CartLine[] = ordered.map((item) => ({
+    offerId: item.offerId,
+    sku: item.sku,
+    name: item.name,
+    category: item.category,
+    priceCents: item.priceCents,
+    quantity: 1,
+    compatibility: compatibility(item)!,
+  }));
+  const charger = ordered.find((item) => item.category === "charger")!;
+  const powerScore = (charger.watts ?? 0) >= 65 ? 30 : 15;
+  const pickupScore = Math.max(0, 18 - first.pickupMinutes / 10);
+  const valueScore = 12 * (1 - totalCents / mission.budgetCents);
+  const score = Math.round((100 + powerScore + pickupScore + valueScore) * 10) / 10;
+  const id = `cart_${sha256(cartIdentity).slice(0, 12)}`;
+
+  return {
+    id,
+    version: sha256({
+      id,
+      prices: ordered.map((item) => [item.offerId, item.priceCents]),
+      scenario: scenario === "stockout" || scenario === "price-change" ? scenario : "normal",
+    }),
+    merchantId: first.merchantId,
+    merchantName: first.merchantName,
+    locationId: first.locationId,
+    locationName: first.locationName,
+    address: first.address,
+    pickupMinutes: first.pickupMinutes,
+    transitMinutes: first.transitMinutes,
+    closesAt: first.closesAt,
+    area: first.area,
+    totalCents,
+    currency: "SGD",
+    score,
+    badge,
+    lines,
+    checks: [
+      "All four required components are in stock at one pickup location.",
+      "Charger supports USB-C Power Delivery and 100–240V input.",
+      "Every item is merchant-approved, compatible, and within the hard budget.",
+    ],
+    alternatives: [],
+    inventoryCheckedAt: now.toISOString(),
+  };
+}
+
 export function buildRankedCarts(
   mission: Mission,
   catalog: CatalogItem[],
   scenario: Scenario,
   now = new Date(),
 ): RankedCart[] {
-  const catalogScenario = scenario === "stockout" || scenario === "price-change" ? scenario : "normal";
   const eligible = effectiveCatalog(catalog, scenario).filter(
-    (item) => item.stock > 0 && compatibility(item),
+    (item) => item.stock > 0 && compatibility(item) && !item.alternativeFor,
   );
   const locations = Map.groupBy(eligible, (item) => `${item.merchantId}:${item.locationId}`);
   const carts: RankedCart[] = [];
@@ -301,8 +437,7 @@ export function buildRankedCarts(
     const first = items[0];
     if (!first) continue;
     const byCategory = Map.groupBy(items, (item) => item.category);
-    const categories: Category[] = ["charger", "mac_cable", "iphone_cable", "adapter"];
-    if (categories.some((category) => !byCategory.get(category)?.length)) continue;
+    if (requiredCategories.some((category) => !byCategory.get(category)?.length)) continue;
 
     for (const charger of byCategory.get("charger") ?? []) {
       const chosen = [
@@ -311,61 +446,90 @@ export function buildRankedCarts(
         byCategory.get("iphone_cable")![0]!,
         byCategory.get("adapter")![0]!,
       ];
-      const totalCents = chosen.reduce((sum, item) => sum + item.priceCents, 0);
-      if (totalCents > mission.budgetCents) continue;
-
-      const cartCore = {
-        merchantId: first.merchantId,
-        locationId: first.locationId,
-        lines: chosen.map((item) => [item.offerId, item.priceCents]),
-      };
-      const lines: CartLine[] = chosen.map((item) => ({
-        offerId: item.offerId,
-        sku: item.sku,
-        name: item.name,
-        category: item.category,
-        priceCents: item.priceCents,
-        quantity: 1,
-        compatibility: compatibility(item)!,
-      }));
-      const powerScore = (charger.watts ?? 0) >= 65 ? 30 : 15;
-      const pickupScore = Math.max(0, 18 - first.pickupMinutes / 10);
-      const valueScore = 12 * (1 - totalCents / mission.budgetCents);
-      const score = Math.round((100 + powerScore + pickupScore + valueScore) * 10) / 10;
-
-      carts.push({
-        id: `cart_${sha256(cartCore).slice(0, 12)}`,
-        version: sha256({ cartCore, scenario: catalogScenario }),
-        merchantId: first.merchantId,
-        merchantName: first.merchantName,
-        locationId: first.locationId,
-        locationName: first.locationName,
-        address: first.address,
-        pickupMinutes: first.pickupMinutes,
-        totalCents,
-        currency: "SGD",
-        score,
-        badge: "ALTERNATIVE",
-        lines,
-        checks: [
-          "All four required components are in stock at one pickup location.",
-          "Charger supports USB-C Power Delivery and 100–240V input.",
-          "Cart stays within the hard budget with no substitutions.",
-        ],
-        inventoryCheckedAt: now.toISOString(),
-      });
+      const cart = createRankedCart(mission, chosen, scenario, now, "ALTERNATIVE");
+      if (cart) carts.push(cart);
     }
   }
 
-  const bestPerMerchant = [...Map.groupBy(carts, (cart) => cart.merchantId).values()]
-    .map((merchantCarts) => merchantCarts.sort((a, b) => b.score - a.score)[0]!)
-    .sort((a, b) => b.score - a.score || a.totalCents - b.totalCents)
-    .slice(0, 3);
+  const bestPerLocation = [...Map.groupBy(carts, (cart) => `${cart.merchantId}:${cart.locationId}`).values()]
+    .map((locationCarts) => locationCarts.sort((a, b) => b.score - a.score)[0]!)
+    .sort((a, b) => b.score - a.score || a.totalCents - b.totalCents);
+  const selected = [...Map.groupBy(bestPerLocation, (cart) => cart.merchantId).values()]
+    .map((merchantCarts) => merchantCarts[0]!);
+  for (const area of ["Airport", "East"] as const) {
+    const areaChoice = bestPerLocation.find((cart) => cart.area === area && !selected.includes(cart));
+    if (areaChoice) selected.push(areaChoice);
+  }
+  for (const cart of bestPerLocation) {
+    if (selected.length >= 5) break;
+    if (!selected.includes(cart)) selected.push(cart);
+  }
+  selected.sort((a, b) => b.score - a.score || a.totalCents - b.totalCents);
+  if (selected[0]) selected[0].badge = "BEST MATCH";
+  const cheapest = selected.toSorted((a, b) => a.totalCents - b.totalCents)[0];
+  if (cheapest && cheapest !== selected[0]) cheapest.badge = "BEST VALUE";
+  return selected.slice(0, 5);
+}
 
-  if (bestPerMerchant[0]) bestPerMerchant[0].badge = "BEST MATCH";
-  const cheapest = bestPerMerchant.toSorted((a, b) => a.totalCents - b.totalCents)[0];
-  if (cheapest && cheapest !== bestPerMerchant[0]) cheapest.badge = "BEST VALUE";
-  return bestPerMerchant;
+export function buildCartFromOfferIds(
+  mission: Mission,
+  catalog: CatalogItem[],
+  scenario: Scenario,
+  offerIds: string[],
+  now = new Date(),
+): RankedCart {
+  const current = new Map(effectiveCatalog(catalog, scenario).map((item) => [item.offerId, item]));
+  const chosen = offerIds.map((offerId) => current.get(offerId)).filter((item): item is CatalogItem => Boolean(item));
+  const cart = createRankedCart(mission, chosen, scenario, now, "CUSTOM");
+  if (!cart) {
+    throw new DomainError(
+      "INVALID_SUBSTITUTION",
+      "That substitution no longer forms a complete, compatible, in-stock cart under budget.",
+      true,
+    );
+  }
+  return cart;
+}
+
+export function buildCartAlternatives(
+  mission: Mission,
+  cart: RankedCart,
+  catalog: CatalogItem[],
+  scenario: Scenario,
+  approved: ApprovedAlternative[],
+): CartAlternative[] {
+  const current = new Map(effectiveCatalog(catalog, scenario).map((item) => [item.offerId, item]));
+  const alternatives: CartAlternative[] = [];
+  for (const pair of approved) {
+    const fromLine = cart.lines.find((line) => line.offerId === pair.fromOfferId);
+    const toLine = cart.lines.find((line) => line.offerId === pair.toOfferId);
+    const source = fromLine || toLine;
+    const replacement = current.get(fromLine ? pair.toOfferId : pair.fromOfferId);
+    if (!source || !replacement || replacement.stock < 1 || replacement.category !== source.category) continue;
+    try {
+      const swapped = buildCartFromOfferIds(
+        mission,
+        catalog,
+        scenario,
+        cart.lines.map((line) => line.offerId === source.offerId ? replacement.offerId : line.offerId),
+      );
+      const replacementLine = swapped.lines.find((line) => line.offerId === replacement.offerId)!;
+      alternatives.push({
+        fromOfferId: source.offerId,
+        offerId: replacement.offerId,
+        name: replacementLine.name,
+        category: replacementLine.category,
+        priceCents: replacementLine.priceCents,
+        stock: replacement.stock,
+        compatibility: replacementLine.compatibility,
+        deltaCents: swapped.totalCents - cart.totalCents,
+        totalCents: swapped.totalCents,
+      });
+    } catch {
+      // A disabled, stale, or over-budget replacement is intentionally omitted.
+    }
+  }
+  return alternatives;
 }
 
 export function createPreview(

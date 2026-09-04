@@ -75,13 +75,13 @@ real host.
 
 Within three minutes, the audience should see:
 
-1. the mission become three ranked, one-merchant carts;
-2. proof that the charger, cables, adapter, destination, stock, pickup, and budget
-   constraints are all satisfied;
-3. a price/stock recheck and ten-minute checkout mandate;
-4. one explicit click confirming the exact merchant, cart version, and total;
-5. a clearly simulated Visa result and pickup receipt; and
-6. a merchant-controlled stale price, stockout, decline, or reversal scenario.
+1. the mission open a Choice Center with five ranked, one-location carts;
+2. comparison, preference reranking, pickup planning, and a merchant-approved compatible swap;
+3. proof that the charger, cables, adapter, destination, stock, pickup, and budget constraints are all satisfied;
+4. a price/stock recheck and ten-minute checkout mandate;
+5. one explicit click confirming the exact merchant, cart version, and total;
+6. a clearly simulated Visa result and signed, verified pickup receipt; and
+7. a merchant-controlled alternative, stale price, stockout, decline, or reversal scenario.
 
 The judge deck now follows this as a seven-slide main story with four Q&A
 backups. Its identity step is labeled **planned**; the speaker notes route the
@@ -91,15 +91,15 @@ live demo through the implemented review-and-confirm flow only.
 
 | Area | Status | Notes |
 | --- | --- | --- |
-| Buyer MCP App | Complete | React widget using an explicit hosted entry point and the MCP Apps bridge |
+| Buyer MCP App | Complete | React widget with an accessible Choice Center modal, comparison, preference reranking, swaps, pickup planner, recovery, and signed receipt view |
 | Local plugin packaging | Complete | Repo marketplace, cache-safe stdio launcher, real Codex CLI install, fresh-host six-tool smoke test, and verified guide |
 | Browser fallback | Complete | `/demo`; simulated chat-host rehearsal, same domain behavior over HTTP (`?instant` skips animations) |
 | Merchant desk | Complete | `/merchant`; inventory, scenarios, orders, audit, reset |
-| Cart engine | Complete for canonical mission | Four required categories; one location per cart |
+| Cart engine | Complete for canonical mission | Five location-diverse carts; four required categories; one location per cart; active merchant-approved swaps only |
 | Checkout safety | Complete for prototype | Expiry, hash, private nonce, exact terms, idempotency |
 | Demo identity check | Planned, not implemented | Target is a simulated connector-style flow; never call it Visa OAuth, KYC, or a real Visa login |
 | Visa rail | Simulated only | Approval, decline, failure, and reversal semantics |
-| Automated verification | Green | Nine tests, TypeScript/build gate, GitHub CI |
+| Automated verification | Green | Fourteen tests, TypeScript/build gate, GitHub CI |
 | README and gallery | Complete | Best-README structure and eight 1600×900 Devpost assets |
 | Stage fallback assets | Complete | Five numbered 1600×900 frames with editable SVG sources and explicit simulator boundaries |
 | Judge pitch deck | Complete | Seven-slide story plus four backups; presenter notes and source blocks included |
@@ -122,6 +122,9 @@ live demo through the implemented review-and-confirm flow only.
 - **Visa simulator:** the current payment adapter. It never contacts Visa and never
   receives card credentials.
 - **Merchant desk:** the operator surface used to control demo data and failures.
+- **Choice Center:** accessible buyer modal for comparison, preference reranking, and exact cart selection.
+- **Approved alternative:** a merchant-published, same-location replacement that preserves compatibility and budget.
+- **Verified receipt:** an HMAC-signed snapshot of the confirmed simulated order; it is not a Visa-issued receipt.
 
 ## Architecture at a glance
 
@@ -159,8 +162,8 @@ and domain rules. Do not split it into services without a measured reason.
 | `web/components/ui/` | Vendored shadcn/ui primitives (button, card, badge, table, input, separator, skeleton) |
 | `web/lib/utils.ts` | `cn` class-merge helper for shadcn components |
 | `web/styles.css` | Tailwind v4 entry: shadcn design tokens, Geist fonts, shared animations |
-| `test/domain.test.ts` | Mission, compatibility and ranking behavior |
-| `test/store.test.ts` | Confirmation, security, failures, inventory and CSV behavior |
+| `test/domain.test.ts` | Mission, compatibility, location-diverse ranking and safe swap behavior |
+| `test/store.test.ts` | Confirmation, security, recovery, alternatives, signed receipts, failures, inventory and CSV behavior |
 | `.codex-plugin/plugin.json` | Codex plugin metadata |
 | `.mcp.json` | Local stdio MCP launch configuration |
 | `.agents/plugins/marketplace.json` | Repository marketplace entry for local plugin installation |
@@ -185,9 +188,11 @@ and domain rules. Do not split it into services without a measured reason.
 | `start_mission` | Model and app | Create the mission and initial carts |
 | `build_carts` | Model and app | Recompute carts from current stock/prices |
 | `select_cart` | App only | Persist the chosen cart |
+| `swap_cart_item` | App only | Apply an active merchant-approved compatible replacement |
 | `create_checkout_preview` | App only | Revalidate and create an exact mandate |
 | `confirm_purchase` | App only | Consume confirmation and execute the simulator outcome |
 | `get_order_status` | Model | Read the latest public mission/order state |
+| `verify_receipt` | Model and app | Verify a simulated receipt's server signature |
 
 The one-time confirmation nonce is returned in MCP result `_meta`, never in
 model-visible `structuredContent`.
@@ -248,7 +253,7 @@ Useful commands:
 ```bash
 npm run dev          # Vite UI development server
 npm run dev:server   # backend with restart-on-change
-npm test             # eight domain/store tests
+npm test             # fourteen domain/store/widget tests
 npm run build        # Vite production bundle + tsc --noEmit
 npm run check        # test and build gate
 npm run mcp          # stdio MCP transport
@@ -274,12 +279,12 @@ the currently working product flow.
 3. Keep `/demo` and `/merchant` open in separate tabs (`/demo?instant` skips
    the intro animation if time is short).
 4. Let `/demo` play: the canonical request types itself, the staged `start_mission`
-   activity runs, and the widget renders three complete carts.
-5. Select ByteRoute and show the compatibility proof.
-6. Click **Review checkout** and emphasize the price/stock recheck.
-7. Read the exact S$133 mandate, then click **Confirm**.
-8. Show the simulated result, pickup receipt, and the scripted thank-you close.
-9. If time permits, select **Price change** in `/merchant` and show stale-preview
+   activity runs, and the Choice Center opens with five complete carts.
+5. Compare the carts, choose ByteRoute, and show one approved cable swap plus the pickup planner.
+6. Show the compatibility proof, then click **Review checkout** and emphasize the price/stock recheck.
+7. Read the exact mandate, then click **Confirm**.
+8. Show the simulated result, signed receipt verification, and scripted thank-you close.
+9. If time permits, withdraw an alternative or select **Price change** in `/merchant` and show recovery or stale-preview
    rejection.
 
 Do not add the target identity scene to the live demo until checkout rejects a

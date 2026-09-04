@@ -55,15 +55,18 @@ and pickup deadline. Woven then:
 
 1. filters incompatible and unavailable products;
 2. assembles complete carts from one pickup location;
-3. ranks the carts by mission fit, pickup speed, and budget headroom;
+3. opens five location-diverse choices with comparison, preference reranking,
+   pickup planning, and merchant-approved compatible swaps;
 4. explains why every component works with the others;
-5. rechecks price and stock before checkout;
-6. presents an exact, expiring mandate for one explicit click; and
-7. returns a simulated Visa result and pickup receipt.
+5. automatically rebuilds complete alternatives when stock or price goes stale;
+6. rechecks price and stock before checkout;
+7. presents an exact, expiring mandate for one explicit click; and
+8. returns a simulated Visa result and signed, verifiable pickup receipt.
 
-The merchant desk makes the trust story visible. Judges can change stock, raise a
-price, trigger an authorization decline, simulate an order failure and reversal,
-import inventory updates, or inspect the audit trail in real time.
+The merchant desk makes the trust story visible. Judges can publish or withdraw
+approved alternatives, change stock, raise a price, trigger an authorization
+decline, simulate an order failure and reversal, import inventory updates, or
+inspect the audit trail in real time.
 
 ### How we built it
 
@@ -78,6 +81,11 @@ then ranks the surviving carts. Checkout creates a ten-minute mandate hash bound
 to the exact cart version and total. A private nonce is delivered to the widget
 through MCP metadata, and confirmation is guarded by constant-time comparison,
 one-time consumption, and idempotency.
+
+Merchant-approved substitutions are stored per offer and location. Every swap is
+rebuilt through the same compatibility and budget rules before it can be
+selected. Confirmed simulated orders receive an HMAC-signed receipt snapshot so
+the prototype can detect a changed number, signature, item, or amount.
 
 Payment is deliberately isolated behind a simulated Visa adapter. This lets the
 prototype demonstrate authorization, decline, merchant failure, and reversal
@@ -106,11 +114,14 @@ when public networking or host configuration is unreliable.
 
 - A working MCP App widget, HTTP MCP endpoint, and stdio Codex transport
 - Complete carts with one merchant, hard budget, stock, pickup, and compatibility
+- An accessible five-cart Choice Center with comparison, local consented
+  preferences, pickup planning, approved swaps, and stale-cart recovery
 - Exact, expiring, one-time mandates with idempotent confirmation
 - Stale price/stock protection and atomic inventory/order writes
 - Simulated approval, decline, merchant failure, and reversal paths
-- A live merchant operations desk with CSV updates and audit events
-- Automated coverage for domain, security, failure, idempotency, and CSV behavior
+- Signed simulated receipts with server-side tamper verification
+- A live merchant operations desk with alternative controls, CSV updates, and audit events
+- Automated coverage for domain, swaps, recovery, receipts, security, failure, idempotency, and CSV behavior
 - A polished desktop and mobile experience, including a clearly labeled
   simulated chat host that rehearses the in-ChatGPT flow with live tool calls
 
@@ -153,12 +164,12 @@ All gallery assets are 1600 × 900 and live in the repository.
 | Order | File | Devpost title | Caption |
 | --- | --- | --- | --- |
 | 1 | `docs/assets/devpost/cover.png` | Everything works together | Woven turns every constraint in one urgent request into a complete cart and an exact confirmation. |
-| 2 | `docs/assets/screenshots/buyer-overview.png` | Born inside the chat | One message becomes a live MCP app: a visible `start_mission` call, then three complete one-merchant carts. |
+| 2 | `docs/assets/screenshots/buyer-overview.png` | Born inside the chat | One message becomes a live MCP app: a visible `start_mission` call, then a five-cart Choice Center. |
 | 3 | `docs/assets/devpost/woven-user-flow.png` | One request to pickup | Six visible steps carry the mission from intent to complete cart, exact confirmation, and receipt. |
 | 4 | `docs/assets/screenshots/checkout-confirmation.png` | The human stays in control | Merchant, pickup, cart version, and total are bound to one expiring confirmation. |
 | 5 | `docs/assets/devpost/woven-trust-boundary.png` | Recommendation is not permission | The model recommends, Woven binds the terms, and only a direct user click can confirm. |
-| 6 | `docs/assets/screenshots/order-success.png` | From mission to pickup receipt | A successful simulated Visa result reserves the kit and returns a pickup-ready receipt. |
-| 7 | `docs/assets/screenshots/merchant-dashboard.png` | Trust you can test live | Change inventory or trigger decline/reversal scenarios while the audit trail updates. |
+| 6 | `docs/assets/screenshots/order-success.png` | From mission to verified receipt | A successful simulated Visa result reserves the kit and returns an exact signed receipt. |
+| 7 | `docs/assets/screenshots/merchant-dashboard.png` | Trust you can test live | Publish alternatives, change inventory, or trigger decline/reversal scenarios while the audit trail updates. |
 | 8 | `docs/assets/devpost/woven-architecture.png` | One service, one source of truth | Every surface shares the same commerce rules, SQLite transactions, and simulated payment boundary. |
 
 Use `cover.png` as the Devpost thumbnail. Keep the raw product screenshots
@@ -188,16 +199,17 @@ compatible, under budget, pickup today.”
 **0:48–1:30 — Ask once**
 
 Run the canonical prompt in ChatGPT/Codex or open `/demo`, where the simulated
-chat host types the canonical request and plays the `start_mission` activity live. Point
-out the three complete one-merchant carts. Select ByteRoute and show the
-compatibility proof, demo stock, pickup location, and S$133 total.
+chat host types the canonical request and plays the `start_mission` activity
+live. In the Choice Center, compare five complete carts, rerank once, choose
+ByteRoute, and show a merchant-approved swap, compatibility proof, pickup plan,
+seeded stock, and exact total.
 
 **1:30–2:15 — Review once and confirm once**
 
 Click **Review checkout**. Say: “Woven rechecks price and stock now. The AI has
 recommended; it still cannot authorize.” Read the exact merchant, items, pickup,
-expiry, and S$133 total. Pause, then click **Confirm S$133.00** and show the
-simulated Visa result and receipt.
+expiry, and exact total. Pause, then click **Confirm** and show the simulated
+Visa result plus the signed receipt's valid signature state.
 
 The target storyboard inserts a simulated connector-style identity check before
 the exact-cart review. Do not include it in a live recording until the product
@@ -205,9 +217,10 @@ actually blocks checkout for a missing or expired identity session.
 
 **2:15–2:35 — Show merchant control**
 
-Open `/merchant` and show inventory, scenario controls, orders, and audit events.
-Explain that the values are seeded demo data and that price, stock, decline, and
-reversal paths can be tested without changing code.
+Open `/merchant` and show approved-alternative controls, inventory, scenarios,
+orders, and audit events. Explain that the values are seeded demo data and that
+alternative withdrawal, price, stock, decline, and reversal paths can be tested
+without changing code.
 
 **2:35–3:00 — Close with why ChatGPT and why a plugin**
 

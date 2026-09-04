@@ -38,8 +38,8 @@ Expected result:
 - `npm run check` ends with these key lines (durations and asset hashes vary):
 
   ```text
-  # tests 9
-  # pass 9
+  # tests 14
+  # pass 14
   # fail 0
   ✓ built in ...
   ```
@@ -69,16 +69,20 @@ bundled stdio server itself and serves the widget on local port `8788`.
 ### Expected result
 
 - **Woven** is shown as installed and enabled.
-- The new task can access six Woven tools:
-  `start_mission`, `build_carts`, `select_cart`,
-  `create_checkout_preview`, `confirm_purchase`, and `get_order_status`.
-- The prompt opens Woven's interactive widget with three complete carts:
+- The new task can access eight Woven tools:
+  `start_mission`, `build_carts`, `select_cart`, `swap_cart_item`,
+  `create_checkout_preview`, `confirm_purchase`, `get_order_status`, and
+  `verify_receipt`.
+- The prompt opens Woven's Choice Center with five complete carts spanning
+  Central, Airport, and East pickup areas. The merchant leaders remain
   ByteRoute at S$133, Volt & Go at S$143, and City Mobile at S$102.
 - ByteRoute is the **Best match** and City Mobile is the **Best value**.
 - Selecting a cart changes no inventory and makes no purchase.
+- Comparison, reranking, local-device preference consent, pickup planning, and
+  merchant-approved cable swaps work before checkout.
 - **Review checkout** creates an exact ten-minute preview.
 - Only the widget's separate **Confirm S$133.00** action can produce the clearly
-  labeled simulated Visa result and pickup receipt.
+  labeled simulated Visa result and signed, server-verified receipt.
 
 ### Codex CLI alternative
 
@@ -145,7 +149,7 @@ curl https://visa-woven.vercel.app/healthz
 Expected JSON:
 
 ```json
-{"ok":true,"service":"woven","version":"0.1.2","paymentMode":"simulated"}
+{"ok":true,"service":"woven","version":"0.2.0","paymentMode":"simulated"}
 ```
 
 ### Create the ChatGPT connection
@@ -165,8 +169,8 @@ Expected JSON:
 6. Start a new ChatGPT Work conversation, type `@`, select **Woven**, and send
    the canonical prompt above.
 
-Expected result: ChatGPT discovers the same six tools and renders the same
-three-cart widget and confirmation flow described in the Codex result. If the
+Expected result: ChatGPT discovers the same eight tools and renders the same
+five-choice modal and confirmation flow described in the Codex result. If the
 server's tool metadata or UI changes, refresh the plugin connection before
 retesting.
 
@@ -199,10 +203,10 @@ the MCP App. It is a rehearsal transport, not the primary product.
 | --- | --- | --- |
 | Woven Local is missing | Confirm `.agents/plugins/marketplace.json` exists, reopen this repository, then fully restart ChatGPT desktop | **Woven Local** appears under Plugins |
 | Woven is installed but tools are missing | Start a new task/session; plugin changes are not injected into an already-running session | Six Woven tools become available |
-| The bundled MCP server cannot launch | Run `npm ci`, remove and reinstall Woven, then start a new task | The bundled MCP server starts and exposes six tools |
+| The bundled MCP server cannot launch | Run `npm ci`, remove and reinstall Woven, then start a new task | The bundled MCP server starts and exposes eight tools |
 | `codex --version` fails with a native-binary `ENOENT` error | Use ChatGPT desktop, or repair the CLI with OpenAI's official installer shown below | `codex --version` prints a version instead of an error |
 | Port `8788` is already in use | Stop the other Woven/plugin process, then start a new task | The widget asset server binds to `8788` |
-| `start_mission` succeeds but the widget area is blank | Reinstall Woven 0.1.2 or newer, then start a new task | Three interactive cart choices appear above the model response |
+| `start_mission` succeeds but the widget area is blank | Reinstall Woven 0.2.0 or newer, then start a new task | The Choice Center opens with five interactive cart choices |
 | ChatGPT cannot connect | Verify public HTTPS, include the `/mcp` path, set `BASE_URL` to the same origin, and retry | Tool discovery succeeds |
 | The widget is stale after code changes | Run `npm run check`, reinstall the local plugin or refresh the ChatGPT connection, then start a new conversation | Updated tools and UI load |
 | Developer Mode is absent | Check the ChatGPT account/workspace policy | The toggle appears after an admin permits it |

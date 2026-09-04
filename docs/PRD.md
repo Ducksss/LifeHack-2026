@@ -8,11 +8,12 @@ Woven is a personal commerce plugin that builds a complete kit around a user’s
 
 Within three minutes, an audience should see:
 
-1. A natural-language travel mission become three ranked, pickup-ready carts.
-2. A visible proof that charger, cables, adapter, destination, stock, pickup, and budget all work together.
-3. An exact checkout preview bound to the merchant, items, total, version, and expiry.
-4. An explicit user confirmation produce a clearly simulated Visa authorization and pickup receipt.
-5. A merchant operator force stock, price, authorization, and order failure paths without changing code.
+1. A natural-language travel mission becomes five ranked, pickup-ready carts in a Choice Center.
+2. A user compares totals, pickup plans, power, and compatibility; reranks by value, speed, power, or pickup area; and makes a merchant-approved compatible swap.
+3. A visible proof that charger, cables, adapter, destination, stock, pickup, and budget all work together.
+4. An exact checkout preview bound to the merchant, items, total, version, and expiry.
+5. An explicit user confirmation produces a clearly simulated Visa authorization and signed, verifiable pickup receipt.
+6. A merchant operator publish alternatives and force stock, price, authorization, and order failure paths without changing code.
 
 The current build does not verify a user identity. The target storyboard adds a
 simulated connector-style identity check before checkout, but it is not part of
@@ -36,12 +37,20 @@ Assumptions are explicit: MacBook Air uses USB-C PD; the demo iPhone and AirPods
 - Apply hard compatibility, inventory, pickup, and budget constraints before ranking.
 - Keep each recommended cart at one merchant/location.
 - Show why every component is compatible.
+- Open an accessible Choice Center with five complete carts spanning Central, Airport, and East pickup areas.
+- Compare price, pickup readiness, travel time, charger power, compatibility, and approved-swap availability.
+- Rerank without weakening hard constraints; remember ranking and pickup-area preferences only after explicit local-device consent.
+- Permit only active merchant-approved, same-location substitutions that preserve all four categories and the hard budget.
+- Automatically refresh complete choices after a stale price, stock, or preview failure.
+- Show pickup readiness, travel buffer, leave-by time, address, area, and closing time.
 - Revalidate immediately before preview and confirmation.
 - Require a direct user click for confirmation.
 - Bind confirmation to exact immutable terms with expiry and one-time nonce.
 - Make order creation idempotent and inventory mutation atomic.
 - Simulate approval, decline, merchant failure/reversal, stockout, and price change.
 - Give the merchant console inventory CSV import/export, scenario controls, orders, audit, and reset.
+- Give the merchant console publish/withdraw controls for approved alternatives.
+- Sign confirmed simulated receipts server-side and detect a changed receipt number, signature, or payload.
 - Never accept or persist payment credentials.
 
 ## Non-goals for this prototype
@@ -51,6 +60,7 @@ Assumptions are explicit: MacBook Air uses USB-C PD; the demo iPhone and AirPods
 - Real Visa authorization without an approved product, sandbox credentials, and compliance review.
 - Production user accounts, merchant onboarding, fulfillment integrations,
   refunds, or disputes.
+- Cloud preference profiles; consented preferences remain local to the current browser or app storage.
 - Broad catalog optimization beyond the four-part charging mission.
 
 ## Planned identity extension — not implemented
@@ -81,11 +91,16 @@ focused automated coverage.
 
 - `npm run check` passes.
 - `start_mission` returns at least two complete carts for the canonical request.
+- The canonical request returns five carts and includes Central, Airport, and East pickup choices.
 - Every returned cart is within S$150 and contains all four compatible categories.
+- Preference changes reorder choices without changing cart contents or hard constraints.
+- A merchant-approved swap remains complete, compatible, single-location, and under budget; a withdrawn swap is rejected.
+- A stale selected cart is cleared and replaced with fresh complete choices.
 - The checkout nonce never appears in public mission view data.
 - A wrong nonce is rejected.
 - A changed price or stock invalidates the old preview.
 - Reusing an idempotency key returns the same order and decrements stock once.
 - Decline and reversal scenarios create no confirmed receipt.
+- A confirmed order includes a four-line signed simulated receipt; a changed signature fails verification.
 - `/` (landing), `/demo`, `/merchant`, `/healthz`, and `/mcp` run from one process.
 - Plugin manifests pass Codex plugin validation.
